@@ -18,7 +18,4 @@ class Controller {
     // display winner and loser
     // loser is determined when all ships are sunk
     // winner is determined by not being loser
-
-
-
 }
