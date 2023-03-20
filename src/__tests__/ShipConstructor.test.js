@@ -13,3 +13,19 @@ test("ships have appropriate hp's", () => {
   expect((submarine.hp)).toBe(3)
   expect((destroyer.hp)).toBe(2)
 })
+
+test("carrier is hit", () => {
+  const carrier = ShipConstructor("carrier");
+  carrier.isHit()
+  expect(carrier.hp).toBe(4)
+})
+
+test("carrier is sunk", () => {
+  const carrier = ShipConstructor("carrier");
+  carrier.isHit()
+  carrier.isHit()
+  carrier.isHit()
+  carrier.isHit()
+  carrier.isHit()
+  expect(carrier.isSunk()).toBe(true)
+})

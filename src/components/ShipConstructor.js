@@ -1,5 +1,5 @@
 const ShipConstructor = (name) =>  {
-  const shipNames = {
+  const ships = {
     destroyer: 2,
     submarine: 3,
     cruiser: 3,
@@ -7,21 +7,18 @@ const ShipConstructor = (name) =>  {
     carrier: 5,
   }
 
-  let hp = shipNames[name]
-
-
-  return {
+  const ship = {
     name: name,
-    hp: hp,
-    isSunk: () => {
-      return hp > 0 ? false : true
+    hp: ships[name],
+    isHit: function() {
+      this.hp -= 1
     },
-    isHit: () => {
-      // need to check if cell is occupied by ship part somehow
-      // if cell is occupied by ship part
-      hp -= 1
+    isSunk: function() {
+      return this.hp === 0
     }
   }
+
+  return ship
 }
 
 export default ShipConstructor
