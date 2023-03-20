@@ -10,11 +10,12 @@ const ShipConstructor = (name) =>  {
   const ship = {
     name: name,
     hp: ships[name],
+    length: ships[name],
     isHit: function() {
       this.hp -= 1
     },
     isSunk: function() {
-      return this.hp === 0
+      return this.hp <= 0
     }
   }
 

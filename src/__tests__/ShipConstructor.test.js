@@ -29,3 +29,12 @@ test("carrier is sunk", () => {
   carrier.isHit()
   expect(carrier.isSunk()).toBe(true)
 })
+
+test("carrier is sunk but below 0", () => {
+  const destroyer = ShipConstructor("destroyer");
+  destroyer.isHit()
+  destroyer.isHit()
+  destroyer.isHit()
+  expect(destroyer.hp).toBe(-1)
+  expect(destroyer.isSunk()).toBe(true)
+})
