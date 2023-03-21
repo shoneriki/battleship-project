@@ -6,10 +6,14 @@ const Gameboard = () => {
   } = GameboardConstructor()
 
   const Board = styled.table`
-    width: 50%;
+    width: 80%;
     min-height: 100vh;
-    padding: 0;
-    margin: 0;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
   `
 
   const TableRow = styled.tr`
@@ -25,27 +29,28 @@ const Gameboard = () => {
     align-items: center;
     justify-content: center;
     height: 100%;
-    padding: 8px;
+    padding: 32px;
     font-size: 8px;
   `
-
+  // v for vertical, h for horizontal
   return (
       <Board>
-        {board.map((row, x) => (
-          <TableRow key={x}>
-            {row.map((cell, y) => (
+        {board.map((row, v) => (
+          <TableRow key={v}>
+            {row.map((cell, h) => (
               <Square
-                key={`${x}, ${y}`}
-                x={cell.x}
-                y={cell.y}
+                key={`${v}, ${h}`}
+                v={cell.v}
+                h={cell.h}
                 hasShip={cell.hasShip}
-                data-testid={`cell-${x}-${y}`}
+                data-testid={`cell-${v}-${h}`}
                 backgroundColor={cell.hasShip ? "red" : "white"}
                 style={{
-                  backgroundColor: cell.hasShip ? "red" : "green",
+                  backgroundColor: cell.hasShip ? "red" : "blue",
                 }}
+                onHover={{backgroundColor: "blue"}}
               >
-                {cell.x},{cell.y}
+
               </Square>
             ))}
           </TableRow>

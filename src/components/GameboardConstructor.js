@@ -1,38 +1,38 @@
 export const GameboardConstructor = () => {
   const BOARD_SIZE = 10
-  const board = Array.from({length: BOARD_SIZE}, (_,y) => Array.from({length: BOARD_SIZE}, (_,x) => ({
-    x,
-    y,
+  const board = Array.from({length: BOARD_SIZE}, (_,v) => Array.from({length: BOARD_SIZE}, (_,h) => ({
+    v,
+    h,
     hasShip: 0,
   })))
-  const placeShip = (ship, x, y, direction, board) => {
+  const placeShip = (ship, v, h, direction, board) => {
     const {length} = ship;
     const coords = [];
-    let xIncrement, yIncrement;
+    let hIncrement, vIncrement;
     if(direction === "h") {
-      xIncrement = 1;
-      yIncrement = 0;
+      vIncrement = 0;
+      hIncrement = 1;
     } else {
-      xIncrement = 0;
-      yIncrement = 1;
+      vIncrement = 1;
+      hIncrement = 0;
     }
-    const XEnding = x + ship.length * xIncrement;
-    const YEnding = y + ship.length * yIncrement;
+    const hEnding = h + ship.length * hIncrement;
+    const vEnding = v + ship.length * vIncrement;
 
-    const placementValid = (x,y) => {
+    const placementValid = (v,h) => {
       // check if ship is out of bounds
-      if (XEnding > BOARD_SIZE || YEnding > BOARD_SIZE || x < 0 || y < 0) {
+      if (vEnding > BOARD_SIZE || hEnding > BOARD_SIZE || v < 0 || h < 0) {
         throw new Error("Ship is out of bounds")
       }
 
       // check if ship is overlapping another ship
       for (let i = 0; i < length; i++) {
         if (direction === "h") {
-          if (board[x+i][y].hasShip) {
+          if (board[v][h+i].hasShip) {
             throw new Error("Ship is overlapping another ship")
           }
         } else {
-          if (board[x][y+i].hasShip) {
+          if (board[v+i][h].hasShip) {
             throw new Error("Ship is overlapping another ship")
           }
         }
@@ -44,14 +44,14 @@ export const GameboardConstructor = () => {
 
     }
 
-    if(placementValid(x,y)) {
+    if(placementValid(v,h)) {
       for (let i = 0; i < length; i++) {
         if (direction === "h") {
-          coords.push([ x + i, y]);
-          board[x+i][y].hasShip = ship
+          coords.push([ v, h + i]);
+          board[v][h+i].hasShip = ship
         } else {
-          coords.push([x, y + i]);
-          board[x][y+i].hasShip = ship
+          coords.push([v + i, h]);
+          board[v+i][h].hasShip = ship
         }
       }
     }

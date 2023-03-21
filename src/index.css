@@ -6,8 +6,30 @@
 .app {
   width: 100%;
   min-height: 100vh;
-  background-color: green;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
+.title {
+  text-align: center;
+}
+
+.boards {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  text-align: center;
+}
+
+.board {
+  width: 50%;
+  height: 100%;
+  border-radius: 10px;
+  font-size: 20px;
+  font-weight: bold;
+  text-align: center;
+}
+
 body {
   margin: 0;
   padding: 0;
