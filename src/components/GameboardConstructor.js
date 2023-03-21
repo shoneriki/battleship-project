@@ -1,8 +1,8 @@
 export const GameboardConstructor = () => {
   const BOARD_SIZE = 10
-  const board = Array.from({length: BOARD_SIZE}, (_,x) => Array.from({length: BOARD_SIZE}, (_,y) => ({
-    x: x,
-    y: y,
+  const board = Array.from({length: BOARD_SIZE}, (_,y) => Array.from({length: BOARD_SIZE}, (_,x) => ({
+    x,
+    y,
     hasShip: 0,
   })))
   const placeShip = (ship, x, y, direction, board) => {
