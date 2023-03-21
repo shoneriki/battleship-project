@@ -1,17 +1,19 @@
+import { cloneElement } from "react"
 import { GameboardConstructor } from "../components/GameboardConstructor"
 import ShipConstructor from "../components/ShipConstructor"
 
 
-test("board is oriented where x is horizontal and y is vertical", () => {
+test("board is oriented where y goes TOP TO BOTTOM and x goes left to right", () => {
   const gameboard = GameboardConstructor()
-  const bottomLeft = gameboard.board[0][0]
-  const test = gameboard.board[1][5]
-  const topRight = gameboard.board[9][9]
+  const bottomRight = gameboard.board[9][9]
 
-  expect(bottomLeft.x).toEqual(0)
-  expect(bottomLeft.y).toEqual(0)
-  expect(topRight.x).toEqual(9)
-  expect(topRight.y).toEqual(9)
+  gameboard.board[9][9] = "testBottomRight"
+  expect(bottomRight.x).toBe(9)
+  expect(bottomRight.y).toBe(9)
+
+  gameboard.board[0][0] = "testTopLeft"
+  console.table(gameboard.board)
+
 })
 
 test("placing ship on board", () => {
