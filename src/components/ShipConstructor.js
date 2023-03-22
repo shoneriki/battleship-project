@@ -1,4 +1,4 @@
-const ShipConstructor = (name) =>  {
+export const ShipConstructor = (name) =>  {
   const ships = {
     destroyer: 2,
     submarine: 3,
@@ -21,5 +21,3 @@ const ShipConstructor = (name) =>  {
 
   return ship
 }
-
-export default ShipConstructor

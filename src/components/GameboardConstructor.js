@@ -1,3 +1,4 @@
+import {ShipConstructor} from "./ShipConstructor"
 export const GameboardConstructor = () => {
   const BOARD_SIZE = 10
   const board = Array.from({length: BOARD_SIZE}, (_,v) => Array.from({length: BOARD_SIZE}, (_,h) => ({
@@ -5,9 +6,17 @@ export const GameboardConstructor = () => {
     h,
     hasShip: 0,
   })))
+  const ships = [
+    ShipConstructor("carrier"),
+    ShipConstructor("battleship"),
+    ShipConstructor("cruiser"),
+    ShipConstructor("submarine"),
+    ShipConstructor("destroyer"),
+  ];
+  const shipCoords = [];
+  const totalShipParts = [];
   const placeShip = (ship, v, h, direction, board) => {
     const {length} = ship;
-    const coords = [];
     let hIncrement, vIncrement;
     if(direction === "h") {
       vIncrement = 0;
@@ -38,29 +47,27 @@ export const GameboardConstructor = () => {
         }
         return true
       }
-
-
-
-
     }
 
     if(placementValid(v,h)) {
       for (let i = 0; i < length; i++) {
         if (direction === "h") {
-          coords.push([ v, h + i]);
-          board[v][h+i].hasShip = ship
+          shipCoords.push([ v, h + i]);
+          totalShipParts.push(ship.name.slice(0,3));
+          board[v][h+i].hasShip = ship.name.slice(0,3)
         } else {
-          coords.push([v + i, h]);
-          board[v+i][h].hasShip = ship
+          shipCoords.push([v + i, h]);
+          totalShipParts.push(ship.name.slice(0,3))
+          board[v+i][h].hasShip = ship.name.slice(0,3)
         }
       }
     }
-
   }
-
 
   return {
     board,
     placeShip,
+    shipCoords,
+    totalShipParts,
   }
 }
