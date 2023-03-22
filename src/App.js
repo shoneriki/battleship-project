@@ -46,25 +46,25 @@ const BoardSection = styled.section`
   font-weight: bold;
   text-align: center;
 `
-
-function App() {
+const AppMain = () => {
   return (
     <AppSection>
-      <GameTitle>Battleship</GameTitle>
+      <GameTitle data-testid="game-title">Battleship</GameTitle>
       <Boards>
         <BoardSection>
-          <Gameboard
-            Player="Player 1"
-          />
+          <Gameboard Player="Player" />
         </BoardSection>
         <BoardSection>
-          <Gameboard
-            Player="Computer"
-          />
+          <Gameboard Player="Computer" data-testid="computer-board" />
         </BoardSection>
       </Boards>
     </AppSection>
+  );
+}
 
+function App() {
+  return (
+    <AppMain/>
   );
 }
 

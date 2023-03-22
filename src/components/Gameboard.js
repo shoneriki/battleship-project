@@ -1,9 +1,5 @@
 import styled from "styled-components"
 import {GameboardConstructor} from "./GameboardConstructor"
-const Gameboard = ({Player}) => {
-  const {
-    board
-  } = GameboardConstructor()
 
   const PlayerTitle = styled.h1`
     text-align: center;
@@ -24,6 +20,9 @@ const Gameboard = ({Player}) => {
       width: 100%;
     }
   `;
+  const BoardBody = styled.tbody`
+
+  `
 
   const TableRow = styled.tr`
     display: flex;
@@ -66,37 +65,62 @@ const Gameboard = ({Player}) => {
     width: 100%;
     justify-content: center;
   `
+const Gameboard = ({Player}) => {
+  const {
+    board,
+    placeShip,
+  } = GameboardConstructor()
 
-  // v for vertical, h for horizontal
-  return (
-    <Board>
-      <PlayerTitle>{Player}</PlayerTitle>
-      <ShipInfo>
-        {
-          Player !== "Computer" && (
-            <h3></h3>
-          )
-        }
-      </ShipInfo>
-      {board.map((row, v) => (
-        <TableRow key={v}>
-          {row.map((cell, h) => (
-            <Square
-              key={`${v}, ${h}`}
-              v={cell.v}
-              h={cell.h}
-              hasShip={cell.hasShip}
-              data-testid={`cell-${v}-${h}`}
-              backgroundColor={cell.hasShip ? "red" : "white"}
-              style={{
-                backgroundColor: cell.hasShip ? "red" : "blue",
-              }}
-              onHover={{ backgroundColor: "blue" }}
-            ></Square>
+
+
+  const Info = ({Player}) => {
+    return (
+      <>
+        <PlayerTitle>{Player}</PlayerTitle>
+        <ShipInfo>
+          {
+            Player !== "Computer" && (
+              <h3></h3>
+            )
+          }
+        </ShipInfo>
+      </>
+    )
+  }
+
+  const PlayerBoard = ({Player}) => {
+    return (
+      <Board>
+        <BoardBody data-testid={`${Player}-board`}>
+          {board.map((row, v) => (
+            <TableRow key={v}>
+              {row.map((cell, h) => (
+                <Square
+                  key={`${v}, ${h}`}
+                  v={cell.v}
+                  h={cell.h}
+                  hasShip={cell.hasShip}
+                  data-testid={`cell-${v}-${h}`}
+                  backgroundColor={cell.hasShip ? "red" : "white"}
+                  style={{
+                    backgroundColor: cell.hasShip ? "red" : "blue",
+                  }}
+                ></Square>
+              ))}
+            </TableRow>
           ))}
-        </TableRow>
-      ))}
-    </Board>
+        </BoardBody>
+      </Board>
+    );
+  }
+    // v for vertical, h for horizontal
+  return (
+    <section>
+      <Info Player={Player}/>
+      <PlayerBoard
+        Player={Player}
+      />
+    </section>
   );
 }
 export default Gameboard

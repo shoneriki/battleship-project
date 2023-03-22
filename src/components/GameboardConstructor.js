@@ -1,3 +1,4 @@
+import ShipConstructor from "./ShipConstructor"
 export const GameboardConstructor = () => {
   const BOARD_SIZE = 10
   const board = Array.from({length: BOARD_SIZE}, (_,v) => Array.from({length: BOARD_SIZE}, (_,h) => ({
@@ -5,6 +6,13 @@ export const GameboardConstructor = () => {
     h,
     hasShip: 0,
   })))
+  const ships = [
+    ShipConstructor("carrier"),
+    ShipConstructor("battleship"),
+    ShipConstructor("cruiser"),
+    ShipConstructor("submarine"),
+    ShipConstructor("destroyer"),
+  ];
   const placeShip = (ship, v, h, direction, board) => {
     const {length} = ship;
     const coords = [];
@@ -38,10 +46,6 @@ export const GameboardConstructor = () => {
         }
         return true
       }
-
-
-
-
     }
 
     if(placementValid(v,h)) {
@@ -57,7 +61,6 @@ export const GameboardConstructor = () => {
     }
 
   }
-
 
   return {
     board,
