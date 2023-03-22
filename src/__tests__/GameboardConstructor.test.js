@@ -1,6 +1,5 @@
-import { cloneElement } from "react"
 import { GameboardConstructor } from "../components/GameboardConstructor"
-import ShipConstructor from "../components/ShipConstructor"
+import {ShipConstructor} from "../components/ShipConstructor"
 
 
 test("board is oriented where y goes TOP TO BOTTOM and x goes left to right", () => {
@@ -20,12 +19,16 @@ test("placing ship on board", () => {
   const destroyer = ShipConstructor("destroyer")
   const submarine = ShipConstructor("submarine")
   let board = gameboard.board
+  let shipCoords = gameboard.shipCoords
+  let totalShipParts = gameboard.totalShipParts
 
   gameboard.placeShip(destroyer, 0, 0, "h", gameboard.board)
-  expect(board[0][0].hasShip).toEqual(destroyer)
-  expect(board[0][1].hasShip).toEqual(destroyer)
+  expect(board[0][0].hasShip).toEqual("des")
+  expect(board[0][1].hasShip).toEqual("des")
 
   gameboard.placeShip(submarine, 1,0, "v", gameboard.board )
-  expect(board[1][0].hasShip).toEqual(submarine)
-  expect(board[2][0].hasShip).toEqual(submarine)
+  expect(board[1][0].hasShip).toEqual("sub")
+  expect(board[2][0].hasShip).toEqual("sub")
+  expect(shipCoords).toStrictEqual([[0,0],[0,1],[1,0],[2,0],[3,0]])
+  expect(totalShipParts).toStrictEqual(["des", "des", "sub", "sub", "sub",])
 })

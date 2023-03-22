@@ -1,4 +1,4 @@
-import ShipConstructor from "../components/ShipConstructor";
+import {ShipConstructor} from "../components/ShipConstructor";
 
 test("ships have appropriate hp's", () => {
   const carrier = ShipConstructor("carrier");

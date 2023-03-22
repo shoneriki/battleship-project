@@ -1,5 +1,6 @@
-import Gameboard from "./components/Gameboard"
-import styled from "styled-components"
+import PlayerArea from "./components/PlayerArea";
+import EnemyArea from "./components/EnemyArea";
+import styled from "styled-components";
 
 const AppSection = styled.main`
   width: 100%;
@@ -12,7 +13,7 @@ const AppSection = styled.main`
     flex-direction: column;
     align-items: center;
   }
-  @media only screen and (min-width: 801px) and  (max-width: 1100px) {
+  @media only screen and (min-width: 801px) and (max-width: 1100px) {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -45,27 +46,25 @@ const BoardSection = styled.section`
   font-size: 20px;
   font-weight: bold;
   text-align: center;
-`
+`;
 const AppMain = () => {
   return (
     <AppSection>
       <GameTitle data-testid="game-title">Battleship</GameTitle>
       <Boards>
         <BoardSection>
-          <Gameboard Player="Player" />
+          <PlayerArea Player="Player" />
         </BoardSection>
         <BoardSection>
-          <Gameboard Player="Computer" data-testid="computer-board" />
+          <EnemyArea Player="Computer" />
         </BoardSection>
       </Boards>
     </AppSection>
   );
-}
+};
 
 function App() {
-  return (
-    <AppMain/>
-  );
+  return <AppMain />;
 }
 
 export default App;
