@@ -60,10 +60,24 @@ const Gameboard = ({Player}) => {
     }
 
   `
+  const ShipInfo = styled.section`
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    justify-content: center;
+  `
+
   // v for vertical, h for horizontal
   return (
     <Board>
       <PlayerTitle>{Player}</PlayerTitle>
+      <ShipInfo>
+        {
+          Player !== "Computer" && (
+            <h3></h3>
+          )
+        }
+      </ShipInfo>
       {board.map((row, v) => (
         <TableRow key={v}>
           {row.map((cell, h) => (

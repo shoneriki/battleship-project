@@ -20,9 +20,6 @@ const AppSection = styled.main`
     width: 100%;
   }
 `;
-const Title = styled.h1`
-
-`
 
 const Boards = styled.section`
   display: flex;

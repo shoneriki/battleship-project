@@ -21,6 +21,7 @@ test("placing ship on board", () => {
   const destroyer = ShipConstructor("destroyer")
   const submarine = ShipConstructor("submarine")
   let board = gameboard.board
+  
   gameboard.placeShip(destroyer, 0, 0, "h", gameboard.board)
   expect(board[0][0].hasShip).toEqual(destroyer)
   expect(board[0][1].hasShip).toEqual(destroyer)
@@ -28,6 +29,4 @@ test("placing ship on board", () => {
   gameboard.placeShip(submarine, 1,0, "v", gameboard.board )
   expect(board[1][0].hasShip).toEqual(submarine)
   expect(board[2][0].hasShip).toEqual(submarine)
-
-
 })
