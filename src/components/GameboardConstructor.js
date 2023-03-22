@@ -6,7 +6,7 @@ export const GameboardConstructor = () => {
     h,
     hasShip: 0,
   })))
-  const ships = [
+  const shipsToBePlaced = [
     ShipConstructor("carrier"),
     ShipConstructor("battleship"),
     ShipConstructor("cruiser"),
@@ -53,14 +53,16 @@ export const GameboardConstructor = () => {
       for (let i = 0; i < length; i++) {
         if (direction === "h") {
           shipCoords.push([ v, h + i]);
-          totalShipParts.push(ship.name.slice(0,3));
-          board[v][h+i].hasShip = ship.name.slice(0,3)
+          board[v][h+i].hasShip = ship.name.slice(0,3);
+          totalShipParts.push(ship.name.slice(0,3))
         } else {
           shipCoords.push([v + i, h]);
-          totalShipParts.push(ship.name.slice(0,3))
           board[v+i][h].hasShip = ship.name.slice(0,3)
+          totalShipParts.push(ship.name.slice(0,3))
         }
       }
+      const removeShip = shipsToBePlaced.findIndex(s => s.name === ship.name);
+      shipsToBePlaced.splice(removeShip, 1)
     }
   }
 
@@ -69,5 +71,6 @@ export const GameboardConstructor = () => {
     placeShip,
     shipCoords,
     totalShipParts,
+    shipsToBePlaced,
   }
 }

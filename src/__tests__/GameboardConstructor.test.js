@@ -21,6 +21,7 @@ test("placing ship on board", () => {
   let board = gameboard.board
   let shipCoords = gameboard.shipCoords
   let totalShipParts = gameboard.totalShipParts
+  let shipsToBePlaced = gameboard.shipsToBePlaced
 
   gameboard.placeShip(destroyer, 0, 0, "h", gameboard.board)
   expect(board[0][0].hasShip).toEqual("des")
@@ -30,5 +31,6 @@ test("placing ship on board", () => {
   expect(board[1][0].hasShip).toEqual("sub")
   expect(board[2][0].hasShip).toEqual("sub")
   expect(shipCoords).toStrictEqual([[0,0],[0,1],[1,0],[2,0],[3,0]])
-  expect(totalShipParts).toStrictEqual(["des", "des", "sub", "sub", "sub",])
+  expect(totalShipParts).toEqual(["des", "des", "sub", "sub", "sub",])
+  console.log("ships to be placed", shipsToBePlaced)
 })
