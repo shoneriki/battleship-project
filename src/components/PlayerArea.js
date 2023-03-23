@@ -1,25 +1,17 @@
-import {useState} from "react"
+import {useState, useEffect} from "react"
 import styled from "styled-components"
 import {GameboardConstructor} from "./GameboardConstructor"
 import {ShipConstructor} from "./ShipConstructor"
 import {PlayerTitle, Board, BoardBody, TableRow, Square, ShipInfo} from "./StyledComponents"
 
-const PlayerArea = ({Player}) => {
+const PlayerArea = ({Player, gameboard}) => {
   const {
     boat
   } = ShipConstructor()
 
   const [ship, setShip] = useState(ShipConstructor("carrier"))
   const [boardSize, setBoardSize] = useState(10)
-  const [playerBoard, setPlayerBoard] = useState(
-    Array.from({ length: boardSize }, (_, v) =>
-      Array.from({ length: boardSize }, (_, h) => ({
-        v,
-        h,
-        hasShip: 0,
-      }))
-    )
-  );
+  const [playerBoard, setPlayerBoard] = useState(gameboard);
   const [direction, setDirection] = useState("h")
   const [shipsToBePlaced, setShipsToBePlaced] = useState(
     ["carrier", "battleship", "cruiser", "submarine", "destroyer"].map((name) =>
@@ -31,16 +23,32 @@ const PlayerArea = ({Player}) => {
   const [shipCoords, setShipCoords] = useState([])
   const [placedShips, setPlacedShips] = useState([])
 
-  const changeDirection = (e, direction) => {
-    direction === "h" ? setDirection("v") : setDirection("h")
-  }
+  // const changeDirection = (e, direction) => {
+  //   direction === "h" ? setDirection("v") : setDirection("h")
+  // }
+  // const changeDirection = (direction) => {
+  //   setDirection(direction)
+  // };
+  useEffect(() => {
+    const handleKeyUp = (e) => {
+      if (e.key === "h" && direction !== "h") {
+        setDirection("h")
+      } else if (e.key === "v" && direction !=="v") {
+        setDirection("v")
+      }
+    }
+    window.addEventListener("keyup", handleKeyUp)
+    return () => {
+      window.removeEventListener("keyup", handleKeyUp)
+    }
+  }, [direction])
+
+
 
   const placeShip = (ship, v, h, direction, board) => {
     const newPlacedShips = [...placedShips];
     const newBoard = playerBoard.map(row => [...row])
-
     const { length } = ship;
-    console.log("length", length)
     let hIncrement, vIncrement;
     if (direction === "h") {
       vIncrement = 0;
@@ -77,19 +85,17 @@ const PlayerArea = ({Player}) => {
         if (direction === "h") {
           shipCoords.push([v, h + i]);
           newBoard[v][h + i].hasShip = ship.name.slice(0, 3);
-          console.log("newBoard inside horizontal check",newBoard)
         } else {
           shipCoords.push([v + i, h]);
           newBoard[v + i][h].hasShip = ship.name.slice(0, 3);
         }
         newPlacedShips.push(ship.name.slice(0, 3));
       }
-      const shipIndex = shipsToBePlaced.findIndex((item) => item.name === ship.name);
-      if (newPlacedShips.includes(ship.name.slice(0, 3))) {
+        const shipIndex = shipsToBePlaced.findIndex((item) => item.name === ship.name);
         const newShipsToBePlaced = [...shipsToBePlaced];
         newShipsToBePlaced.splice(shipIndex, 1);
         setShipsToBePlaced(newShipsToBePlaced);
-      }
+
     }
     return { board, shipsToBePlaced, shipCoords };
   };
@@ -99,22 +105,19 @@ const PlayerArea = ({Player}) => {
       <>
         <PlayerTitle>{Player}</PlayerTitle>
         <ShipInfo>
-          {Player !== "Computer" && shipsToBePlaced !== 17 && (
+          {Player !== "Computer" && shipsToBePlaced.length !== 0 && (
             <section className="ShipSelector">
-              <button onClick={(e) => changeDirection(e, direction)}>
-                change direction to {direction === "h" ? "vertical" : "horizontal"}
-              </button>
-              <h3>{ship.name}</h3>
-              {
-                shipsToBePlaced.map((ship) => {
-                    return (
-                      <button key={ship.name} onClick={(e) => setShip(ship)}>
-                        {ship.name}
-                      </button>
-                    )
-                }
-                )
-              }
+              <h6> h for horizontal, v for vertical</h6>
+              <h6>
+                {ship.name} {direction === "h" ? "horizontal" : "vertical"}
+              </h6>
+              {shipsToBePlaced.map((ship) => {
+                return (
+                  <button key={ship.name} onClick={(e) => setShip(ship)}>
+                    {ship.name}
+                  </button>
+                );
+              })}
             </section>
           )}
         </ShipInfo>
