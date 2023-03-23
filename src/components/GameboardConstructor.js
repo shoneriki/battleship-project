@@ -58,6 +58,7 @@ export const GameboardConstructor = () => {
           board[v+i][h].hasShip = ship.name.slice(0,3)
         }
         totalShipParts.push(ship.name.slice(0, 3));
+        console.log("totalShipParts",totalShipParts)
       }
       if(totalShipParts.includes(ship.name.slice(0,3))){
         const removeShipIndex = shipsToBePlaced.findIndex(

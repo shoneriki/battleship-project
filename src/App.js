@@ -1,5 +1,7 @@
 import PlayerArea from "./components/PlayerArea";
 import EnemyArea from "./components/EnemyArea";
+import {ShipConstructor} from "./components/ShipConstructor"
+import { useState } from "react";
 import styled from "styled-components";
 
 const AppSection = styled.main`
@@ -48,6 +50,7 @@ const BoardSection = styled.section`
   text-align: center;
 `;
 const AppMain = () => {
+  
   return (
     <AppSection>
       <GameTitle data-testid="game-title">Battleship</GameTitle>
