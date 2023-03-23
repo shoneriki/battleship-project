@@ -1,5 +1,6 @@
 import AppSection from "../App";
 import Gameboard from "../components/PlayerArea";
+import { ShipConstructor } from "../components/ShipConstructor";
 import {
   render,
   screen,
@@ -24,5 +25,9 @@ test("computer board renders", () => {
 test("placeShip functionality in react", () => {
   render(<AppSection />);
   const playerBoard = screen.getByTestId("Player-board");
-  const tile = screen.getByTestId("Player-cell-0-0");
+  const ship = ShipConstructor("destroyer");
+  const orientation = "h";
+  const tile = screen.getByTestId("Player-cell-0-1");
+  fireEvent.click(tile);
+  // expect(tile.hasShip).toEqual("des");
 });

@@ -32,5 +32,4 @@ test("placing ship on board", () => {
   expect(board[2][0].hasShip).toEqual("sub")
   expect(shipCoords).toStrictEqual([[0,0],[0,1],[1,0],[2,0],[3,0]])
   expect(totalShipParts).toEqual(["des", "des", "sub", "sub", "sub",])
-  console.log("ships to be placed", shipsToBePlaced)
 })

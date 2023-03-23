@@ -4,22 +4,33 @@ import {GameboardConstructor} from "./GameboardConstructor"
 import {ShipConstructor} from "./ShipConstructor"
 import {PlayerTitle, Board, BoardBody, TableRow, Square, ShipInfo} from "./StyledComponents"
 
-
 const PlayerArea = ({Player}) => {
   const {
     board,
     placeShip,
     shipCoords,
     totalShipParts,
+    shipsToBePlaced,
   } = GameboardConstructor()
 
   const [ship, setShip] = useState(ShipConstructor("carrier"))
-  const [updatedBoard, setUpdatedBoard] = useState(board)
+  const [gameboard, setGameboard] = useState(board)
   const [direction, setDirection] = useState("h")
+  const [unplacedShips, setUnplacedShips] = useState(shipsToBePlaced)
   const [shipsPlaced, setShipsPlaced] = useState(false)
 
   const changeDirection = (e, direction) => {
     direction === "h" ? setDirection("v") : setDirection("h")
+  }
+
+  const handleShipPlacement = (v,h, ship, direction, gameboard) => {
+    const {board, shipsToBePlaced, totalShipParts, shipCoords} = placeShip(ship, v, h, direction, gameboard)
+    console.log("board from handleShipPlacement", board)
+    for(const [v,h] of shipCoords) {
+      board[v][h].hasShip = ship.name.slice(0, 3);
+    }
+    setGameboard([...board])
+    setUnplacedShips(shipsToBePlaced)
   }
 
   const Info = ({Player, shipName, shipLength, direction}) => {
@@ -27,7 +38,7 @@ const PlayerArea = ({Player}) => {
       <>
         <PlayerTitle>{Player}</PlayerTitle>
         <ShipInfo>
-          {Player !== "Computer" && shipsPlaced === false && (
+          {Player !== "Computer" && !shipsPlaced && (
             <section className="ShipSelector">
               <h6>Please Select Ship and orientation</h6>
               <button onClick={(e) => changeDirection(e, direction)}>
@@ -38,21 +49,16 @@ const PlayerArea = ({Player}) => {
                 <mark>{direction === "h" ? "horizontal" : "vertical"}</mark>{" "}
                 length of <mark>{shipLength}</mark> on the board
               </h6>
-              <button onClick={(e) => setShip(ShipConstructor("carrier"))}>
-                {ShipConstructor("carrier").name}
-              </button>
-              <button onClick={(e) => setShip(ShipConstructor("battleship"))}>
-                {ShipConstructor("battleship").name}
-              </button>
-              <button onClick={(e) => setShip(ShipConstructor("cruiser"))}>
-                {ShipConstructor("cruiser").name}
-              </button>
-              <button onClick={(e) => setShip(ShipConstructor("submarine"))}>
-                {ShipConstructor("submarine").name}
-              </button>
-              <button onClick={(e) => setShip(ShipConstructor("destroyer"))}>
-                {ShipConstructor("destroyer").name}
-              </button>
+              {
+                unplacedShips.map((ship) => {
+                    return (
+                      <button key={ship.name} onClick={(e) => setShip(ship)}>
+                        {ship.name}
+                      </button>
+                    )
+                }
+                )
+              }
             </section>
           )}
         </ShipInfo>
@@ -64,7 +70,7 @@ const PlayerArea = ({Player}) => {
     return (
       <Board>
         <BoardBody data-testid={`${Player}-board`}>
-          {board.map((row, v) => (
+          {gameboard.map((row, v) => (
             <TableRow key={v}>
               {row.map((cell, h) => (
                 <Square
@@ -73,9 +79,15 @@ const PlayerArea = ({Player}) => {
                   h={cell.h}
                   hasShip={cell.hasShip}
                   data-testid={`${Player}-cell-${v}-${h}`}
-                  backgroundColor={cell.hasShip ? "red" : "white"}
                   style={{
-                    backgroundColor: cell.hasShip ? "red" : "blue",
+                    backgroundColor: cell.hasShip ? "green" : "blue",
+                  }}
+                  onClick={() => {
+                    try {
+                      handleShipPlacement(v, h, ship, direction, gameboard);
+                    } catch (error) {
+                      alert(error.message);
+                    }
                   }}
                 ></Square>
               ))}
@@ -101,4 +113,5 @@ const PlayerArea = ({Player}) => {
     </section>
   );
 }
-export default PlayerArea
+
+export default PlayerArea;

@@ -27,7 +27,6 @@ export const GameboardConstructor = () => {
     }
     const hEnding = h + ship.length * hIncrement;
     const vEnding = v + ship.length * vIncrement;
-
     const placementValid = (v,h) => {
       // check if ship is out of bounds
       if (vEnding > BOARD_SIZE || hEnding > BOARD_SIZE || v < 0 || h < 0) {
@@ -54,16 +53,20 @@ export const GameboardConstructor = () => {
         if (direction === "h") {
           shipCoords.push([ v, h + i]);
           board[v][h+i].hasShip = ship.name.slice(0,3);
-          totalShipParts.push(ship.name.slice(0,3))
         } else {
           shipCoords.push([v + i, h]);
           board[v+i][h].hasShip = ship.name.slice(0,3)
-          totalShipParts.push(ship.name.slice(0,3))
         }
+        totalShipParts.push(ship.name.slice(0, 3));
       }
-      const removeShip = shipsToBePlaced.findIndex(s => s.name === ship.name);
-      shipsToBePlaced.splice(removeShip, 1)
+      if(totalShipParts.includes(ship.name.slice(0,3))){
+        const removeShipIndex = shipsToBePlaced.findIndex(
+          (item) => item.name === ship.name
+        );
+        shipsToBePlaced.splice(removeShipIndex, 1);
+      }
     }
+    return {board, shipsToBePlaced, totalShipParts, shipCoords}
   }
 
   return {
