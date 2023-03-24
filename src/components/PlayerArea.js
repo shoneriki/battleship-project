@@ -9,15 +9,21 @@ const PlayerArea = ({Player, gameboard}) => {
     boat
   } = ShipConstructor()
 
-  const [ship, setShip] = useState(ShipConstructor("carrier"))
   const [boardSize, setBoardSize] = useState(10)
   const [playerBoard, setPlayerBoard] = useState(gameboard);
   const [direction, setDirection] = useState("h")
   const [shipsToBePlaced, setShipsToBePlaced] = useState(
-    ["carrier", "battleship", "cruiser", "submarine", "destroyer"].map((name) =>
-      ShipConstructor(name)
-    )
-  );
+    [
+      ShipConstructor("carrier"),
+      ShipConstructor("battleship"),
+      ShipConstructor("cruiser"),
+      ShipConstructor("submarine"),
+      ShipConstructor("destroyer")
+    ]
+    );
+  const [ship, setShip] = useState(
+    shipsToBePlaced !== 0 ? shipsToBePlaced[0] : null
+  )
 
   const [allShipsPlaced, setAllShipsPlaced] = useState(false)
   const [shipCoords, setShipCoords] = useState([])
@@ -43,12 +49,18 @@ const PlayerArea = ({Player, gameboard}) => {
     }
   }, [direction])
 
+  useEffect(() => {
+    setShip(shipsToBePlaced.length !== 0 ? shipsToBePlaced[0] : setAllShipsPlaced(true));
+  }, [shipsToBePlaced,allShipsPlaced])
+
+
 
 
   const placeShip = (ship, v, h, direction, board) => {
-    const newPlacedShips = [...placedShips];
+    // const newPlacedShips = [...placedShips];
     const newBoard = playerBoard.map(row => [...row])
     const { length } = ship;
+    // calculating the ending coordinates of the ship
     let hIncrement, vIncrement;
     if (direction === "h") {
       vIncrement = 0;
@@ -89,38 +101,40 @@ const PlayerArea = ({Player, gameboard}) => {
           shipCoords.push([v + i, h]);
           newBoard[v + i][h].hasShip = ship.name.slice(0, 3);
         }
-        newPlacedShips.push(ship.name.slice(0, 3));
+        placedShips.push(ship.name.slice(0, 3));
       }
-        const shipIndex = shipsToBePlaced.findIndex((item) => item.name === ship.name);
-        const newShipsToBePlaced = [...shipsToBePlaced];
-        newShipsToBePlaced.splice(shipIndex, 1);
-        setShipsToBePlaced(newShipsToBePlaced);
-        setPlayerBoard(newBoard)
+      setPlayerBoard(newBoard)
+      const newShipsToBePlaced = shipsToBePlaced.filter(
+        (item) => item.name !== ship.name
+      );
+      setShipsToBePlaced(newShipsToBePlaced);
     }
     return { board, shipsToBePlaced, shipCoords };
   };
 
   const Info = ({Player, direction}) => {
+
     return (
       <>
         <PlayerTitle>{Player}</PlayerTitle>
-        <ShipInfo>
-          {Player !== "Computer" && shipsToBePlaced.length !== 0 && (
+        {Player !== "Computer" && !allShipsPlaced && (
+        <ShipInfo
+          data-testid={`${Player}-ship-info`}
+        >
             <section className="ShipSelector">
               <h6> h for horizontal, v for vertical</h6>
-              <h6>
-                {ship.name} {direction === "h" ? "horizontal" : "vertical"}
-              </h6>
+              <h6>{ship.name}, {direction}, {ship.length}</h6>
               {shipsToBePlaced.map((ship) => {
                 return (
                   <button key={ship.name} onClick={(e) => setShip(ship)}>
                     {ship.name}
                   </button>
                 );
-              })}
+              })
+              }
             </section>
-          )}
         </ShipInfo>
+          )}
       </>
     );
   }
@@ -162,8 +176,6 @@ const PlayerArea = ({Player, gameboard}) => {
     <section>
       <Info
         Player={Player}
-        shipName={ship.name}
-        shipLength={ship.length}
         direction={direction}
       />
       <PlayerBoard
