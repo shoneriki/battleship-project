@@ -95,7 +95,7 @@ const PlayerArea = ({Player, gameboard}) => {
         const newShipsToBePlaced = [...shipsToBePlaced];
         newShipsToBePlaced.splice(shipIndex, 1);
         setShipsToBePlaced(newShipsToBePlaced);
-
+        setPlayerBoard(newBoard)
     }
     return { board, shipsToBePlaced, shipCoords };
   };
