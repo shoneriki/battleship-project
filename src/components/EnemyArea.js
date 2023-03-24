@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import styled from "styled-components";
 import { GameboardConstructor } from "./GameboardConstructor";
 import { ShipConstructor } from "./ShipConstructor";
@@ -11,14 +11,25 @@ import {
   ShipInfo,
 } from "./StyledComponents";
 
-const EnemyArea = ({ Player }) => {
+const EnemyArea = ({ Player, gameboard }) => {
   const { board, placeShip, shipCoords, totalShipParts } = GameboardConstructor();
+
+
+  const [shipsToBePlaced, setShipsToBePlaced] = useState(
+    [
+      ShipConstructor("carrier"),
+      ShipConstructor("battleship"),
+      ShipConstructor("cruiser"),
+      ShipConstructor("submarine"),
+      ShipConstructor("destroyer"),
+    ]
+  )
+  const [computerBoard, setComputerBoard] = useState(gameboard)
 
   const Info = ({ Player }) => {
     return (
       <>
         <PlayerTitle>{Player}</PlayerTitle>
-        <ShipInfo>{Player !== "Computer" && <h3></h3>}</ShipInfo>
       </>
     );
   };
@@ -27,7 +38,7 @@ const EnemyArea = ({ Player }) => {
     return (
       <Board>
         <BoardBody data-testid={`${Player}-board`}>
-          {board.map((row, v) => (
+          {gameboard.map((row, v) => (
             <TableRow key={v}>
               {row.map((cell, h) => (
                 <Square

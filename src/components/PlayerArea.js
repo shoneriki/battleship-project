@@ -73,7 +73,7 @@ const PlayerArea = ({Player, gameboard}) => {
     const vEnding = v + ship.length * vIncrement;
     const placementValid = (v, h) => {
       // check if ship is out of bounds
-      if (vEnding > 10 || hEnding > 10 || v < 0 || h < 0) {
+      if (vEnding > boardSize || hEnding > boardSize || v < 0 || h < 0) {
         throw new Error("Ship is out of bounds");
       }
 
@@ -123,7 +123,7 @@ const PlayerArea = ({Player, gameboard}) => {
         >
             <section className="ShipSelector">
               <h6> h for horizontal, v for vertical</h6>
-              <h6>{ship.name}, {direction}, {ship.length}</h6>
+              <h6>{ship.name}, {direction === "h" ? "horizontal" : "vertical"}, {ship.length}</h6>
               {shipsToBePlaced.map((ship) => {
                 return (
                   <button key={ship.name} onClick={(e) => setShip(ship)}>
@@ -156,10 +156,14 @@ const PlayerArea = ({Player, gameboard}) => {
                     backgroundColor: cell.hasShip ? "green" : "blue",
                   }}
                   onClick={() => {
-                    try {
-                      placeShip(ship, v, h, direction, playerBoard);
-                    } catch (error) {
-                      alert(error.message);
+                    if(!allShipsPlaced) {
+                      try {
+                        placeShip(ship, v, h, direction, playerBoard);
+                      } catch (error) {
+                        alert(error.message);
+                      }
+                    } else {
+                      alert("All ships have been placed")
                     }
                   }}
                 ></Square>
