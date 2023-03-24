@@ -12,8 +12,6 @@ import {
 } from "./StyledComponents";
 
 const EnemyArea = ({ Player, gameboard }) => {
-  const { board, placeShip, shipCoords, totalShipParts } = GameboardConstructor();
-
 
   const [shipsToBePlaced, setShipsToBePlaced] = useState(
     [
@@ -25,6 +23,8 @@ const EnemyArea = ({ Player, gameboard }) => {
     ]
   )
   const [computerBoard, setComputerBoard] = useState(gameboard)
+  const [allShipsPlaced, setAllShipsPlaced] = useState(false)
+  const [placedShips, setPlacedShips] = useState([])
 
   const Info = ({ Player }) => {
     return (
@@ -38,7 +38,7 @@ const EnemyArea = ({ Player, gameboard }) => {
     return (
       <Board>
         <BoardBody data-testid={`${Player}-board`}>
-          {gameboard.map((row, v) => (
+          {computerBoard.map((row, v) => (
             <TableRow key={v}>
               {row.map((cell, h) => (
                 <Square

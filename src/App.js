@@ -51,7 +51,16 @@ const BoardSection = styled.section`
 `;
 const AppMain = () => {
   const [boardSize, setBoardSize] = useState(10)
-  const [gameBoard, setGameBoard] = useState(
+  const [playerBoard, setPlayerBoard] = useState(
+    Array.from({ length: boardSize }, (_, v) =>
+      Array.from({ length: boardSize }, (_, h) => ({
+        v,
+        h,
+        hasShip: 0,
+      }))
+    )
+  );
+  const [computerBoard, setComputerBoard] = useState(
     Array.from({ length: boardSize }, (_, v) =>
       Array.from({ length: boardSize }, (_, h) => ({
         v,
@@ -68,13 +77,13 @@ const AppMain = () => {
         <BoardSection>
           <PlayerArea
             Player="Player"
-            gameboard={gameBoard}
+            gameboard={playerBoard}
           />
         </BoardSection>
         <BoardSection>
           <EnemyArea
             Player="Computer"
-            gameboard={gameBoard}
+            gameboard={computerBoard}
           />
         </BoardSection>
       </Boards>
