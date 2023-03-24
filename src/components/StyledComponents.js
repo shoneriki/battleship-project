@@ -47,6 +47,7 @@ export const Square = styled.td`
   height: 10%;
   padding: 16px;
   font-size: 8px;
+  cursor: pointer;
 
   @media only screen and (max-width: 800px) {
     width: calc(10% - 8px);

@@ -1,5 +1,7 @@
 import PlayerArea from "./components/PlayerArea";
 import EnemyArea from "./components/EnemyArea";
+import {ShipConstructor} from "./components/ShipConstructor"
+import { useState } from "react";
 import styled from "styled-components";
 
 const AppSection = styled.main`
@@ -48,15 +50,32 @@ const BoardSection = styled.section`
   text-align: center;
 `;
 const AppMain = () => {
+  const [boardSize, setBoardSize] = useState(10)
+  const [gameBoard, setGameBoard] = useState(
+    Array.from({ length: boardSize }, (_, v) =>
+      Array.from({ length: boardSize }, (_, h) => ({
+        v,
+        h,
+        hasShip: 0,
+      }))
+    )
+  );
+
   return (
     <AppSection>
       <GameTitle data-testid="game-title">Battleship</GameTitle>
       <Boards>
         <BoardSection>
-          <PlayerArea Player="Player" />
+          <PlayerArea
+            Player="Player"
+            gameboard={gameBoard}
+          />
         </BoardSection>
         <BoardSection>
-          <EnemyArea Player="Computer" />
+          <EnemyArea
+            Player="Computer"
+            gameboard={gameBoard}
+          />
         </BoardSection>
       </Boards>
     </AppSection>

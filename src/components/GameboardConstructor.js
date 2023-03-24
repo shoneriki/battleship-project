@@ -6,7 +6,7 @@ export const GameboardConstructor = () => {
     h,
     hasShip: 0,
   })))
-  const ships = [
+  const shipsToBePlaced = [
     ShipConstructor("carrier"),
     ShipConstructor("battleship"),
     ShipConstructor("cruiser"),
@@ -27,7 +27,6 @@ export const GameboardConstructor = () => {
     }
     const hEnding = h + ship.length * hIncrement;
     const vEnding = v + ship.length * vIncrement;
-
     const placementValid = (v,h) => {
       // check if ship is out of bounds
       if (vEnding > BOARD_SIZE || hEnding > BOARD_SIZE || v < 0 || h < 0) {
@@ -53,15 +52,22 @@ export const GameboardConstructor = () => {
       for (let i = 0; i < length; i++) {
         if (direction === "h") {
           shipCoords.push([ v, h + i]);
-          totalShipParts.push(ship.name.slice(0,3));
-          board[v][h+i].hasShip = ship.name.slice(0,3)
+          board[v][h+i].hasShip = ship.name.slice(0,3);
         } else {
           shipCoords.push([v + i, h]);
-          totalShipParts.push(ship.name.slice(0,3))
           board[v+i][h].hasShip = ship.name.slice(0,3)
         }
+        totalShipParts.push(ship.name.slice(0, 3));
+        console.log("totalShipParts",totalShipParts)
+      }
+      if(totalShipParts.includes(ship.name.slice(0,3))){
+        const removeShipIndex = shipsToBePlaced.findIndex(
+          (item) => item.name === ship.name
+        );
+        shipsToBePlaced.splice(removeShipIndex, 1);
       }
     }
+    return {board, shipsToBePlaced, totalShipParts, shipCoords}
   }
 
   return {
@@ -69,5 +75,6 @@ export const GameboardConstructor = () => {
     placeShip,
     shipCoords,
     totalShipParts,
+    shipsToBePlaced,
   }
 }

@@ -12,8 +12,7 @@ import {
 } from "./StyledComponents";
 
 const EnemyArea = ({ Player }) => {
-  const { board, placeShip, shipCoords, totalShipParts } =
-    GameboardConstructor();
+  const { board, placeShip, shipCoords, totalShipParts } = GameboardConstructor();
 
   const Info = ({ Player }) => {
     return (
