@@ -71,11 +71,24 @@ const AppMain = () => {
     )
   );
 
+  // functions to be accessed within PlayerArea and EnemyArea
+
   const [playerShipsPlaced, setPlayerShipsPlaced] = useState(false);
+  const [comShipsPlaced, setComShipsPlaced] = useState(false);
 
   const updatePlayerShipsPlaced = (arePlayerShipsPlaced) => {
     setPlayerShipsPlaced(arePlayerShipsPlaced)
   }
+
+  const updateComShipsPlaced = (areComShipsPlaced) => {
+    setComShipsPlaced(areComShipsPlaced)
+  }
+
+
+
+  // end functions to be accessed within PlayerArea and EnemyArea
+
+
 
 
   return (
@@ -94,6 +107,7 @@ const AppMain = () => {
           <EnemyArea
             Player="Computer"
             gameboard={computerBoard}
+            updateComShipsPlaced={updateComShipsPlaced}
           />
         </BoardSection>
       </Boards>

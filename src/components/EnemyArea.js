@@ -11,20 +11,17 @@ import {
   ShipInfo,
 } from "./StyledComponents";
 
-const EnemyArea = ({ Player, gameboard }) => {
-
-  const [shipsToBePlaced, setShipsToBePlaced] = useState(
-    [
-      ShipConstructor("carrier"),
-      ShipConstructor("battleship"),
-      ShipConstructor("cruiser"),
-      ShipConstructor("submarine"),
-      ShipConstructor("destroyer"),
-    ]
-  )
-  const [computerBoard, setComputerBoard] = useState(gameboard)
-  const [allShipsPlaced, setAllShipsPlaced] = useState(false)
-  const [placedShips, setPlacedShips] = useState([])
+const EnemyArea = ({ Player, gameboard, updateComShipsPlaced }) => {
+  const [shipsToBePlaced, setShipsToBePlaced] = useState([
+    ShipConstructor("carrier"),
+    ShipConstructor("battleship"),
+    ShipConstructor("cruiser"),
+    ShipConstructor("submarine"),
+    ShipConstructor("destroyer"),
+  ]);
+  const [computerBoard, setComputerBoard] = useState(gameboard);
+  const [allShipsPlaced, setAllShipsPlaced] = useState(false);
+  const [placedShips, setPlacedShips] = useState([]);
 
   const Info = ({ Player }) => {
     return (
@@ -47,10 +44,10 @@ const EnemyArea = ({ Player, gameboard }) => {
                   h={cell.h}
                   hasShip={cell.hasShip}
                   data-testid={`${Player}-cell-${v}-${h}`}
-                  backgroundColor={cell.hasShip ? "red" : "white"}
-                  style={{
-                    backgroundColor: cell.hasShip ? "red" : "blue",
-                  }}
+                  // backgroundColor={cell.hasShip ? "red" : "white"}
+                  // style={{
+                  //   backgroundColor: cell.hasShip ? "red" : "blue",
+                  // }}
                 ></Square>
               ))}
             </TableRow>

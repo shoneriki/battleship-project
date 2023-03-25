@@ -5,7 +5,6 @@ import {ShipConstructor} from "./ShipConstructor"
 import {PlayerTitle, Board, BoardBody, TableRow, Square, ShipInfo} from "./StyledComponents"
 
 const PlayerArea = ({ Player, gameboard, updatePlayerShipsPlaced }) => {
-  const { boat } = ShipConstructor();
 
   const [boardSize, setBoardSize] = useState(10);
   const [playerBoard, setPlayerBoard] = useState(gameboard);
