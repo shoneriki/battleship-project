@@ -4,9 +4,22 @@ import {GameboardConstructor} from "./GameboardConstructor"
 import {ShipConstructor} from "./ShipConstructor"
 import {PlayerTitle, Board, BoardBody, TableRow, Square, ShipInfo} from "./StyledComponents"
 
-const PlayerArea = ({ Player, gameboard, updatePlayerShipsPlaced }) => {
+const PlayerArea = ({
+  Player,
+  gameboard,
+  updatePlayerShipsPlaced,
+  boardSize,
+  /*  lifting state logic props---------------------------------------------*/
+  humanBoard,
+  secondPlaceShip,
+  playerShips,
+  playerShipCoords,
+  playerSegmentsOnBoard,
+  playerShipsSunk,
 
-  const [boardSize, setBoardSize] = useState(10);
+  /* end lifting state logic props -----------------------------------------*/
+}) => {
+
   const [playerBoard, setPlayerBoard] = useState(gameboard);
   const [direction, setDirection] = useState("h");
   const [shipsToBePlaced, setShipsToBePlaced] = useState([
@@ -47,11 +60,11 @@ const PlayerArea = ({ Player, gameboard, updatePlayerShipsPlaced }) => {
   }, [shipsToBePlaced, allShipsPlaced]);
 
   const placeShip = (ship, v, h, direction, board) => {
-    // const newPlacedShips = [...placedShips];
     const newBoard = playerBoard.map((row) => [...row]);
     const { length } = ship;
-    // calculating the ending coordinates of the ship
-    let hIncrement, vIncrement;
+    const placementValid = (v, h) => {
+      /* checking if ship goes out of bounds */
+      let hIncrement, vIncrement;
     if (direction === "h") {
       vIncrement = 0;
       hIncrement = 1;
@@ -59,25 +72,23 @@ const PlayerArea = ({ Player, gameboard, updatePlayerShipsPlaced }) => {
       vIncrement = 1;
       hIncrement = 0;
     }
+    // calculating the ending coordinates of the ship
     const hEnding = h + ship.length * hIncrement;
     const vEnding = v + ship.length * vIncrement;
-    const placementValid = (v, h) => {
-      // check if ship is out of bounds
       if (vEnding > boardSize || hEnding > boardSize || v < 0 || h < 0) {
         throw new Error("Ship is out of bounds");
       }
+    /* end check of ship out of bounds */
 
-      // check if ship is overlapping another ship
+      /* check if ship is overlapping another ship */
       for (let i = 0; i < length; i++) {
         if (direction === "h") {
-          if (newBoard[v][h + i].hasShip) {
-            throw new Error("Ship is overlapping another ship");
-          }
+          if (newBoard[v][h+i].hasShip) throw new Error("at least part of ship is overlapping another ship")
         } else {
-          if (newBoard[v + i][h].hasShip) {
-            throw new Error("Ship is overlapping another ship");
-          }
+          if (newBoard[v+i][h].hasShip) throw new Error("at least part of ship is overlapping another ship")
         }
+        /* end of check if ship is overlapping with another ship*/
+
         return true;
       }
     };
@@ -174,12 +185,84 @@ const PlayerArea = ({ Player, gameboard, updatePlayerShipsPlaced }) => {
       </Board>
     );
   };
+/* lifting state logic -----------------------------------------------------*/
+  const SecondInfo = ({ Player, direction }) => {
+    return (
+      <>
+        <PlayerTitle>{Player}</PlayerTitle>
+        {Player !== "Computer" && !allShipsPlaced && (
+          <ShipInfo data-testid={`${Player}-ship-info`}>
+            <section className="ShipSelector">
+              <h6> h for horizontal, v for vertical</h6>
+              <h6>
+                {ship.name}, {direction === "h" ? "horizontal" : "vertical"},{" "}
+                {ship.length}
+              </h6>
+              {shipsToBePlaced.map((ship) => {
+                return (
+                  <button key={ship.name} onClick={(e) => setShip(ship)}>
+                    {ship.name}
+                  </button>
+                );
+              })}
+            </section>
+          </ShipInfo>
+        )}
+      </>
+    );
+  };
+
+  const SecondPlayerBoard = ({ Player }) => {
+    return (
+      <Board>
+        <BoardBody data-testid={`${Player}-board`}>
+          {humanBoard.map((row, v) => (
+            <TableRow key={v}>
+              {row.map((cell, h) => (
+                <Square
+                  key={`${v}, ${h}`}
+                  v={cell.v}
+                  h={cell.h}
+                  hasShip={cell.hasShip}
+                  data-testid={`${Player}-cell-${v}-${h}`}
+                  style={{
+                    backgroundColor: cell.hasShip ? "green" : "blue",
+                  }}
+                  onClick={() => {
+                    if (!allShipsPlaced) {
+                      try {
+                        placeShip(ship, v, h, direction, playerBoard);
+                      } catch (error) {
+                        alert(error.message);
+                      }
+                    } else {
+                      alert("All ships have been placed");
+                    }
+                  }}
+                ></Square>
+              ))}
+            </TableRow>
+          ))}
+        </BoardBody>
+      </Board>
+    );
+  };
+
+  /* end lifting state logic---------------------------------------------------*/
+
 
   // v for vertical, h for horizontal
   return (
     <section>
       <Info Player={Player} direction={direction} />
-      <PlayerBoard Player={Player} />
+      <PlayerBoard Player={Player}/>
+      {/* // lifting state logic */}
+      <SecondInfo />
+      <SecondPlayerBoard
+        Player={Player}
+
+      />
+      {/* // end lifting state logic */}
     </section>
   );
 };
