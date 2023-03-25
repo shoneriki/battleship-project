@@ -1,6 +1,7 @@
 import PlayerArea from "./components/PlayerArea";
 import EnemyArea from "./components/EnemyArea";
 import {ShipConstructor} from "./components/ShipConstructor"
+import {Controller} from "./components/Controller"
 import { useState } from "react";
 import styled from "styled-components";
 
@@ -70,6 +71,13 @@ const AppMain = () => {
     )
   );
 
+  const [playerShipsPlaced, setPlayerShipsPlaced] = useState(false);
+
+  const updatePlayerShipsPlaced = (arePlayerShipsPlaced) => {
+    setPlayerShipsPlaced(arePlayerShipsPlaced)
+  }
+
+
   return (
     <AppSection>
       <GameTitle data-testid="game-title">Battleship</GameTitle>
@@ -78,6 +86,8 @@ const AppMain = () => {
           <PlayerArea
             Player="Player"
             gameboard={playerBoard}
+            playerShipsPlaced={playerShipsPlaced}
+            updatePlayerShipsPlaced={updatePlayerShipsPlaced}
           />
         </BoardSection>
         <BoardSection>

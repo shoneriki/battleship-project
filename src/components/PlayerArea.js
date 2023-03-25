@@ -4,61 +4,52 @@ import {GameboardConstructor} from "./GameboardConstructor"
 import {ShipConstructor} from "./ShipConstructor"
 import {PlayerTitle, Board, BoardBody, TableRow, Square, ShipInfo} from "./StyledComponents"
 
-const PlayerArea = ({Player, gameboard}) => {
-  const {
-    boat
-  } = ShipConstructor()
+const PlayerArea = ({ Player, gameboard, updatePlayerShipsPlaced }) => {
+  const { boat } = ShipConstructor();
 
-  const [boardSize, setBoardSize] = useState(10)
+  const [boardSize, setBoardSize] = useState(10);
   const [playerBoard, setPlayerBoard] = useState(gameboard);
-  const [direction, setDirection] = useState("h")
-  const [shipsToBePlaced, setShipsToBePlaced] = useState(
-    [
-      ShipConstructor("carrier"),
-      ShipConstructor("battleship"),
-      ShipConstructor("cruiser"),
-      ShipConstructor("submarine"),
-      ShipConstructor("destroyer")
-    ]
-    );
+  const [direction, setDirection] = useState("h");
+  const [shipsToBePlaced, setShipsToBePlaced] = useState([
+    ShipConstructor("carrier"),
+    ShipConstructor("battleship"),
+    ShipConstructor("cruiser"),
+    ShipConstructor("submarine"),
+    ShipConstructor("destroyer"),
+  ]);
   const [ship, setShip] = useState(
     shipsToBePlaced !== 0 ? shipsToBePlaced[0] : null
-  )
+  );
 
-  const [allShipsPlaced, setAllShipsPlaced] = useState(false)
-  const [shipCoords, setShipCoords] = useState([])
-  const [placedShips, setPlacedShips] = useState([])
+  const [allShipsPlaced, setAllShipsPlaced] = useState(false);
+  const [shipCoords, setShipCoords] = useState([]);
+  const [placedShips, setPlacedShips] = useState([]);
 
-  // const changeDirection = (e, direction) => {
-  //   direction === "h" ? setDirection("v") : setDirection("h")
-  // }
-  // const changeDirection = (direction) => {
-  //   setDirection(direction)
-  // };
   useEffect(() => {
     const handleKeyUp = (e) => {
       if (e.key === "h" && direction !== "h") {
-        setDirection("h")
-      } else if (e.key === "v" && direction !=="v") {
-        setDirection("v")
+        setDirection("h");
+      } else if (e.key === "v" && direction !== "v") {
+        setDirection("v");
       }
-    }
-    window.addEventListener("keyup", handleKeyUp)
+    };
+    window.addEventListener("keyup", handleKeyUp);
     return () => {
-      window.removeEventListener("keyup", handleKeyUp)
-    }
-  }, [direction])
+      window.removeEventListener("keyup", handleKeyUp);
+    };
+  }, [direction]);
 
   useEffect(() => {
-    setShip(shipsToBePlaced.length !== 0 ? shipsToBePlaced[0] : setAllShipsPlaced(true));
-  }, [shipsToBePlaced,allShipsPlaced])
-
-
-
+    setShip(
+      shipsToBePlaced.length !== 0
+        ? shipsToBePlaced[0]
+        : setAllShipsPlaced(true)
+    );
+  }, [shipsToBePlaced, allShipsPlaced]);
 
   const placeShip = (ship, v, h, direction, board) => {
     // const newPlacedShips = [...placedShips];
-    const newBoard = playerBoard.map(row => [...row])
+    const newBoard = playerBoard.map((row) => [...row]);
     const { length } = ship;
     // calculating the ending coordinates of the ship
     let hIncrement, vIncrement;
@@ -103,7 +94,7 @@ const PlayerArea = ({Player, gameboard}) => {
         }
         placedShips.push(ship.name.slice(0, 3));
       }
-      setPlayerBoard(newBoard)
+      setPlayerBoard(newBoard);
       const newShipsToBePlaced = shipsToBePlaced.filter(
         (item) => item.name !== ship.name
       );
@@ -112,34 +103,44 @@ const PlayerArea = ({Player, gameboard}) => {
     return { board, shipsToBePlaced, shipCoords };
   };
 
-  const Info = ({Player, direction}) => {
+  // functions to access from app
 
+  /* check if all ships are placed  */
+
+  if(allShipsPlaced) {
+    updatePlayerShipsPlaced(true)
+    console.log("updatePlayerShipsPlaced works from inside PlayerArea?")
+  }
+
+  // end functions to access from app
+
+  const Info = ({ Player, direction }) => {
     return (
       <>
         <PlayerTitle>{Player}</PlayerTitle>
         {Player !== "Computer" && !allShipsPlaced && (
-        <ShipInfo
-          data-testid={`${Player}-ship-info`}
-        >
+          <ShipInfo data-testid={`${Player}-ship-info`}>
             <section className="ShipSelector">
               <h6> h for horizontal, v for vertical</h6>
-              <h6>{ship.name}, {direction === "h" ? "horizontal" : "vertical"}, {ship.length}</h6>
+              <h6>
+                {ship.name}, {direction === "h" ? "horizontal" : "vertical"},{" "}
+                {ship.length}
+              </h6>
               {shipsToBePlaced.map((ship) => {
                 return (
                   <button key={ship.name} onClick={(e) => setShip(ship)}>
                     {ship.name}
                   </button>
                 );
-              })
-              }
+              })}
             </section>
-        </ShipInfo>
-          )}
+          </ShipInfo>
+        )}
       </>
     );
-  }
+  };
 
-  const PlayerBoard = ({Player}) => {
+  const PlayerBoard = ({ Player }) => {
     return (
       <Board>
         <BoardBody data-testid={`${Player}-board`}>
@@ -156,14 +157,14 @@ const PlayerArea = ({Player, gameboard}) => {
                     backgroundColor: cell.hasShip ? "green" : "blue",
                   }}
                   onClick={() => {
-                    if(!allShipsPlaced) {
+                    if (!allShipsPlaced) {
                       try {
                         placeShip(ship, v, h, direction, playerBoard);
                       } catch (error) {
                         alert(error.message);
                       }
                     } else {
-                      alert("All ships have been placed")
+                      alert("All ships have been placed");
                     }
                   }}
                 ></Square>
@@ -173,20 +174,15 @@ const PlayerArea = ({Player, gameboard}) => {
         </BoardBody>
       </Board>
     );
-  }
+  };
 
-    // v for vertical, h for horizontal
+  // v for vertical, h for horizontal
   return (
     <section>
-      <Info
-        Player={Player}
-        direction={direction}
-      />
-      <PlayerBoard
-        Player={Player}
-      />
+      <Info Player={Player} direction={direction} />
+      <PlayerBoard Player={Player} />
     </section>
   );
-}
+};
 
 export default PlayerArea;
