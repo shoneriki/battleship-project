@@ -2,7 +2,7 @@ import PlayerArea from "./components/PlayerArea";
 import EnemyArea from "./components/EnemyArea";
 import {ShipConstructor} from "./components/ShipConstructor"
 import {Controller} from "./components/Controller"
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import styled from "styled-components";
 
 const AppSection = styled.main`
@@ -103,7 +103,7 @@ const [humanBoard, setHumanBoard] = useState(
   )
 );
 
-const [playerShips, setPlayerShips] = useState([
+const [humanShips, setHumanShips] = useState([
   ShipConstructor("carrier"),
   ShipConstructor("battleship"),
   ShipConstructor("cruiser"),
@@ -111,21 +111,25 @@ const [playerShips, setPlayerShips] = useState([
   ShipConstructor("destroyer"),
 ])
 
-const [playerShipCoords, setPlayerShipCoords] = useState([])
+const [humanDirection , setHumanDirection] = useState("h")
+const [humanShip,setHumanShip ] = useState(humanShips[0])
+const [allHumanShipsPlaced, setAllHumanShipsPlaced] = useState(false)
+
+const [humanShipCoords, setHumanShipCoords] = useState([])
 // if shipCoord is hit, find what hasShip value is and take that string out of the playerSegmentsOnBoard array
-const [playerSegmentsOnBoard, setPlayerSegmentsOnBoard] = useState([])
+const [humanSegmentsOnBoard, setHumanSegmentsOnBoard] = useState([])
 // if certain string does not exist in the playerSegmentsOnBoard, then that ship is sunk
 // figure out what to push to the below playerShipsSunk array. Maybe just add 1 once?
-const [playerShipsSunk, setPlayerShipsSunk] = useState(0)
+const [humanShipsSunk, setHumanShipsSunk] = useState(0)
 // if playerShipsSunk.length === 5, the game is over
 
-const secondPlaceShip = (ship, v,h, direction, board) => {
+const humanPlaceShip = (ship, v,h, direction, board) => {
   const newBoard = [...board];
   const {length} = ship;
   const shipCoords = [];
   const segmentsOnBoard = [];
 
-  const playerShipPlacementValid = (v,h) => {
+  const humanShipPlacementValid = (v,h) => {
     /* check for if ship goes out of bounds*/
     let hIncrement,vIncrement;
     if(direction === "h") {
@@ -147,14 +151,57 @@ const secondPlaceShip = (ship, v,h, direction, board) => {
     /*end of check for if ship is out of bounds*/
     /* check for ship overlaps with already placed ship*/
       for(let i = 0; i < length; i++ ) {
-        if(board[v + (vIncrement * i)][h + (hIncrement * i)].hasShip) return "ship overlaps with other ship"
+        if(direction === 'h') {
+          if(newBoard[v][h+i].hasShip !== 0) return "ship overlaps with another ship"
+        } else {
+          if(newBoard[v+i][h].hasShip !== 0) return "ship overlaps with another ship"
+        }
       }
-
     }
-
+    return true
+  }
+  if(humanShipPlacementValid(v,h)) {
+    for(let i = 0; i < length; i++) {
+      if(direction === "h") {
+        newBoard[v][h+i].hasShip = ship.name.slice(0,3);
+        shipCoords.push([v, h+i])
+      } else {
+        newBoard[v+i][h].hasShip = ship.name.slice(0,3);
+        shipCoords.push([v+i, h])
+      }
+      segmentsOnBoard.push(ship.name)
+    }
+    setHumanBoard(newBoard);
+    setHumanShipCoords(shipCoords)
+    setHumanSegmentsOnBoard(segmentsOnBoard)
+    const newShipsToBePlaced = humanShips.filter(
+      (item) => item.name !== ship.name
+    );
+    setHumanShips(newShipsToBePlaced);
   }
 }
 
+
+useEffect(() => {
+  const handleKeyUp = (e) => {
+    if (e.key === "h" && humanDirection !== "h") {
+      console.log("horizontal?")
+      setHumanDirection("h");
+    } else if (e.key === "v" && humanDirection !== "v") {
+      setHumanDirection("v");
+    }
+  };
+  window.addEventListener("keyup", handleKeyUp);
+  return () => {
+    window.removeEventListener("keyup", handleKeyUp);
+  };
+}, [humanDirection]);
+
+useEffect(() => {
+  setHumanShip(
+    humanShips.length !== 0 ? humanShips[0] : setAllHumanShipsPlaced(true)
+  );
+}, [humanShips, setAllHumanShipsPlaced]);
 
 // end human side
 
@@ -188,18 +235,24 @@ const [comBoard, setComBoard] = useState(
         <BoardSection>
           <PlayerArea
             Player="Player"
-            gameboard={playerBoard}
-            playerShipsPlaced={playerShipsPlaced}
-            updatePlayerShipsPlaced={updatePlayerShipsPlaced}
-            boardSize={boardSize}
+            // gameboard={playerBoard}
+            // playerShipsPlaced={playerShipsPlaced}
+            // updatePlayerShipsPlaced={updatePlayerShipsPlaced}
+            // boardSize={boardSize}
+
             // lifting state logic
             humanBoard={humanBoard}
-            secondPlaceShip={secondPlaceShip}
-            playerShips={playerShips}
-            playerShipCoords={playerShipCoords}
-            playerSegmentsOnBoard={playerSegmentsOnBoard}
-            playerShipsSunk={playerShipsSunk}
+            humanPlaceShip={humanPlaceShip}
+            humanShips={humanShips}
+            humanShipCoords={humanShipCoords}
+            humanSegmentsOnBoard={humanSegmentsOnBoard}
+            humanShipsSunk={humanShipsSunk}
+            humanDirection={humanDirection}
+            allHumanShipsPlaced={allHumanShipsPlaced}
+            humanShip={humanShip}
+            setHumanShip={setHumanShip}
             //end lifting state logic
+
           />
         </BoardSection>
         <BoardSection>
