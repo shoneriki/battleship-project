@@ -1,6 +1,4 @@
-import { useState, useEffect } from "react";
-import styled from "styled-components";
-import { GameboardConstructor } from "./GameboardConstructor";
+import { useState} from "react";
 import { ShipConstructor } from "./ShipConstructor";
 import {
   PlayerTitle,
@@ -44,10 +42,10 @@ const EnemyArea = ({ Player, gameboard, updateComShipsPlaced }) => {
                   h={cell.h}
                   hasShip={cell.hasShip}
                   data-testid={`${Player}-cell-${v}-${h}`}
-                  // backgroundColor={cell.hasShip ? "red" : "white"}
-                  // style={{
-                  //   backgroundColor: cell.hasShip ? "red" : "blue",
-                  // }}
+                  backgroundColor={cell.hasShip ? "red" : "blue"}
+                  style={{
+                    backgroundColor: cell.hasShip ? "red" : "blue",
+                  }}
                 ></Square>
               ))}
             </TableRow>

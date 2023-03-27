@@ -1,7 +1,6 @@
 import PlayerArea from "./components/PlayerArea";
 import EnemyArea from "./components/EnemyArea";
 import {ShipConstructor} from "./components/ShipConstructor"
-import {Controller} from "./components/Controller"
 import { useState, useEffect } from "react";
 import styled from "styled-components";
 
@@ -11,17 +10,11 @@ const AppSection = styled.main`
   display: flex;
   flex-direction: column;
   justify-content: center;
-  @media only screen and (max-width: 800px) {
+  @media only screen and (max-width: 800px),
+    only screen and (min-width: 801px) and (max-width: 1100px) {
     display: flex;
     flex-direction: column;
     align-items: center;
-  }
-  @media only screen and (min-width: 801px) and (max-width: 1100px) {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
   }
 `;
 
@@ -50,66 +43,54 @@ const BoardSection = styled.section`
   font-weight: bold;
   text-align: center;
 `;
+
 const AppMain = () => {
   const [boardSize, setBoardSize] = useState(10)
-  const [playerBoard, setPlayerBoard] = useState(
-    Array.from({ length: boardSize }, (_, v) =>
-      Array.from({ length: boardSize }, (_, h) => ({
+  const initialBoard = (boardSize) => {
+    return Array.from({length: boardSize}, (_,v) =>
+      Array.from({length: boardSize}, (_,h) => ({
         v,
         h,
         hasShip: 0,
       }))
     )
-  );
-  const [computerBoard, setComputerBoard] = useState(
-    Array.from({ length: boardSize }, (_, v) =>
-      Array.from({ length: boardSize }, (_, h) => ({
-        v,
-        h,
-        hasShip: 0,
-      }))
-    )
-  );
-
-  // functions to be accessed within PlayerArea and EnemyArea
-
-  const [playerShipsPlaced, setPlayerShipsPlaced] = useState(false);
-  const [comShipsPlaced, setComShipsPlaced] = useState(false);
-
-  const updatePlayerShipsPlaced = (arePlayerShipsPlaced) => {
-    setPlayerShipsPlaced(arePlayerShipsPlaced)
   }
+  const initialShips = [
+      ShipConstructor("carrier"),
+      ShipConstructor("battleship"),
+      ShipConstructor("cruiser"),
+      ShipConstructor("submarine"),
+      ShipConstructor("destroyer"),
+  ]
+  const [allShipsPlaced, setAllShipsPlaced] = useState(false)
 
-  const updateComShipsPlaced = (areComShipsPlaced) => {
-    setComShipsPlaced(areComShipsPlaced)
-  }
 
-
-
-  // end functions to be accessed within PlayerArea and EnemyArea
 
 
 /* lifting state logic---------------------------------------------------------*/
 
 // human side
-const secondBoardSize = 10;
-const [humanBoard, setHumanBoard] = useState(
-  Array.from({ length: secondBoardSize }, (_, v) =>
-    Array.from({ length: secondBoardSize }, (_, h) => ({
-      v,
-      h,
-      hasShip: 0,
-    }))
-  )
-);
+// const [humanBoard, setHumanBoard] = useState(
+//   Array.from({ length: boardSize }, (_, v) =>
+//     Array.from({ length: boardSize }, (_, h) => ({
+//       v,
+//       h,
+//       hasShip: 0,
+//     }))
+//   )
+// );
+const [humanBoard, setHumanBoard] = useState(initialBoard(boardSize))
 
-const [humanShips, setHumanShips] = useState([
-  ShipConstructor("carrier"),
-  ShipConstructor("battleship"),
-  ShipConstructor("cruiser"),
-  ShipConstructor("submarine"),
-  ShipConstructor("destroyer"),
-])
+// const [humanShips, setHumanShips] = useState([
+//   ShipConstructor("carrier"),
+//   ShipConstructor("battleship"),
+//   ShipConstructor("cruiser"),
+//   ShipConstructor("submarine"),
+//   ShipConstructor("destroyer"),
+// ])
+const [humanShips, setHumanShips] = useState(initialShips)
+
+const [placementError, setPlacementError] = useState(null);
 
 const [humanDirection , setHumanDirection] = useState("h")
 const [humanShip,setHumanShip ] = useState(humanShips[0])
@@ -117,69 +98,143 @@ const [allHumanShipsPlaced, setAllHumanShipsPlaced] = useState(false)
 
 const [humanShipCoords, setHumanShipCoords] = useState([])
 // if shipCoord is hit, find what hasShip value is and take that string out of the playerSegmentsOnBoard array
-const [humanSegmentsOnBoard, setHumanSegmentsOnBoard] = useState([])
+const [humanShipSegmentsOnBoard, setHumanShipSegmentsOnBoard] = useState([])
 // if certain string does not exist in the playerSegmentsOnBoard, then that ship is sunk
 // figure out what to push to the below playerShipsSunk array. Maybe just add 1 once?
 const [humanShipsSunk, setHumanShipsSunk] = useState(0)
 // if playerShipsSunk.length === 5, the game is over
 
-const humanPlaceShip = (ship, v,h, direction, board) => {
+const humanPlaceShip = (ship, v, h, direction, board) => {
   const newBoard = [...board];
-  const {length} = ship;
-  const shipCoords = [];
-  const segmentsOnBoard = [];
+  const { length } = ship;
+  const shipCoords = [...humanShipCoords];
+  const segmentsOnBoard = [...humanShipSegmentsOnBoard];
 
-  const humanShipPlacementValid = (v,h) => {
+  const shipPlacementValid = (v, h) => {
     /* check for if ship goes out of bounds*/
-    let hIncrement,vIncrement;
-    if(direction === "h") {
+    let hIncrement, vIncrement;
+    if (direction === "h") {
       vIncrement = 0;
       hIncrement = 1;
     } else {
       vIncrement = 1;
-      hIncrement = 0
+      hIncrement = 0;
     }
-    let vEnding = v + (vIncrement * length);
-    let hEnding = h + (hIncrement * length);
-    for(let i = 0; i < length; i++) {
+    let vEnding = v + vIncrement * length;
+    let hEnding = h + hIncrement * length;
+    for (let i = 0; i < length; i++) {
       if (
-        vEnding > secondBoardSize ||
-        hEnding > secondBoardSize ||
+        vEnding > boardSize ||
+        hEnding > boardSize ||
         vEnding < 0 ||
         hEnding < 0
-      ) return "ship is out of bounds"
+      ) {
+        throw new Error( "ship is out of bounds")
+      }
+    }
     /*end of check for if ship is out of bounds*/
+
     /* check for ship overlaps with already placed ship*/
-      for(let i = 0; i < length; i++ ) {
-        if(direction === 'h') {
-          if(newBoard[v][h+i].hasShip !== 0) return "ship overlaps with another ship"
-        } else {
-          if(newBoard[v+i][h].hasShip !== 0) return "ship overlaps with another ship"
+    for (let i = 0; i < length; i++) {
+      if (direction === "h") {
+        if (newBoard[v][h + i].hasShip !== 0) {
+          throw new Error("ship overlaps with another ship")
+        }
+      } else {
+        if (newBoard[v + i][h].hasShip !== 0) {
+          throw new Error( "ship overlaps with another ship")
         }
       }
     }
-    return true
-  }
-  if(humanShipPlacementValid(v,h)) {
-    for(let i = 0; i < length; i++) {
-      if(direction === "h") {
-        newBoard[v][h+i].hasShip = ship.name.slice(0,3);
-        shipCoords.push([v, h+i])
+    /* end check for ship overlap*/
+
+    /* if both checks pass, return true*/
+    return true;
+  };
+
+  const placementResult = shipPlacementValid(v, h);
+  if (placementResult === true) {
+    for (let i = 0; i < length; i++) {
+      if (direction === "h") {
+        newBoard[v][h + i].hasShip = ship.name.slice(0, 3);
+        shipCoords.push([v, h + i]);
       } else {
-        newBoard[v+i][h].hasShip = ship.name.slice(0,3);
-        shipCoords.push([v+i, h])
+        newBoard[v + i][h].hasShip = ship.name.slice(0, 3);
+        shipCoords.push([v + i, h]);
       }
-      segmentsOnBoard.push(ship.name)
+      segmentsOnBoard.push(ship.name.slice(0, 3));
     }
-    setHumanBoard(newBoard);
-    setHumanShipCoords(shipCoords)
-    setHumanSegmentsOnBoard(segmentsOnBoard)
+    setHumanShipCoords(shipCoords);
+    setHumanShipSegmentsOnBoard(segmentsOnBoard);
     const newShipsToBePlaced = humanShips.filter(
       (item) => item.name !== ship.name
     );
     setHumanShips(newShipsToBePlaced);
+  } else {
+    setPlacementError(placementResult);
   }
-}
+  setHumanBoard(newBoard);
+};
+
+
+// const humanRandomPlaceShips = (board, ships) => {
+//   const newBoard = [...board];
+//   const shipCoords = [];
+//   const segmentsOnBoard = [];
+
+//   for (const ship of ships) {
+//     let validPlacement = false;
+//     while (!validPlacement) {
+//       const v = Math.floor(Math.random() * (boardSize - ship.length + 1));
+//       const h = Math.floor(Math.random() * (boardSize - ship.length + 1));
+//       const direction = Math.random() > 0.5 ? "h" : "v";
+
+//       validPlacement = true;
+//       for (let i = 0; i < ship.length; i++) {
+//         const vIndex = direction === "h" ? v : v + i;
+//         const hIndex = direction === "h" ? h + i : h;
+//         if (
+//           vIndex >= boardSize ||
+//           hIndex >= boardSize ||
+//           newBoard[vIndex][hIndex].hasShip !== 0
+//         ) {
+//           validPlacement = false;
+//           break;
+//         }
+//       }
+
+//       if (validPlacement) {
+//         for (let i = 0; i < ship.length; i++) {
+//           const vIndex = direction === "h" ? v : v + i;
+//           const hIndex = direction === "h" ? h + i : h;
+//           newBoard[vIndex][hIndex].hasShip = ship.name.slice(0, 3);
+//           shipCoords.push([vIndex, hIndex]);
+//         }
+//         segmentsOnBoard.push(...Array(ship.length).fill(ship.name.slice(0, 3)));
+//       }
+//     }
+//   }
+
+//   return [newBoard, shipCoords, segmentsOnBoard];
+// };
+
+// const handleRandomPlacement = () => {
+//   const [newBoard, shipCoords, segmentsOnBoard] = humanRandomPlaceShips(
+//     humanBoard,
+//     humanShips
+//   );
+//   setHumanBoard(newBoard);
+//   setHumanShipCoords(shipCoords);
+//   setHumanShipSegmentsOnBoard(segmentsOnBoard);
+//   setAllHumanShipsPlaced(true);
+// };
+
+// useEffect(() => {
+//   if (allHumanShipsPlaced) {
+//     // do something else, like start the game
+//   }
+// }, [allHumanShipsPlaced]);
+
 
 
 useEffect(() => {
@@ -206,15 +261,7 @@ useEffect(() => {
 // end human side
 
 
-const [comBoard, setComBoard] = useState(
-  Array.from({ length: boardSize }, (_, v) =>
-    Array.from({ length: boardSize }, (_, h) => ({
-      v,
-      h,
-      hasShip: 0,
-    }))
-  )
-);
+const [comBoard, setComBoard] = useState(initialBoard(boardSize))
   const [comShips, setComShips] = useState([
     ShipConstructor("carrier"),
     ShipConstructor("battleship"),
@@ -235,31 +282,26 @@ const [comBoard, setComBoard] = useState(
         <BoardSection>
           <PlayerArea
             Player="Player"
-            // gameboard={playerBoard}
-            // playerShipsPlaced={playerShipsPlaced}
-            // updatePlayerShipsPlaced={updatePlayerShipsPlaced}
-            // boardSize={boardSize}
-
-            // lifting state logic
             humanBoard={humanBoard}
+            humanDirection={humanDirection}
             humanPlaceShip={humanPlaceShip}
+            // humanRandomPlaceShips={humanRandomPlaceShips}
+            // handleRandomPlacement={handleRandomPlacement}
+            placementError={placementError}
             humanShips={humanShips}
             humanShipCoords={humanShipCoords}
-            humanSegmentsOnBoard={humanSegmentsOnBoard}
+            humanShipSegmentsOnBoard={humanShipSegmentsOnBoard}
             humanShipsSunk={humanShipsSunk}
-            humanDirection={humanDirection}
             allHumanShipsPlaced={allHumanShipsPlaced}
             humanShip={humanShip}
             setHumanShip={setHumanShip}
-            //end lifting state logic
-
           />
         </BoardSection>
         <BoardSection>
           <EnemyArea
             Player="Computer"
-            gameboard={computerBoard}
-            updateComShipsPlaced={updateComShipsPlaced}
+            gameboard={comBoard}
+            boardSize={boardSize}
           />
         </BoardSection>
       </Boards>
