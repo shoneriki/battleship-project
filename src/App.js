@@ -64,30 +64,9 @@ const AppMain = () => {
   ]
   const [allShipsPlaced, setAllShipsPlaced] = useState(false)
 
-
-
-
 /* lifting state logic---------------------------------------------------------*/
 
-// human side
-// const [humanBoard, setHumanBoard] = useState(
-//   Array.from({ length: boardSize }, (_, v) =>
-//     Array.from({ length: boardSize }, (_, h) => ({
-//       v,
-//       h,
-//       hasShip: 0,
-//     }))
-//   )
-// );
 const [humanBoard, setHumanBoard] = useState(initialBoard(boardSize))
-
-// const [humanShips, setHumanShips] = useState([
-//   ShipConstructor("carrier"),
-//   ShipConstructor("battleship"),
-//   ShipConstructor("cruiser"),
-//   ShipConstructor("submarine"),
-//   ShipConstructor("destroyer"),
-// ])
 const [humanShips, setHumanShips] = useState(initialShips)
 
 const [placementError, setPlacementError] = useState(null);
@@ -170,8 +149,6 @@ const humanPlaceShip = (ship, v, h, direction, board) => {
       (item) => item.name !== ship.name
     );
     setHumanShips(newShipsToBePlaced);
-  } else {
-    setPlacementError(placementResult);
   }
   setHumanBoard(newBoard);
 };
@@ -258,17 +235,96 @@ useEffect(() => {
   );
 }, [humanShips, setAllHumanShipsPlaced]);
 
+
+
 // end human side
 
 
-const [comBoard, setComBoard] = useState(initialBoard(boardSize))
-  const [comShips, setComShips] = useState([
-    ShipConstructor("carrier"),
-    ShipConstructor("battleship"),
-    ShipConstructor("cruiser"),
-    ShipConstructor("submarine"),
-    ShipConstructor("destroyer"),
-  ])
+// computer side
+const [comBoard, setComBoard] = useState(initialBoard(boardSize));
+const [comShips, setComShips] = useState([
+  ShipConstructor("carrier"),
+  ShipConstructor("battleship"),
+  ShipConstructor("cruiser"),
+  ShipConstructor("submarine"),
+  ShipConstructor("destroyer"),
+]);
+
+const [comShipCoords, setComShipCoords] = useState([]);
+const [comShipSegmentsOnBoard, setComShipSegmentsOnBoard] = useState([]);
+const [allComShipsPlaced, setAllComShipsPlaced] = useState(false);
+
+const comPlaceAllShips = (board, ships) => {
+  const newBoard = [...board];
+  const shipCoords = [];
+  const segmentsOnBoard = [];
+
+  for (const ship of ships) {
+    let validPlacement = false;
+    while (!validPlacement) {
+      const v = Math.floor(Math.random() * (boardSize - ship.length + 1));
+      const h = Math.floor(Math.random() * (boardSize - ship.length + 1));
+      const direction = Math.random() > 0.5 ? "h" : "v";
+
+      let validSegments = true;
+      for (let i = 0; i < ship.length; i++) {
+        const vIndex = direction === "h" ? v : v + i;
+        const hIndex = direction === "h" ? h + i : h;
+        const shipSegment = ship.name.slice(0, 3);
+
+        if (
+          vIndex >= boardSize ||
+          hIndex >= boardSize ||
+          newBoard[vIndex][hIndex].hasShip !== 0 ||
+          segmentsOnBoard.includes(shipSegment) ||
+          allComShipsPlaced
+        ) {
+          validSegments = false;
+          break;
+        }
+      }
+
+      if (validSegments) {
+        for (let i = 0; i < ship.length; i++) {
+          const vIndex = direction === "h" ? v : v + i;
+          const hIndex = direction === "h" ? h + i : h;
+          const shipSegment = ship.name.slice(0, 3);
+
+          newBoard[vIndex][hIndex].hasShip = shipSegment;
+          shipCoords.push([vIndex, hIndex]);
+        }
+
+        segmentsOnBoard.push(...Array(ship.length).fill(ship.name.slice(0, 3)));
+        validPlacement = true;
+      }
+    }
+  }
+
+  return [newBoard, shipCoords, segmentsOnBoard];
+};
+
+const handlePlaceComputerShips = () => {
+  const [newComBoard, newComShipCoords, newComShipSegmentsOnBoard] =
+    comPlaceAllShips(comBoard, comShips);
+  setComBoard(newComBoard);
+  setComShipCoords(newComShipCoords);
+  setComShipSegmentsOnBoard(newComShipSegmentsOnBoard);
+  const allShipsPlaced = newComShipSegmentsOnBoard.length === 17;
+  setAllComShipsPlaced(allShipsPlaced);
+}
+
+
+useEffect(() => {
+  if (allComShipsPlaced) {
+    console.log("all computer ships placed")
+  }
+}, [allComShipsPlaced])
+
+
+
+
+
+// end computer side
 
 /*end lifting state logic------------------------------------------------------*/
 
@@ -300,8 +356,11 @@ const [comBoard, setComBoard] = useState(initialBoard(boardSize))
         <BoardSection>
           <EnemyArea
             Player="Computer"
-            gameboard={comBoard}
+            comBoard={comBoard}
             boardSize={boardSize}
+            comShips={comShips}
+            comPlaceAllShips={comPlaceAllShips}
+            handlePlaceComputerShips={handlePlaceComputerShips}
           />
         </BoardSection>
       </Boards>

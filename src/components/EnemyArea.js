@@ -9,22 +9,23 @@ import {
   ShipInfo,
 } from "./StyledComponents";
 
-const EnemyArea = ({ Player, gameboard, updateComShipsPlaced }) => {
-  const [shipsToBePlaced, setShipsToBePlaced] = useState([
-    ShipConstructor("carrier"),
-    ShipConstructor("battleship"),
-    ShipConstructor("cruiser"),
-    ShipConstructor("submarine"),
-    ShipConstructor("destroyer"),
-  ]);
-  const [computerBoard, setComputerBoard] = useState(gameboard);
-  const [allShipsPlaced, setAllShipsPlaced] = useState(false);
-  const [placedShips, setPlacedShips] = useState([]);
-
+const EnemyArea = ({
+  Player,
+  comBoard,
+  boardSize,
+  comShips,
+  comPlaceAllShips,
+  handlePlaceComputerShips,
+}) => {
   const Info = ({ Player }) => {
     return (
       <>
         <PlayerTitle>{Player}</PlayerTitle>
+        <button
+          onClick={handlePlaceComputerShips}
+        >
+          Place Ships
+        </button>
       </>
     );
   };
@@ -33,7 +34,7 @@ const EnemyArea = ({ Player, gameboard, updateComShipsPlaced }) => {
     return (
       <Board>
         <BoardBody data-testid={`${Player}-board`}>
-          {computerBoard.map((row, v) => (
+          {comBoard.map((row, v) => (
             <TableRow key={v}>
               {row.map((cell, h) => (
                 <Square
