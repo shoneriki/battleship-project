@@ -62,23 +62,29 @@ const PlayerArea = ({
                   v={cell.v}
                   h={cell.h}
                   hasShip={cell.hasShip}
-                  gameOn={gameOn}
+                  allHumanShipsPlaced={allHumanShipsPlaced}
                   data-testid={`${Player}-cell-${v}-${h}`}
                   style={{
                     backgroundColor: cell.hasShip ? "green" : "blue",
-                    cursor: gameOn ? "default" : "pointer",
+                    cursor: allHumanShipsPlaced ? "default" : "pointer",
                   }}
-                  onClick={() => {
-                    if (!allHumanShipsPlaced) {
-                      try {
-                        humanPlaceShip(humanShip, v, h, humanDirection, humanBoard);
-                      } catch (error) {
-                        alert(error.message);
-                      }
-                    } else if (allHumanShipsPlaced && gameOn ) {
-
-                    }
-                  }}
+                  onClick={
+                    !allHumanShipsPlaced
+                      ? () => {
+                          try {
+                            humanPlaceShip(
+                              humanShip,
+                              v,
+                              h,
+                              humanDirection,
+                              humanBoard
+                            );
+                          } catch (error) {
+                            alert(error.message);
+                          }
+                        }
+                      : undefined
+                  }
                 ></Square>
               ))}
             </TableRow>

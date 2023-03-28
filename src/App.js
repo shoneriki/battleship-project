@@ -132,8 +132,7 @@ const humanPlaceShip = (ship, v, h, direction, board) => {
     return true;
   };
 
-  const placementResult = shipPlacementValid(v, h);
-  if (placementResult === true) {
+  if (shipPlacementValid(v,h)) {
     for (let i = 0; i < length; i++) {
       if (direction === "h") {
         newBoard[v][h + i].hasShip = ship.name.slice(0, 3);
@@ -205,22 +204,18 @@ const humanRandomPlaceShips = (board, ships) => {
 }
 
 const handleRandomPlayerShipPlacement = () => {
-  const [newBoard, newShipCoords, newShipSegmentsOnBoard] = humanRandomPlaceShips(
-    humanBoard,
-    humanShips
-  );
-  setHumanBoard(newBoard);
-  setHumanShipCoords(newShipCoords);
-  setHumanShipSegmentsOnBoard(newShipSegmentsOnBoard);
-  const allShipsPlaced = newShipSegmentsOnBoard.length === 17;
-  setAllHumanShipsPlaced(allShipsPlaced);
-};
-
-useEffect(() => {
-}, [allHumanShipsPlaced]);
-
-
-
+  act(() => {
+    const [newBoard, newShipCoords, newShipSegmentsOnBoard] = humanRandomPlaceShips(
+      humanBoard,
+      humanShips
+    );
+    setHumanBoard(newBoard);
+    setHumanShipCoords(newShipCoords);
+    setHumanShipSegmentsOnBoard(newShipSegmentsOnBoard);
+    const allShipsPlaced = newShipSegmentsOnBoard.length === 17;
+    setAllHumanShipsPlaced(allShipsPlaced);
+  });
+}
 useEffect(() => {
   const handleKeyUp = (e) => {
     if (e.key === "h" && humanDirection !== "h") {
@@ -241,8 +236,6 @@ useEffect(() => {
     humanShips.length !== 0 ? humanShips[0] : setAllHumanShipsPlaced(true)
   );
 }, [humanShips, setAllHumanShipsPlaced]);
-
-
 
 // end human side
 
@@ -311,14 +304,6 @@ const comPlaceAllShips = (board, ships) => {
 };
 
 const handlePlaceComputerShips = () => {
-  // const [newComBoard, newComShipCoords, newComShipSegmentsOnBoard] =
-  //   comPlaceAllShips(comBoard, comShips);
-  // setComBoard(newComBoard);
-  // setComShipCoords(newComShipCoords);
-  // setComShipSegmentsOnBoard(newComShipSegmentsOnBoard);
-  // const allShipsPlaced = newComShipSegmentsOnBoard.length === 17;
-  // setAllComShipsPlaced(allShipsPlaced);
-
   act(() => {
     const [newComBoard, newComShipCoords, newComShipSegmentsOnBoard] =
       comPlaceAllShips(comBoard, comShips);
@@ -328,7 +313,6 @@ const handlePlaceComputerShips = () => {
     const allShipsPlaced = newComShipSegmentsOnBoard.length === 17;
     setAllComShipsPlaced(allShipsPlaced);
   });
-
 }
 
 
@@ -349,9 +333,9 @@ useEffect(() => {
 
 },[allHumanShipsPlaced, allComShipsPlaced])
 
-const [isPlayerTurn, setIsPlayerTurn] = useState(true);
 
-const [isComTurn, setIsComTurn] = useState(false);
+
+
 /* end both sides */
 
   return (
