@@ -3,6 +3,8 @@ import EnemyArea from "./components/EnemyArea";
 import {ShipConstructor} from "./components/ShipConstructor"
 import { useState, useEffect } from "react";
 import styled from "styled-components";
+import { act } from "react-dom/test-utils";
+
 
 const AppSection = styled.main`
   width: 100%;
@@ -151,65 +153,71 @@ const humanPlaceShip = (ship, v, h, direction, board) => {
   }
   setHumanBoard(newBoard);
 };
+const humanRandomPlaceShips = (board, ships) => {
+    const newBoard = [...board];
+    const shipCoords = [];
+    const segmentsOnBoard = [];
 
+    for (const ship of ships) {
+      let validPlacement = false;
+      while (!validPlacement) {
+        const v = Math.floor(Math.random() * (boardSize - ship.length + 1));
+        const h = Math.floor(Math.random() * (boardSize - ship.length + 1));
+        const direction = Math.random() > 0.5 ? "h" : "v";
 
-// const humanRandomPlaceShips = (board, ships) => {
-//   const newBoard = [...board];
-//   const shipCoords = [];
-//   const segmentsOnBoard = [];
+        let validSegments = true;
+        for (let i = 0; i < ship.length; i++) {
+          const vIndex = direction === "v" ? v + i : v;
+          const hIndex = direction === "h" ? h + i : h;
+          const shipSegment = ship.name.slice(0, 3);
 
-//   for (const ship of ships) {
-//     let validPlacement = false;
-//     while (!validPlacement) {
-//       const v = Math.floor(Math.random() * (boardSize - ship.length + 1));
-//       const h = Math.floor(Math.random() * (boardSize - ship.length + 1));
-//       const direction = Math.random() > 0.5 ? "h" : "v";
+          if (
+            vIndex >= boardSize ||
+            hIndex >= boardSize ||
+            newBoard[vIndex][hIndex].hasShip !== 0 ||
+            segmentsOnBoard.includes(shipSegment) ||
+            allHumanShipsPlaced
+          ) {
+            validSegments = false;
+            break;
+          }
+        }
 
-//       validPlacement = true;
-//       for (let i = 0; i < ship.length; i++) {
-//         const vIndex = direction === "h" ? v : v + i;
-//         const hIndex = direction === "h" ? h + i : h;
-//         if (
-//           vIndex >= boardSize ||
-//           hIndex >= boardSize ||
-//           newBoard[vIndex][hIndex].hasShip !== 0
-//         ) {
-//           validPlacement = false;
-//           break;
-//         }
-//       }
+        if (validSegments) {
+          for (let i = 0; i < ship.length; i++) {
+            const vIndex = direction === "h" ? v : v + i;
+            const hIndex = direction === "h" ? h + i : h;
+            const shipSegment = ship.name.slice(0, 3);
 
-//       if (validPlacement) {
-//         for (let i = 0; i < ship.length; i++) {
-//           const vIndex = direction === "h" ? v : v + i;
-//           const hIndex = direction === "h" ? h + i : h;
-//           newBoard[vIndex][hIndex].hasShip = ship.name.slice(0, 3);
-//           shipCoords.push([vIndex, hIndex]);
-//         }
-//         segmentsOnBoard.push(...Array(ship.length).fill(ship.name.slice(0, 3)));
-//       }
-//     }
-//   }
+            newBoard[vIndex][hIndex].hasShip = shipSegment;
+            shipCoords.push([vIndex, hIndex]);
+          }
 
-//   return [newBoard, shipCoords, segmentsOnBoard];
-// };
+          segmentsOnBoard.push(
+            ...Array(ship.length).fill(ship.name.slice(0, 3))
+          );
+          validPlacement = true;
+        }
+      }
+    }
 
-// const handleRandomPlacement = () => {
-//   const [newBoard, shipCoords, segmentsOnBoard] = humanRandomPlaceShips(
-//     humanBoard,
-//     humanShips
-//   );
-//   setHumanBoard(newBoard);
-//   setHumanShipCoords(shipCoords);
-//   setHumanShipSegmentsOnBoard(segmentsOnBoard);
-//   setAllHumanShipsPlaced(true);
-// };
+    return [newBoard, shipCoords, segmentsOnBoard];
+}
 
-// useEffect(() => {
-//   if (allHumanShipsPlaced) {
-//     // do something else, like start the game
-//   }
-// }, [allHumanShipsPlaced]);
+const handleRandomPlayerShipPlacement = () => {
+  const [newBoard, newShipCoords, newShipSegmentsOnBoard] = humanRandomPlaceShips(
+    humanBoard,
+    humanShips
+  );
+  setHumanBoard(newBoard);
+  setHumanShipCoords(newShipCoords);
+  setHumanShipSegmentsOnBoard(newShipSegmentsOnBoard);
+  const allShipsPlaced = newShipSegmentsOnBoard.length === 17;
+  setAllHumanShipsPlaced(allShipsPlaced);
+};
+
+useEffect(() => {
+}, [allHumanShipsPlaced]);
 
 
 
@@ -267,7 +275,7 @@ const comPlaceAllShips = (board, ships) => {
 
       let validSegments = true;
       for (let i = 0; i < ship.length; i++) {
-        const vIndex = direction === "h" ? v : v + i;
+        const vIndex = direction === "v" ? v + i : v;
         const hIndex = direction === "h" ? h + i : h;
         const shipSegment = ship.name.slice(0, 3);
 
@@ -303,13 +311,24 @@ const comPlaceAllShips = (board, ships) => {
 };
 
 const handlePlaceComputerShips = () => {
-  const [newComBoard, newComShipCoords, newComShipSegmentsOnBoard] =
-    comPlaceAllShips(comBoard, comShips);
-  setComBoard(newComBoard);
-  setComShipCoords(newComShipCoords);
-  setComShipSegmentsOnBoard(newComShipSegmentsOnBoard);
-  const allShipsPlaced = newComShipSegmentsOnBoard.length === 17;
-  setAllComShipsPlaced(allShipsPlaced);
+  // const [newComBoard, newComShipCoords, newComShipSegmentsOnBoard] =
+  //   comPlaceAllShips(comBoard, comShips);
+  // setComBoard(newComBoard);
+  // setComShipCoords(newComShipCoords);
+  // setComShipSegmentsOnBoard(newComShipSegmentsOnBoard);
+  // const allShipsPlaced = newComShipSegmentsOnBoard.length === 17;
+  // setAllComShipsPlaced(allShipsPlaced);
+
+  act(() => {
+    const [newComBoard, newComShipCoords, newComShipSegmentsOnBoard] =
+      comPlaceAllShips(comBoard, comShips);
+    setComBoard(newComBoard);
+    setComShipCoords(newComShipCoords);
+    setComShipSegmentsOnBoard(newComShipSegmentsOnBoard);
+    const allShipsPlaced = newComShipSegmentsOnBoard.length === 17;
+    setAllComShipsPlaced(allShipsPlaced);
+  });
+
 }
 
 
@@ -329,6 +348,10 @@ useEffect(() => {
   }
 
 },[allHumanShipsPlaced, allComShipsPlaced])
+
+const [isPlayerTurn, setIsPlayerTurn] = useState(true);
+
+const [isComTurn, setIsComTurn] = useState(false);
 /* end both sides */
 
   return (
@@ -341,9 +364,10 @@ useEffect(() => {
             humanBoard={humanBoard}
             humanDirection={humanDirection}
             humanPlaceShip={humanPlaceShip}
-            // humanRandomPlaceShips={humanRandomPlaceShips}
-            // handleRandomPlacement={handleRandomPlacement}
-            placementError={placementError}
+            /* for placing ships randomly */
+            humanRandomPlaceShips={humanRandomPlaceShips}
+            handleRandomPlayerShipPlacement={handleRandomPlayerShipPlacement}
+            /*end of placing ships randomly */
             humanShips={humanShips}
             humanShipCoords={humanShipCoords}
             humanShipSegmentsOnBoard={humanShipSegmentsOnBoard}

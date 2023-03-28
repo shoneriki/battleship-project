@@ -62,3 +62,7 @@ export const ShipInfo = styled.section`
   width: 100%;
   justify-content: center;
 `;
+
+export const ComSquare = styled(Square)`
+  cursor: default;
+`

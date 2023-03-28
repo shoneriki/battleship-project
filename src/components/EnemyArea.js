@@ -6,6 +6,7 @@ import {
   BoardBody,
   TableRow,
   Square,
+  ComSquare,
   ShipInfo,
 } from "./StyledComponents";
 
@@ -16,7 +17,8 @@ const EnemyArea = ({
   comShips,
   comPlaceAllShips,
   handlePlaceComputerShips,
-  allComShipsPlaced
+  allComShipsPlaced,
+  gameOn,
 }) => {
   const Info = ({ Player }) => {
     return (
@@ -26,12 +28,12 @@ const EnemyArea = ({
           !allComShipsPlaced && (
             <button
               onClick={handlePlaceComputerShips}
-              data-testid={"place-ships-btn"}
+              data-testid={`${Player}-place-ships-btn`}
             >
               Place Ships
             </button>
           )
-        }
+        } 
       </>
     );
   };
@@ -43,16 +45,18 @@ const EnemyArea = ({
           {comBoard.map((row, v) => (
             <TableRow key={v}>
               {row.map((cell, h) => (
-                <Square
+                <ComSquare
                   key={`${v}, ${h}`}
                   v={cell.v}
                   h={cell.h}
                   hasShip={cell.hasShip}
+                  gameOn={gameOn}
                   data-testid={`${Player}-cell-${v}-${h}`}
                   style={{
                     backgroundColor: "blue",
+                    cursor: gameOn ? "pointer" : "default",
                   }}
-                ></Square>
+                ></ComSquare>
               ))}
             </TableRow>
           ))}
