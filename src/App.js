@@ -70,10 +70,8 @@ const AppMain = () => {
 const [humanBoard, setHumanBoard] = useState(initialBoard(boardSize))
 const [humanShips, setHumanShips] = useState(initialShips)
 
-const [placementError, setPlacementError] = useState(null);
-
 const [humanDirection , setHumanDirection] = useState("h")
-const [humanShip,setHumanShip ] = useState(humanShips[0])
+const [humanShip, setHumanShip] = useState(humanShips[0])
 const [allHumanShipsPlaced, setAllHumanShipsPlaced] = useState(false)
 
 const [humanShipCoords, setHumanShipCoords] = useState([])
@@ -84,6 +82,7 @@ const [humanShipSegmentsOnBoard, setHumanShipSegmentsOnBoard] = useState([])
 const [humanShipsSunk, setHumanShipsSunk] = useState(0)
 // if playerShipsSunk.length === 5, the game is over
 
+/* player ship placement functionality ---------------------------------------*/
 const humanPlaceShip = (ship, v, h, direction, board) => {
   const newBoard = [...board];
   const { length } = ship;
@@ -217,6 +216,12 @@ const handleRandomPlayerShipPlacement = () => {
   });
 }
 useEffect(() => {
+  setHumanShip(
+    humanShips.length !== 0 ? humanShips[0] : setAllHumanShipsPlaced(true)
+  );
+}, [humanShips, setAllHumanShipsPlaced]);
+
+useEffect(() => {
   const handleKeyUp = (e) => {
     if (e.key === "h" && humanDirection !== "h") {
       console.log("horizontal?")
@@ -231,11 +236,8 @@ useEffect(() => {
   };
 }, [humanDirection]);
 
-useEffect(() => {
-  setHumanShip(
-    humanShips.length !== 0 ? humanShips[0] : setAllHumanShipsPlaced(true)
-  );
-}, [humanShips, setAllHumanShipsPlaced]);
+/*end player place ship functionality -----------------------------------------*/
+
 
 // end human side
 
