@@ -62,7 +62,6 @@ const AppMain = () => {
       ShipConstructor("submarine"),
       ShipConstructor("destroyer"),
   ]
-  const [allShipsPlaced, setAllShipsPlaced] = useState(false)
 
 /* lifting state logic---------------------------------------------------------*/
 
@@ -321,10 +320,16 @@ useEffect(() => {
 }, [allComShipsPlaced])
 // end computer side
 
-/*end lifting state logic------------------------------------------------------*/
+/* both sides */
 
+const [gameOn, setGameOn] = useState(false);
+useEffect(() => {
+  if (allHumanShipsPlaced && allComShipsPlaced) {
+    setGameOn(true);
+  }
 
-
+},[allHumanShipsPlaced, allComShipsPlaced])
+/* end both sides */
 
   return (
     <AppSection>
@@ -346,6 +351,7 @@ useEffect(() => {
             allHumanShipsPlaced={allHumanShipsPlaced}
             humanShip={humanShip}
             setHumanShip={setHumanShip}
+            gameOn={gameOn}
           />
         </BoardSection>
         <BoardSection>
@@ -357,6 +363,7 @@ useEffect(() => {
             comPlaceAllShips={comPlaceAllShips}
             handlePlaceComputerShips={handlePlaceComputerShips}
             allComShipsPlaced={allComShipsPlaced}
+            gameOn={gameOn}
           />
         </BoardSection>
       </Boards>

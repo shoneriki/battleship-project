@@ -14,6 +14,7 @@ const PlayerArea = ({
   allHumanShipsPlaced,
   humanShip,
   setHumanShip,
+  gameOn,
 }) => {
 
   const Info = ({ Player, humanDirection }) => {
@@ -32,7 +33,7 @@ const PlayerArea = ({
               {/* <button
                 onClick={humanRandomPlaceShips(humanBoard, humanShips)}
               >
-                Screw that, please place ships for me
+                please place ships for me
               </button> */}
               {humanShips.map((ship) => {
                 return (
@@ -71,8 +72,8 @@ const PlayerArea = ({
                       } catch (error) {
                         alert(error.message);
                       }
-                    } else {
-                      alert("All ships have been placed");
+                    } else if (allHumanShipsPlaced && gameOn ) {
+
                     }
                   }}
                 ></Square>
