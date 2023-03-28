@@ -1,6 +1,4 @@
-import { useState } from "react";
-import styled from "styled-components";
-import { GameboardConstructor } from "./GameboardConstructor";
+import { useState} from "react";
 import { ShipConstructor } from "./ShipConstructor";
 import {
   PlayerTitle,
@@ -11,14 +9,29 @@ import {
   ShipInfo,
 } from "./StyledComponents";
 
-const EnemyArea = ({ Player }) => {
-  const { board, placeShip, shipCoords, totalShipParts } = GameboardConstructor();
-
+const EnemyArea = ({
+  Player,
+  comBoard,
+  boardSize,
+  comShips,
+  comPlaceAllShips,
+  handlePlaceComputerShips,
+  allComShipsPlaced
+}) => {
   const Info = ({ Player }) => {
     return (
       <>
         <PlayerTitle>{Player}</PlayerTitle>
-        <ShipInfo>{Player !== "Computer" && <h3></h3>}</ShipInfo>
+        {
+          !allComShipsPlaced && (
+            <button
+              onClick={handlePlaceComputerShips}
+              data-testid={"place-ships-btn"}
+            >
+              Place Ships
+            </button>
+          )
+        }
       </>
     );
   };
@@ -27,7 +40,7 @@ const EnemyArea = ({ Player }) => {
     return (
       <Board>
         <BoardBody data-testid={`${Player}-board`}>
-          {board.map((row, v) => (
+          {comBoard.map((row, v) => (
             <TableRow key={v}>
               {row.map((cell, h) => (
                 <Square
@@ -36,9 +49,8 @@ const EnemyArea = ({ Player }) => {
                   h={cell.h}
                   hasShip={cell.hasShip}
                   data-testid={`${Player}-cell-${v}-${h}`}
-                  backgroundColor={cell.hasShip ? "red" : "white"}
                   style={{
-                    backgroundColor: cell.hasShip ? "red" : "blue",
+                    backgroundColor: "blue",
                   }}
                 ></Square>
               ))}

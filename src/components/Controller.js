@@ -1,8 +1,10 @@
 // import ship later
+import {ShipConstructor} from "./ShipConstructor";
+import PlayerArea from "./PlayerArea"
 // import gameboard later
 // import player later
 
-class Controller {
+export const Controller = () => {
   // prep stage
     // two players
     // each player has a gameboard

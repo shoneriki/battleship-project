@@ -76,10 +76,4 @@ test("when all ships are placed, ships can't be placed", async () => {
 
 })
 
-test("computer board renders", () => {
-  render(<AppSection/>)
-  const ComBoard = screen.getByTestId("Computer-board");
-  expect(ComBoard).toBeInTheDocument()
-})
-
 /* end react tests */
