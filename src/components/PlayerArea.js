@@ -1,7 +1,6 @@
 import {PlayerTitle, Board, BoardBody, TableRow, Square, ShipInfo} from "./StyledComponents"
 
 const PlayerArea = ({
-  /*  lifting state logic props---------------------------------------------*/
   Player,
   humanBoard,
   humanPlaceShip,
@@ -15,11 +14,9 @@ const PlayerArea = ({
   allHumanShipsPlaced,
   humanShip,
   setHumanShip,
-  /* end lifting state logic props -----------------------------------------*/
 }) => {
 
-/* lifting state logic -----------------------------------------------------*/
-  const SecondInfo = ({ Player, humanDirection }) => {
+  const Info = ({ Player, humanDirection }) => {
     return (
       <>
         <PlayerTitle>{Player}</PlayerTitle>
@@ -51,7 +48,7 @@ const PlayerArea = ({
     );
   };
 
-  const SecondPlayerBoard = ({ Player }) => {
+  const PlayerBoard = ({ Player }) => {
     return (
       <Board>
         <BoardBody data-testid={`${Player}-board`}>
@@ -93,11 +90,11 @@ const PlayerArea = ({
   // v for vertical, h for horizontal
   return (
     <section>
-      <SecondInfo
+      <Info
         Player={Player}
         humanDirection={humanDirection}
       />
-      <SecondPlayerBoard
+      <PlayerBoard
         Player={Player}
       />
     </section>

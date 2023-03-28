@@ -319,11 +319,6 @@ useEffect(() => {
     console.log("all computer ships placed")
   }
 }, [allComShipsPlaced])
-
-
-
-
-
 // end computer side
 
 /*end lifting state logic------------------------------------------------------*/
@@ -361,6 +356,7 @@ useEffect(() => {
             comShips={comShips}
             comPlaceAllShips={comPlaceAllShips}
             handlePlaceComputerShips={handlePlaceComputerShips}
+            allComShipsPlaced={allComShipsPlaced}
           />
         </BoardSection>
       </Boards>
@@ -372,4 +368,4 @@ function App() {
   return <AppMain />;
 }
 
-export default App;
+export default App

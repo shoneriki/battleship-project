@@ -16,16 +16,22 @@ const EnemyArea = ({
   comShips,
   comPlaceAllShips,
   handlePlaceComputerShips,
+  allComShipsPlaced
 }) => {
   const Info = ({ Player }) => {
     return (
       <>
         <PlayerTitle>{Player}</PlayerTitle>
-        <button
-          onClick={handlePlaceComputerShips}
-        >
-          Place Ships
-        </button>
+        {
+          !allComShipsPlaced && (
+            <button
+              onClick={handlePlaceComputerShips}
+              data-testid={"place-ships-btn"}
+            >
+              Place Ships
+            </button>
+          )
+        }
       </>
     );
   };
@@ -43,9 +49,8 @@ const EnemyArea = ({
                   h={cell.h}
                   hasShip={cell.hasShip}
                   data-testid={`${Player}-cell-${v}-${h}`}
-                  backgroundColor={cell.hasShip ? "red" : "blue"}
                   style={{
-                    backgroundColor: cell.hasShip ? "red" : "blue",
+                    backgroundColor: "blue",
                   }}
                 ></Square>
               ))}
