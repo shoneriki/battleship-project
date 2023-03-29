@@ -1,4 +1,4 @@
-import { useState} from "react";
+import { useState, useEffect} from "react";
 import { ShipConstructor } from "./ShipConstructor";
 import {
   PlayerTitle,
@@ -15,25 +15,41 @@ const EnemyArea = ({
   comBoard,
   boardSize,
   comShips,
+  setComShips,
   comPlaceAllShips,
   handlePlaceComputerShips,
   allComShipsPlaced,
   gameOn,
+  receiveAttack,
+  comShipSegmentsOnBoard,
 }) => {
-  const Info = ({ Player }) => {
+
+  const Info = ({ Player, comShips, comShipSegmentsOnBoard }) => {
     return (
       <>
         <PlayerTitle>{Player}</PlayerTitle>
-        {
-          !allComShipsPlaced && (
-            <button
-              onClick={handlePlaceComputerShips}
-              data-testid={`${Player}-place-ships-btn`}
-            >
-              Place Ships
-            </button>
-          )
-        } 
+        {!allComShipsPlaced && (
+          <button
+            onClick={handlePlaceComputerShips}
+            data-testid={`${Player}-place-ships-btn`}
+          >
+            Place Ships
+          </button>
+        )}
+        <section>
+          {allComShipsPlaced && (
+            <ShipInfo data-testid={`${Player}-ship-info`}>
+              {comShips.map((ship) => {
+                return (
+                  <div key={ship.name}>
+                    <h6>{ship.name}</h6>
+                    <h6>{ship.hp}</h6>
+                  </div>
+                );
+              })}
+            </ShipInfo>
+          )}
+        </section>
       </>
     );
   };
@@ -50,11 +66,30 @@ const EnemyArea = ({
                   v={cell.v}
                   h={cell.h}
                   hasShip={cell.hasShip}
+                  onClick={
+                    gameOn
+                      ? (event) => {
+                          const [hit, miss] = receiveAttack(
+                            v,
+                            h,
+                            comBoard,
+                            comShipSegmentsOnBoard,
+                            comShips,
+                            setComShips,
+                          );
+                          if (hit) {
+                            event.target.classList.add("hit");
+                          } else if (miss) {
+                            event.target.classList.add("miss");
+                          }
+                        }
+                      : null
+                  }
                   gameOn={gameOn}
                   data-testid={`${Player}-cell-${v}-${h}`}
                   style={{
-                    backgroundColor: "blue",
-                    cursor: gameOn ? "pointer" : "default",
+                    backgroundColor: cell.hasShip ? "purple" : "blue",
+                    "cursor": gameOn ? "pointer" : "default",
                   }}
                 ></ComSquare>
               ))}
@@ -68,7 +103,11 @@ const EnemyArea = ({
   // v for vertical, h for horizontal
   return (
     <section>
-      <Info Player={Player} />
+      <Info
+        Player={Player}
+        comShips={comShips}
+        comShipSegmentsOnBoard={comShipSegmentsOnBoard}
+      />
       <PlayerBoard Player={Player} />
     </section>
   );
