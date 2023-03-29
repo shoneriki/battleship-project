@@ -21,7 +21,7 @@ const EnemyArea = ({
   allComShipsPlaced,
   gameOn,
   // attack logic
-  handleAttack,
+  attackCom,
   hit,
   setHit,
   miss,
@@ -72,26 +72,13 @@ const EnemyArea = ({
                   v={cell.v}
                   h={cell.h}
                   hasShip={cell.hasShip}
-                  onClick={
-                    gameOn ? (
-                    () =>
-                    handleAttack(
-                      v,
-                      h,
-                      comBoard,
-                      setComBoard,
-                      comShips,
-                      setComShips
-                    )
-
-                    ): null
-                  }
+                  onClick={gameOn ? () => attackCom(v, h, comBoard, comShips) : null}
                   hit={hit}
                   miss={miss}
                   gameOn={gameOn}
                   data-testid={`${Player}-cell-${v}-${h}`}
                   style={{
-                    backgroundColor: hit ? "red" : miss ? "grey" : "blue",
+                    backgroundColor: "blue",
                     cursor: gameOn ? "pointer" : "default",
                   }}
                 ></ComSquare>

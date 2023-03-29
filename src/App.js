@@ -192,32 +192,42 @@ useEffect(() => {
 
 /*end player place ship functionality -----------------------------------------*/
 /*attack logic +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
-const [hit, setHit] = useState(null)
-const [miss, setMiss] = useState(null)
-const handleAttack = (v,h,board,setBoard,ships,setShips, setHit, setMiss) => {
+const [hit, setHit] = useState(false);
+const [miss, setMiss] = useState(false);
+const [hitComCoords, setHitComCoords] = useState([]);
+const [missedComCoords,setMissedComCoords] = useState([]);
+const attackCom =(v,h,board,ships)  => {
   if(!gameOn) return;
   const newBoard = [...board];
   const cell = newBoard[v][h];
-
+  console.log("cell", cell);
   if(cell.hit || cell.miss) {
     return;
   }
 
   if(cell.hasShip !== 0) {
-    console.log("should be in the hit")
-    const ship = ships.find(ship => ship.name.slice(0,3) === cell.hasShip);
-    ship.isHit();
-    setShips([...ships])
-    newBoard[v][h].hit = true;
-    console.log("newBoard[v][h]", newBoard[v][h])
-    setBoard(newBoard);
-    setHit(true);
-  } else if (board[v][h] === 0){
-    console.log("should be in miss")
+    console.log("hit a ship")
+    const shipIndex = ships.findIndex((ship) => ship.name.slice(0,3) === cell.hasShip)
+    const newShips = [...ships]
+    newShips[shipIndex] = {...newShips[shipIndex], hp: newShips[shipIndex].hp -= 1}
+    setComShips(newShips)
+    setComBoard(newBoard)
+    setHit(true)
+    setHitComCoords([...hitComCoords, [v,h]])
+    console.log("ship hp?", newShips[shipIndex].hp)
+    if(newShips[shipIndex].hp <= 0) {
+      const newArray = [...comShips]
+      newArray.splice(shipIndex,1)
+      setComShips(newArray)
+    }
+  } else {
+    console.log("miss?")
     newBoard[v][h].miss = true;
-    setBoard(newBoard);
-    setMiss(true);
+    setComBoard(newBoard);
+    setMiss(true)
+    setMissedComCoords([...missedComCoords, [v,h]])
   }
+  return [hit,miss]
 }
 
 /*end attack logic */
@@ -350,7 +360,7 @@ useEffect(() => {
             allComShipsPlaced={allComShipsPlaced}
             gameOn={gameOn}
             // attack logic
-            handleAttack={handleAttack}
+            attackCom = {attackCom}
             hit={hit}
             setHit={setHit}
             miss={miss}
