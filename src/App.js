@@ -156,7 +156,6 @@ const humanRandomPlaceShips = (board, ships) => {
         }
       }
     }
-
     return [newBoard, shipCoords, segmentsOnBoard];
 }
 
@@ -192,38 +191,36 @@ useEffect(() => {
 }, [humanDirection]);
 
 /*end player place ship functionality -----------------------------------------*/
-// when gameOn is true
-// clicking on the enemyCell should execute an attack function
+/*attack logic +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+const [hit, setHit] = useState(null)
+const [miss, setMiss] = useState(null)
+const handleAttack = (v,h,board,setBoard,ships,setShips, setHit, setMiss) => {
+  if(!gameOn) return;
+  const newBoard = [...board];
+  const cell = newBoard[v][h];
 
-
-const receiveAttack = (v,h,board, shipSegments, ships, setShips) => {
-  let hit = false
-  let miss = false
-  if(board[v][h].hasShip !== 0) {
-    hit = true;
-    const deleteSegment = shipSegments.findIndex((shipPart) => shipPart === board[v][h].hasShip)
-    shipSegments.splice(deleteSegment, 1)
-    const ship = ships.find((ship) => ship.name.slice(0,3) === board[v][h].hasShip)
-    console.log("ship", ship)
-    if(ship.hp > 0) {
-      ship.isHit()
-      const newShipStats = ships.map((ship) => ({...ship, hp: ship.hp}))
-      setShips(newShipStats)
-    } else {
-      ship.isSunk()
-      const updatedShips = ships.map(ship => ({...ship, sunk: ship.sunk}));
-      setShips(updatedShips)
-    }
-  } else {
-    board[v][h].hasShip = "miss"
-    console.log("board[v][h] miss?", board[v][h])
-    miss = true
+  if(cell.hit || cell.miss) {
+    return;
   }
-  return [hit, miss]
+
+  if(cell.hasShip !== 0) {
+    console.log("should be in the hit")
+    const ship = ships.find(ship => ship.name.slice(0,3) === cell.hasShip);
+    ship.isHit();
+    setShips([...ships])
+    newBoard[v][h].hit = true;
+    console.log("newBoard[v][h]", newBoard[v][h])
+    setBoard(newBoard);
+    setHit(true);
+  } else if (board[v][h] === 0){
+    console.log("should be in miss")
+    newBoard[v][h].miss = true;
+    setBoard(newBoard);
+    setMiss(true);
+  }
 }
 
-
-
+/*end attack logic */
 // end human side
 
 
@@ -280,7 +277,7 @@ const comPlaceAllShips = (board, ships) => {
           newBoard[vIndex][hIndex].hasShip = shipSegment;
           shipCoords.push([vIndex, hIndex]);
         }
-
+        console.log("shipCoords for computer", shipCoords)
         segmentsOnBoard.push(...Array(ship.length).fill(ship.name.slice(0, 3)));
         validPlacement = true;
       }
@@ -310,6 +307,7 @@ const [gameOn, setGameOn] = useState(false);
 useEffect(() => {
   if (allHumanShipsPlaced && allComShipsPlaced) {
     setGameOn(true);
+    console.log("game is on")
   }
 },[allHumanShipsPlaced, allComShipsPlaced])
 useEffect(() => {
@@ -346,15 +344,18 @@ useEffect(() => {
             comBoard={comBoard}
             boardSize={boardSize}
             comShips={comShips}
+            setComShips={setComShips}
             comPlaceAllShips={comPlaceAllShips}
             handlePlaceComputerShips={handlePlaceComputerShips}
             allComShipsPlaced={allComShipsPlaced}
             gameOn={gameOn}
-            /*hit/attack */
-            receiveAttack={receiveAttack}
-            comShipSegmentsOnBoard={comShipSegmentsOnBoard}
-            setComShips = {setComShips}
-            /*end hit/attack */
+            // attack logic
+            handleAttack={handleAttack}
+            hit={hit}
+            setHit={setHit}
+            miss={miss}
+            setMiss={setMiss}
+            // end attack logic
           />
         </BoardSection>
       </Boards>

@@ -13,14 +13,20 @@ import {
 const EnemyArea = ({
   Player,
   comBoard,
+  setComBoard,
   boardSize,
   comShips,
   setComShips,
-  comPlaceAllShips,
   handlePlaceComputerShips,
   allComShipsPlaced,
   gameOn,
-  receiveAttack,
+  // attack logic
+  handleAttack,
+  hit,
+  setHit,
+  miss,
+  setMiss,
+  // end attack logic
   comShipSegmentsOnBoard,
 }) => {
 
@@ -67,29 +73,26 @@ const EnemyArea = ({
                   h={cell.h}
                   hasShip={cell.hasShip}
                   onClick={
-                    gameOn
-                      ? (event) => {
-                          const [hit, miss] = receiveAttack(
-                            v,
-                            h,
-                            comBoard,
-                            comShipSegmentsOnBoard,
-                            comShips,
-                            setComShips,
-                          );
-                          if (hit) {
-                            event.target.classList.add("hit");
-                          } else if (miss) {
-                            event.target.classList.add("miss");
-                          }
-                        }
-                      : null
+                    gameOn ? (
+                    () =>
+                    handleAttack(
+                      v,
+                      h,
+                      comBoard,
+                      setComBoard,
+                      comShips,
+                      setComShips
+                    )
+
+                    ): null
                   }
+                  hit={hit}
+                  miss={miss}
                   gameOn={gameOn}
                   data-testid={`${Player}-cell-${v}-${h}`}
                   style={{
-                    backgroundColor: cell.hasShip ? "purple" : "blue",
-                    "cursor": gameOn ? "pointer" : "default",
+                    backgroundColor: hit ? "red" : miss ? "grey" : "blue",
+                    cursor: gameOn ? "pointer" : "default",
                   }}
                 ></ComSquare>
               ))}

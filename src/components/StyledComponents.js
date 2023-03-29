@@ -111,13 +111,12 @@ export const Square = styled.td`
     cursor: not-allowed;
   }
 `;
+export const ComSquare = styled(Square)`
+  cursor: default;
+`
 export const ShipInfo = styled.section`
   display: flex;
   flex-direction: row;
   width: 100%;
   justify-content: center;
 `;
-
-export const ComSquare = styled(Square)`
-  cursor: default;
-`
