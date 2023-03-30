@@ -46,6 +46,13 @@ const EnemyArea = ({
           </button>
         )}
         <section>
+          {
+            gameOn && turn === "computer" && (
+              <h6> Computer's turn </h6>
+            )
+          }
+        </section>
+        <section>
           {gameOn && (
             <ShipInfo data-testid={`${Player}-ship-info`}>
               {comShips.map((ship) => {

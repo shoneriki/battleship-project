@@ -127,6 +127,6 @@ export const ShipInfo = styled.section`
 export const Winner = styled.h6`
   text-align: center;
 `
-export const Turn = styled.h6`
+export const Turn = styled.h1`
   text-align: center;
 `

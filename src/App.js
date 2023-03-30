@@ -206,36 +206,34 @@ const attackCom =(v,h,board,ships)  => {
     console.log("cell", cell);
 
     if(cell.hasShip !== 0) {
-      console.log("hit a ship")
       const shipIndex = ships.findIndex((ship) => ship.name.slice(0,3) === cell.hasShip)
+      console.log(`hit ${ships[shipIndex].name}`)
       const newShips = [...ships]
-      newShips[shipIndex] = {...newShips[shipIndex], hp: newShips[shipIndex].hp -= 1}
+      newShips[shipIndex].isHit()
+      console.log("newShips[shipIndex].hp", newShips[shipIndex].hp)
       setComShips(newShips)
       newBoard[v][h].hit = true;
       setComBoard(newBoard)
       setHitComCoords([...hitComCoords, [v,h]])
-      console.log("hitComCoords", hitComCoords)
-      if(newShips[shipIndex].hp <= 0) {
+      if(newShips[shipIndex].isSunk()) {
+        console.log(`sunk ${ships[shipIndex].name}`)
         const newArray = [...comShips]
         newArray.splice(shipIndex,1)
         setComShips(newArray)
-        console.log("ComShips",comShips)
-        console.log("ComShips.length", comShips.length)
-        if(comShips.length === 0) {
-          setGameOn(false)
-          console.log("game on?", gameOn)
-          setWinner("player")
-          console.log("winner?", winner)
-          setLoser("Computer")
-          console.log("loser", loser)
-        }
       }
+      // if(comShips.length === 0 || hitComCoords.length === 17) {
+      //   setGameOn(false)
+      //   console.log("game on?", gameOn)
+      //   setWinner("player")
+      //   console.log("winner?", winner)
+      //   setLoser("Computer")
+      //   console.log("loser", loser)
+      // }
     } else {
       console.log("miss?")
-      newBoard[v][h].miss = true;
       setComBoard(newBoard);
+      newBoard[v][h].miss = true;
       setMissedComCoords([...missedComCoords, [v,h]])
-      console.log("missedComCoords",missedComCoords)
     }
     // setTurn("Computer")
 
@@ -243,6 +241,10 @@ const attackCom =(v,h,board,ships)  => {
   return [hit,miss]
 }
 
+useEffect(() => {
+  console.log("hitComCoords", hitComCoords)
+  console.log("missedComCoords", missedComCoords)
+},[hitComCoords, missedComCoords])
 /*end attack logic */
 // end human side
 
@@ -337,28 +339,27 @@ const attackPlayer = (board,ships) => {
   }
 
   if(cell.hasShip !== 0) {
-    console.log("hit a ship")
+    console.log("hit a ship from computer?")
     const shipIndex = ships.findIndex((ship) => ship.name.slice(0,3) === cell.hasShip)
     const newShips = [...ships]
     newShips[shipIndex] = {...newShips[shipIndex], hp: newShips[shipIndex].hp -= 1}
     setHumanShips(newShips)
     setHumanBoard(newBoard)
-    setHit(true)
+    newBoard[v][h].hit = true
     setHitComCoords([...hitComCoords, [v,h]])
-    console.log("ship hp?", newShips[shipIndex].hp)
+    console.log("hitComCoords", hitComCoords)
     if(newShips[shipIndex].hp <= 0) {
       const newArray = [...humanShips]
       newArray.splice(shipIndex,1)
       setHumanShips(newArray)
     }
   } else {
-    console.log("miss?")
+    console.log("miss from computer?")
     newBoard[v][h].miss = true;
     setHumanBoard(newBoard);
-    setMiss(true)
     setMissedComCoords([...missedComCoords, [v,h]])
   }
-  setTurn("player")
+  // setTurn("player")
   return [hit,miss]
 }
 // end computer side
@@ -376,6 +377,22 @@ useEffect(() => {
   }
 },[allHumanShipsPlaced, allComShipsPlaced])
 
+useEffect(()=>{
+  console.log("comShips",comShips)
+},[comShips])
+
+useEffect(() => {
+  if (comShips.length === 0 || hitComCoords.length === 17) {
+    console.log("game over?")
+    setGameOn(false);
+    console.log("game on?", gameOn);
+    setWinner("Player");
+    console.log("winner?", winner);
+    setLoser("Computer");
+    console.log("loser", loser);
+  }
+}, [gameOn, comShips, hitComCoords, winner, loser])
+
 /* end both sides */
 
   return (
@@ -383,12 +400,9 @@ useEffect(() => {
       <GameTitle data-testid="game-title">Battleship</GameTitle>
       <section>
       {
-        winner !== "" && loser !== "" ? <Winner winner={winner} loser={loser} /> : null
+        winner !== "" && loser !== "" ? <Winner winner={winner} loser={loser}>{`${winner} wins!`}</Winner> : null
       }
       </section>
-      <Turn>
-        {turn}
-      </Turn>
       <Boards>
         <BoardSection>
           <PlayerArea
@@ -408,6 +422,7 @@ useEffect(() => {
             humanShip={humanShip}
             setHumanShip={setHumanShip}
             gameOn={gameOn}
+            turn={turn}
           />
         </BoardSection>
         <BoardSection>
