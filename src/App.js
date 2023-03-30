@@ -221,14 +221,6 @@ const attackCom =(v,h,board,ships)  => {
         newArray.splice(shipIndex,1)
         setComShips(newArray)
       }
-      // if(comShips.length === 0 || hitComCoords.length === 17) {
-      //   setGameOn(false)
-      //   console.log("game on?", gameOn)
-      //   setWinner("player")
-      //   console.log("winner?", winner)
-      //   setLoser("Computer")
-      //   console.log("loser", loser)
-      // }
     } else {
       console.log("miss?")
       setComBoard(newBoard);
