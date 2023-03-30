@@ -1,5 +1,6 @@
 import { useState, useEffect} from "react";
 import { ShipConstructor } from "./ShipConstructor";
+import classNames from "classnames"
 import {
   PlayerTitle,
   Board,
@@ -78,9 +79,9 @@ const EnemyArea = ({
                     gameOn ? () => attackCom(v, h, comBoard, comShips) : null
                   }
                   className={classNames({
-                    hit: hit,
-                    miss: miss,
-                    default: !hit && !miss,
+                    hit: cell.hit,
+                    miss: cell.miss,
+                    default: !cell.hit && !cell.miss,
                   })}
                   gameOn={gameOn}
                   data-testid={`${Player}-cell-${v}-${h}`}

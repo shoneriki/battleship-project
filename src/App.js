@@ -4,6 +4,7 @@ import {ShipConstructor} from "./components/ShipConstructor"
 import { useState, useEffect } from "react";
 import {AppSection, Boards, GameTitle, BoardSection, Winner, Turn} from "./components/StyledComponents"
 
+
 const AppMain = () => {
   const [boardSize, setBoardSize] = useState(10)
   const initialBoard = (boardSize) => {
@@ -23,7 +24,6 @@ const AppMain = () => {
       ShipConstructor("destroyer"),
   ]
 
-/* lifting state logic---------------------------------------------------------*/
 
 const [humanBoard, setHumanBoard] = useState(initialBoard(boardSize))
 const [humanShips, setHumanShips] = useState(initialShips)
@@ -191,6 +191,7 @@ useEffect(() => {
 }, [humanDirection]);
 
 /*end player place ship functionality -----------------------------------------*/
+
 /*attack logic +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 const [hit, setHit] = useState(false);
 const [miss, setMiss] = useState(false);
@@ -203,9 +204,6 @@ const attackCom =(v,h,board,ships)  => {
     const newBoard = [...board];
     const cell = newBoard[v][h];
     console.log("cell", cell);
-    if(cell.hit || cell.miss) {
-      return;
-    }
 
     if(cell.hasShip !== 0) {
       console.log("hit a ship")
@@ -213,14 +211,16 @@ const attackCom =(v,h,board,ships)  => {
       const newShips = [...ships]
       newShips[shipIndex] = {...newShips[shipIndex], hp: newShips[shipIndex].hp -= 1}
       setComShips(newShips)
+      newBoard[v][h].hit = true;
       setComBoard(newBoard)
-      setHit(true)
       setHitComCoords([...hitComCoords, [v,h]])
-      console.log("ship hp?", newShips[shipIndex].hp)
+      console.log("hitComCoords", hitComCoords)
       if(newShips[shipIndex].hp <= 0) {
         const newArray = [...comShips]
         newArray.splice(shipIndex,1)
         setComShips(newArray)
+        console.log("ComShips",comShips)
+        console.log("ComShips.length", comShips.length)
         if(comShips.length === 0) {
           setGameOn(false)
           console.log("game on?", gameOn)
@@ -234,14 +234,18 @@ const attackCom =(v,h,board,ships)  => {
       console.log("miss?")
       newBoard[v][h].miss = true;
       setComBoard(newBoard);
-      setMiss(true)
       setMissedComCoords([...missedComCoords, [v,h]])
+      console.log("missedComCoords",missedComCoords)
     }
-    setTurn("Computer")
+    // setTurn("Computer")
 
   }
   return [hit,miss]
 }
+
+useEffect(() => {
+
+}, [hitComCoords, missedComCoords])
 
 useEffect(() => {
 },[allHumanShipsPlaced, humanShips])
