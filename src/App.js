@@ -37,8 +37,7 @@ const [humanShipCoords, setHumanShipCoords] = useState([])
 const [humanShipSegmentsOnBoard, setHumanShipSegmentsOnBoard] = useState([])
 // if certain string does not exist in the playerSegmentsOnBoard, then that ship is sunk
 // figure out what to push to the below playerShipsSunk array. Maybe just add 1 once?
-const [humanShipsSunk, setHumanShipsSunk] = useState(0)
-// if playerShipsSunk.length === 5, the game is over
+
 
 /* player ship placement functionality ---------------------------------------*/
 const humanPlaceShip = (ship, v, h, direction, board) => {
@@ -375,13 +374,9 @@ useEffect(()=>{
 
 useEffect(() => {
   if (comShips.length === 0 || hitComCoords.length === 17) {
-    console.log("game over?")
     setGameOn(false);
-    console.log("game on?", gameOn);
     setWinner("Player");
-    console.log("winner?", winner);
     setLoser("Computer");
-    console.log("loser", loser);
   }
 }, [gameOn, comShips, hitComCoords, winner, loser])
 
@@ -409,7 +404,6 @@ useEffect(() => {
             humanShips={humanShips}
             humanShipCoords={humanShipCoords}
             humanShipSegmentsOnBoard={humanShipSegmentsOnBoard}
-            humanShipsSunk={humanShipsSunk}
             allHumanShipsPlaced={allHumanShipsPlaced}
             humanShip={humanShip}
             setHumanShip={setHumanShip}
