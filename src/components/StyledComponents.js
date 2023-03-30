@@ -130,3 +130,11 @@ export const Winner = styled.h6`
 export const Turn = styled.h1`
   text-align: center;
 `
+
+export const Labels = styled.tr`
+  display: flex;
+  width: 100%
+`
+export const ShipStats = styled.section`
+  margin: 0 8px;
+`

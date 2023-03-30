@@ -9,9 +9,11 @@ import {
   Square,
   ComSquare,
   ShipInfo,
+  Labels,
+  ShipStats,
 } from "./StyledComponents";
 
-const EnemyArea = ({
+export const EnemyArea = ({
   Player,
   comBoard,
   setComBoard,
@@ -57,10 +59,10 @@ const EnemyArea = ({
             <ShipInfo data-testid={`${Player}-ship-info`}>
               {comShips.map((ship) => {
                 return (
-                  <div key={ship.name}>
+                  <ShipStats key={ship.name}>
                     <h6>{ship.name}</h6>
-                    <h6>{ship.hp}</h6>
-                  </div>
+                    <h6>hp: {ship.hp}</h6>
+                  </ShipStats>
                 );
               })}
             </ShipInfo>

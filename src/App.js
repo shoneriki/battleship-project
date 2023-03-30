@@ -202,26 +202,23 @@ const attackCom =(v,h,board,ships)  => {
   if (turn === "player") {
     const newBoard = [...board];
     const cell = newBoard[v][h];
-    console.log("cell", cell);
 
     if(cell.hasShip !== 0) {
       const shipIndex = ships.findIndex((ship) => ship.name.slice(0,3) === cell.hasShip)
-      console.log(`hit ${ships[shipIndex].name}`)
+      // alert(`hit ${ships[shipIndex].name}`)
       const newShips = [...ships]
       newShips[shipIndex].isHit()
-      console.log("newShips[shipIndex].hp", newShips[shipIndex].hp)
       setComShips(newShips)
       newBoard[v][h].hit = true;
       setComBoard(newBoard)
       setHitComCoords([...hitComCoords, [v,h]])
       if(newShips[shipIndex].isSunk()) {
-        console.log(`sunk ${ships[shipIndex].name}`)
+        // alert(`sunk ${ships[shipIndex].name}`)
         const newArray = [...comShips]
         newArray.splice(shipIndex,1)
         setComShips(newArray)
       }
     } else {
-      console.log("miss?")
       setComBoard(newBoard);
       newBoard[v][h].miss = true;
       setMissedComCoords([...missedComCoords, [v,h]])
@@ -233,8 +230,6 @@ const attackCom =(v,h,board,ships)  => {
 }
 
 useEffect(() => {
-  console.log("hitComCoords", hitComCoords)
-  console.log("missedComCoords", missedComCoords)
 },[hitComCoords, missedComCoords])
 /*end attack logic */
 // end human side
@@ -369,7 +364,7 @@ useEffect(() => {
 },[allHumanShipsPlaced, allComShipsPlaced])
 
 useEffect(()=>{
-  console.log("comShips",comShips)
+  console.log("comShips", comShips)
 },[comShips])
 
 useEffect(() => {

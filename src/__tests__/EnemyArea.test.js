@@ -11,7 +11,8 @@ import userEvent from "@testing-library/user-event";
 import "@testing-library/jest-dom/extend-expect";
 import { ShipConstructor } from "../components/ShipConstructor";
 import EnemyArea from "../components/PlayerArea";
-import AppSection,  {comPlaceAllShips } from "../App";
+import ComputerBoard from "../components/ComputerBoard";
+import AppSection from "../App";
 import { act } from "react-test-renderer";
 
 test("computer board renders", () => {
@@ -42,3 +43,19 @@ test("computer board can place ships", async () => {
     screen.queryByTestId("Computer-place-ships-btn")
   ).not.toBeInTheDocument();
 });
+
+// test("render red ComSquare when hasShip is not 0", async () => {
+//   render(<ComputerBoard/>)
+//   const comSquares = screen.queryAllByTestId("cell-*");
+//   const squareWithShip = comSquares.find((square) => {
+//     console.log("square?",square)
+//   });
+//   act(() => {
+//     userEvent.click(squareWithShip);
+//   });
+//   await waitFor(() => {
+//     expect(
+//       getComputedStyle(squareWithShip).getPropertyValue("background-color")
+//     ).toBe("red");
+//   });
+// });
