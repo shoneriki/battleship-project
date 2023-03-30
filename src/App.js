@@ -243,13 +243,6 @@ const attackCom =(v,h,board,ships)  => {
   return [hit,miss]
 }
 
-useEffect(() => {
-
-}, [hitComCoords, missedComCoords])
-
-useEffect(() => {
-},[allHumanShipsPlaced, humanShips])
-
 /*end attack logic */
 // end human side
 
@@ -327,9 +320,6 @@ const handlePlaceComputerShips = () => {
   setAllComShipsPlaced(allShipsPlaced);
 }
 
-useEffect(() => {
-}, [allComShipsPlaced])
-
 const attackPlayer = (board,ships) => {
   if(!gameOn) return;
   if(turn === "player") return;
@@ -385,8 +375,6 @@ useEffect(() => {
     setGameOn(true);
   }
 },[allHumanShipsPlaced, allComShipsPlaced])
-useEffect(() => {
-}, [comShips, comShipSegmentsOnBoard]);
 
 /* end both sides */
 
