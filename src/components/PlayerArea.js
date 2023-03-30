@@ -44,6 +44,20 @@ const PlayerArea = ({
                 );
               })}
             </section>
+            <section>
+              {gameOn && (
+                <ShipInfo data-testid={`${Player}-ship-info`}>
+                  {humanShips.map((ship) => {
+                    return (
+                      <div key={ship.name}>
+                        <h6>{ship.name}</h6>
+                        <h6>hp: {ship.hp}</h6>
+                      </div>
+                    );
+                  })}
+                </ShipInfo>
+              )}
+            </section>
           </ShipInfo>
         )}
       </>

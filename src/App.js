@@ -2,7 +2,7 @@ import PlayerArea from "./components/PlayerArea";
 import EnemyArea from "./components/EnemyArea";
 import {ShipConstructor} from "./components/ShipConstructor"
 import { useState, useEffect } from "react";
-import {AppSection, Boards, GameTitle, BoardSection} from "./components/StyledComponents"
+import {AppSection, Boards, GameTitle, BoardSection, Winner, Turn} from "./components/StyledComponents"
 
 const AppMain = () => {
   const [boardSize, setBoardSize] = useState(10)
@@ -198,37 +198,53 @@ const [hitComCoords, setHitComCoords] = useState([]);
 const [missedComCoords,setMissedComCoords] = useState([]);
 const attackCom =(v,h,board,ships)  => {
   if(!gameOn) return;
-  const newBoard = [...board];
-  const cell = newBoard[v][h];
-  console.log("cell", cell);
-  if(cell.hit || cell.miss) {
-    return;
-  }
-
-  if(cell.hasShip !== 0) {
-    console.log("hit a ship")
-    const shipIndex = ships.findIndex((ship) => ship.name.slice(0,3) === cell.hasShip)
-    const newShips = [...ships]
-    newShips[shipIndex] = {...newShips[shipIndex], hp: newShips[shipIndex].hp -= 1}
-    setComShips(newShips)
-    setComBoard(newBoard)
-    setHit(true)
-    setHitComCoords([...hitComCoords, [v,h]])
-    console.log("ship hp?", newShips[shipIndex].hp)
-    if(newShips[shipIndex].hp <= 0) {
-      const newArray = [...comShips]
-      newArray.splice(shipIndex,1)
-      setComShips(newArray)
+  if (turn !== "player") return;
+  if (turn === "player") {
+    const newBoard = [...board];
+    const cell = newBoard[v][h];
+    console.log("cell", cell);
+    if(cell.hit || cell.miss) {
+      return;
     }
-  } else {
-    console.log("miss?")
-    newBoard[v][h].miss = true;
-    setComBoard(newBoard);
-    setMiss(true)
-    setMissedComCoords([...missedComCoords, [v,h]])
+
+    if(cell.hasShip !== 0) {
+      console.log("hit a ship")
+      const shipIndex = ships.findIndex((ship) => ship.name.slice(0,3) === cell.hasShip)
+      const newShips = [...ships]
+      newShips[shipIndex] = {...newShips[shipIndex], hp: newShips[shipIndex].hp -= 1}
+      setComShips(newShips)
+      setComBoard(newBoard)
+      setHit(true)
+      setHitComCoords([...hitComCoords, [v,h]])
+      console.log("ship hp?", newShips[shipIndex].hp)
+      if(newShips[shipIndex].hp <= 0) {
+        const newArray = [...comShips]
+        newArray.splice(shipIndex,1)
+        setComShips(newArray)
+        if(comShips.length === 0) {
+          setGameOn(false)
+          console.log("game on?", gameOn)
+          setWinner("player")
+          console.log("winner?", winner)
+          setLoser("Computer")
+          console.log("loser", loser)
+        }
+      }
+    } else {
+      console.log("miss?")
+      newBoard[v][h].miss = true;
+      setComBoard(newBoard);
+      setMiss(true)
+      setMissedComCoords([...missedComCoords, [v,h]])
+    }
+    setTurn("Computer")
+
   }
   return [hit,miss]
 }
+
+useEffect(() => {
+},[allHumanShipsPlaced, humanShips])
 
 /*end attack logic */
 // end human side
@@ -307,26 +323,80 @@ const handlePlaceComputerShips = () => {
   setAllComShipsPlaced(allShipsPlaced);
 }
 
-
 useEffect(() => {
 }, [allComShipsPlaced])
+
+const attackPlayer = (board,ships) => {
+  if(!gameOn) return;
+  if(turn === "player") return;
+  if(turn !== "player") {
+
+  }
+  const v = Math.floor(Math.random() * boardSize);
+  const h = Math.floor(Math.random() * boardSize);
+
+  const newBoard = [...board];
+  const cell = newBoard[v][h];
+  console.log("cell", cell);
+  if(cell.hit || cell.miss) {
+    return;
+  }
+
+  if(cell.hasShip !== 0) {
+    console.log("hit a ship")
+    const shipIndex = ships.findIndex((ship) => ship.name.slice(0,3) === cell.hasShip)
+    const newShips = [...ships]
+    newShips[shipIndex] = {...newShips[shipIndex], hp: newShips[shipIndex].hp -= 1}
+    setHumanShips(newShips)
+    setHumanBoard(newBoard)
+    setHit(true)
+    setHitComCoords([...hitComCoords, [v,h]])
+    console.log("ship hp?", newShips[shipIndex].hp)
+    if(newShips[shipIndex].hp <= 0) {
+      const newArray = [...humanShips]
+      newArray.splice(shipIndex,1)
+      setHumanShips(newArray)
+    }
+  } else {
+    console.log("miss?")
+    newBoard[v][h].miss = true;
+    setHumanBoard(newBoard);
+    setMiss(true)
+    setMissedComCoords([...missedComCoords, [v,h]])
+  }
+  setTurn("player")
+  return [hit,miss]
+}
 // end computer side
 
 /* both sides */
+
+const [turn, setTurn] = useState("player");
+const [winner, setWinner] = useState("")
+const [loser, setLoser] = useState("")
+
 const [gameOn, setGameOn] = useState(false);
 useEffect(() => {
   if (allHumanShipsPlaced && allComShipsPlaced) {
     setGameOn(true);
-    console.log("game is on")
   }
 },[allHumanShipsPlaced, allComShipsPlaced])
 useEffect(() => {
 }, [comShips, comShipSegmentsOnBoard]);
+
 /* end both sides */
 
   return (
     <AppSection>
       <GameTitle data-testid="game-title">Battleship</GameTitle>
+      <section>
+      {
+        winner !== "" && loser !== "" ? <Winner winner={winner} loser={loser} /> : null
+      }
+      </section>
+      <Turn>
+        {turn}
+      </Turn>
       <Boards>
         <BoardSection>
           <PlayerArea
@@ -365,6 +435,7 @@ useEffect(() => {
             setHit={setHit}
             miss={miss}
             setMiss={setMiss}
+            turn={turn}
             // end attack logic
           />
         </BoardSection>

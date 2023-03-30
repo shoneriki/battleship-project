@@ -110,6 +110,9 @@ export const Square = styled.td`
     background-color: grey;
     cursor: not-allowed;
   }
+  &.default {
+    background-color: blue;
+  }
 `;
 export const ComSquare = styled(Square)`
   cursor: default;
@@ -120,3 +123,10 @@ export const ShipInfo = styled.section`
   width: 100%;
   justify-content: center;
 `;
+
+export const Winner = styled.h6`
+  text-align: center;
+`
+export const Turn = styled.h6`
+  text-align: center;
+`
