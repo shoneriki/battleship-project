@@ -1,37 +1,71 @@
-import { useState} from "react";
+import { useState, useEffect} from "react";
 import { ShipConstructor } from "./ShipConstructor";
+import classNames from "classnames"
 import {
   PlayerTitle,
   Board,
   BoardBody,
   TableRow,
   Square,
+  ComSquare,
   ShipInfo,
 } from "./StyledComponents";
 
 const EnemyArea = ({
   Player,
   comBoard,
+  setComBoard,
   boardSize,
   comShips,
-  comPlaceAllShips,
+  setComShips,
   handlePlaceComputerShips,
-  allComShipsPlaced
+  allComShipsPlaced,
+  gameOn,
+  // attack logic
+  attackCom,
+  hit,
+  setHit,
+  miss,
+  setMiss,
+  turn,
+  // end attack logic
+  comShipSegmentsOnBoard,
 }) => {
-  const Info = ({ Player }) => {
+
+  const Info = ({ Player, comShips, comShipSegmentsOnBoard }) => {
+
     return (
       <>
         <PlayerTitle>{Player}</PlayerTitle>
-        {
-          !allComShipsPlaced && (
-            <button
-              onClick={handlePlaceComputerShips}
-              data-testid={"place-ships-btn"}
-            >
-              Place Ships
-            </button>
-          )
-        }
+        {!allComShipsPlaced && (
+          <button
+            onClick={handlePlaceComputerShips}
+            data-testid={`${Player}-place-ships-btn`}
+          >
+            Place Ships
+          </button>
+        )}
+        <section>
+          {
+            gameOn && turn === "computer" && (
+              <h6> Computer's turn </h6>
+            )
+          }
+        </section>
+        <section>
+          {gameOn && (
+            <ShipInfo data-testid={`${Player}-ship-info`}>
+              {comShips.map((ship) => {
+                return (
+                  <div key={ship.name}>
+                    <h6>{ship.name}</h6>
+                    <h6>{ship.hp}</h6>
+                  </div>
+                );
+              })}
+            </ShipInfo>
+          )}
+        </section>
       </>
     );
   };
@@ -43,16 +77,25 @@ const EnemyArea = ({
           {comBoard.map((row, v) => (
             <TableRow key={v}>
               {row.map((cell, h) => (
-                <Square
+                <ComSquare
                   key={`${v}, ${h}`}
                   v={cell.v}
                   h={cell.h}
                   hasShip={cell.hasShip}
+                  onClick={
+                    gameOn ? () => attackCom(v, h, comBoard, comShips) : null
+                  }
+                  className={classNames({
+                    hit: cell.hit,
+                    miss: cell.miss,
+                    default: !cell.hit && !cell.miss,
+                  })}
+                  gameOn={gameOn}
                   data-testid={`${Player}-cell-${v}-${h}`}
                   style={{
-                    backgroundColor: "blue",
+                    cursor: gameOn && turn === "player" ? "pointer" : "default",
                   }}
-                ></Square>
+                ></ComSquare>
               ))}
             </TableRow>
           ))}
@@ -64,7 +107,11 @@ const EnemyArea = ({
   // v for vertical, h for horizontal
   return (
     <section>
-      <Info Player={Player} />
+      <Info
+        Player={Player}
+        comShips={comShips}
+        comShipSegmentsOnBoard={comShipSegmentsOnBoard}
+      />
       <PlayerBoard Player={Player} />
     </section>
   );

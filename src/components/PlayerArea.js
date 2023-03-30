@@ -5,7 +5,7 @@ const PlayerArea = ({
   humanBoard,
   humanPlaceShip,
   humanRandomPlaceShips,
-  placementError,
+  handleRandomPlayerShipPlacement,
   humanShips,
   humanShipCoords,
   humanShipSegmentsOnBoard,
@@ -14,6 +14,7 @@ const PlayerArea = ({
   allHumanShipsPlaced,
   humanShip,
   setHumanShip,
+  gameOn,
 }) => {
 
   const Info = ({ Player, humanDirection }) => {
@@ -25,15 +26,16 @@ const PlayerArea = ({
             <section className="ShipSelector">
               <h6> h for horizontal, v for vertical</h6>
               <h6>
-                {humanShip.name},{" "}
+                {humanShip.name},
                 {humanDirection === "h" ? "horizontal" : "vertical"},{" "}
                 {humanShip.length}
               </h6>
-              {/* <button
-                onClick={humanRandomPlaceShips(humanBoard, humanShips)}
+              <button
+                onClick={handleRandomPlayerShipPlacement}
+                data-testid={`${Player}-place-ships-btn`}
               >
-                Screw that, please place ships for me
-              </button> */}
+                please place ships for me
+              </button>
               {humanShips.map((ship) => {
                 return (
                   <button key={ship.name} onClick={(e) => setHumanShip(ship)}>
@@ -41,6 +43,20 @@ const PlayerArea = ({
                   </button>
                 );
               })}
+            </section>
+            <section>
+              {gameOn && (
+                <ShipInfo data-testid={`${Player}-ship-info`}>
+                  {humanShips.map((ship) => {
+                    return (
+                      <div key={ship.name}>
+                        <h6>{ship.name}</h6>
+                        <h6>hp: {ship.hp}</h6>
+                      </div>
+                    );
+                  })}
+                </ShipInfo>
+              )}
             </section>
           </ShipInfo>
         )}
@@ -60,21 +76,29 @@ const PlayerArea = ({
                   v={cell.v}
                   h={cell.h}
                   hasShip={cell.hasShip}
+                  allHumanShipsPlaced={allHumanShipsPlaced}
                   data-testid={`${Player}-cell-${v}-${h}`}
                   style={{
                     backgroundColor: cell.hasShip ? "green" : "blue",
+                    cursor: allHumanShipsPlaced ? "default" : "pointer",
                   }}
-                  onClick={() => {
-                    if (!allHumanShipsPlaced) {
-                      try {
-                        humanPlaceShip(humanShip, v, h, humanDirection, humanBoard);
-                      } catch (error) {
-                        alert(error.message);
-                      }
-                    } else {
-                      alert("All ships have been placed");
-                    }
-                  }}
+                  onClick={
+                    !allHumanShipsPlaced
+                      ? () => {
+                          try {
+                            humanPlaceShip(
+                              humanShip,
+                              v,
+                              h,
+                              humanDirection,
+                              humanBoard
+                            );
+                          } catch (error) {
+                            alert(error.message);
+                          }
+                        }
+                      : undefined
+                  }
                 ></Square>
               ))}
             </TableRow>
