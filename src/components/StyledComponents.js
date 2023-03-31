@@ -117,12 +117,42 @@ export const Square = styled.td`
 export const ComSquare = styled(Square)`
   cursor: default;
 `
-export const ShipInfo = styled.section`
+export const ShipDashboard = styled.section`
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   width: 100%;
   justify-content: center;
 `;
+
+export const ShipInfo = styled.section`
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+`
+
+export const PlayerShipButtons = styled.section`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+`
+
+export const PlaceAllPlayerShips = styled.section`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 8px 0;
+  padding: 0;
+  width: 100%;
+`
+
+export const ShipSelector = styled.section`
+  display: flex;
+  flex-direction: column;
+`
 
 export const Winner = styled.h6`
   text-align: center;

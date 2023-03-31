@@ -81,6 +81,7 @@ const AppMain = () => {
     );
   }, [humanShips, setAllHumanShipsPlaced]);
 
+
   useEffect(() => {
     const handleKeyUp = (e) => {
       if (e.key === "h" && humanDirection !== "h") {
@@ -196,7 +197,7 @@ const AppMain = () => {
     }
     setHumanBoard(newBoard);
   };
-  const humanRandomPlaceShips = (board, ships) => {
+  const randomPlaceShips = (board, ships) => {
     const newBoard = [...board];
     const shipCoords = [];
     const segmentsOnBoard = [];
@@ -248,7 +249,7 @@ const AppMain = () => {
 
   const handleRandomPlayerShipPlacement = () => {
     const [newBoard, newShipCoords, newShipSegmentsOnBoard] =
-      humanRandomPlaceShips(humanBoard, humanShips);
+      randomPlaceShips(humanBoard, humanShips);
     setHumanBoard(newBoard);
     setHumanShipCoords(newShipCoords);
     setHumanShipSegmentsOnBoard(newShipSegmentsOnBoard);
@@ -432,7 +433,7 @@ const AppMain = () => {
             humanDirection={humanDirection}
             humanPlaceShip={humanPlaceShip}
             /* for placing ships randomly */
-            humanRandomPlaceShips={humanRandomPlaceShips}
+            randomPlaceShips={randomPlaceShips}
             handleRandomPlayerShipPlacement={handleRandomPlayerShipPlacement}
             /*end of placing ships randomly */
             humanShips={humanShips}

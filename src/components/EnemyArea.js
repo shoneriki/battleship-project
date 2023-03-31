@@ -6,7 +6,6 @@ import {
   Board,
   BoardBody,
   TableRow,
-  Square,
   ComSquare,
   ShipInfo,
   Labels,
