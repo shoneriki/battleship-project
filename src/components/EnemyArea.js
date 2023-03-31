@@ -13,7 +13,7 @@ import {
   ShipStats,
 } from "./StyledComponents";
 
-export const EnemyArea = ({
+const EnemyArea = ({
   Player,
   comBoard,
   setComBoard,
@@ -55,7 +55,8 @@ export const EnemyArea = ({
           }
         </section>
         <section>
-          {gameOn && (
+          {
+            gameOn && (
             <ShipInfo data-testid={`${Player}-ship-info`}>
               {comShips.map((ship) => {
                 return (
@@ -118,4 +119,4 @@ export const EnemyArea = ({
     </section>
   );
 };
-export default EnemyArea;
+export default EnemyArea
