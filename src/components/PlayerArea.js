@@ -1,4 +1,16 @@
-import {PlayerTitle, Board, BoardBody, TableRow, Square, ShipInfo} from "./StyledComponents"
+import {
+  PlayerTitle,
+  Board,
+  BoardBody,
+  TableRow,
+  Square,
+  ShipDashboard,
+  ShipInfo,
+  ShipStats,
+  ShipSelector,
+  PlayerShipButtons,
+  PlaceAllPlayerShips,
+} from "./StyledComponents";
 
 const PlayerArea = ({
   Player,
@@ -21,45 +33,50 @@ const PlayerArea = ({
     return (
       <>
         <PlayerTitle>{Player}</PlayerTitle>
-        {Player !== "Computer" && !allHumanShipsPlaced && (
-          <ShipInfo data-testid={`${Player}-ship-info`}>
-            <section className="ShipSelector">
+        {!allHumanShipsPlaced && (
+          <ShipDashboard data-testid={`${Player}-ship-info`}>
+            <ShipSelector>
               <h6> h for horizontal, v for vertical</h6>
               <h6>
                 {humanShip.name},
                 {humanDirection === "h" ? "horizontal" : "vertical"},{" "}
                 {humanShip.length}
               </h6>
+              <PlayerShipButtons>
+                {humanShips.map((ship) => {
+                  return (
+                    <button key={ship.name} onClick={(e) => setHumanShip(ship)}>
+                      {ship.name}
+                    </button>
+                  );
+                })}
+              </PlayerShipButtons>
+            </ShipSelector>
+
+            <PlaceAllPlayerShips>
               <button
                 onClick={handleRandomPlayerShipPlacement}
                 data-testid={`${Player}-place-ships-btn`}
               >
                 please place ships for me
               </button>
-              {humanShips.map((ship) => {
-                return (
-                  <button key={ship.name} onClick={(e) => setHumanShip(ship)}>
-                    {ship.name}
-                  </button>
-                );
-              })}
-            </section>
-            <section>
-              {gameOn && (
-                <ShipInfo data-testid={`${Player}-ship-info`}>
-                  {humanShips.map((ship) => {
-                    return (
-                      <div key={ship.name}>
-                        <h6>{ship.name}</h6>
-                        <h6>hp: {ship.hp}</h6>
-                      </div>
-                    );
-                  })}
-                </ShipInfo>
-              )}
-            </section>
-          </ShipInfo>
+            </PlaceAllPlayerShips>
+          </ShipDashboard>
         )}
+          <section>
+            {gameOn && (
+              <ShipInfo data-testid={`${Player}-ship-info`}>
+                {humanShips.map((ship) => {
+                  return (
+                    <ShipStats key={ship.name}>
+                      <h6>{ship.name}</h6>
+                      <h6>hp: {ship.hp}</h6>
+                    </ShipStats>
+                  );
+                })}
+              </ShipInfo>
+            )}
+          </section>
       </>
     );
   };
