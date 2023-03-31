@@ -59,14 +59,7 @@ test("attackCom should be called when a cell is clicked", async() => {
       { v: 1, h: 1, hasShip: 0, hit: false, miss: false },
     ],
   ];
-  const setComShips = jest.fn();
-  const comPlaceAllShips = jest.fn();
-  const handlePlaceComputerShips = jest.fn();
-  const allComShipsPlaced = true;
-  const gameOn = true;
 
-  const hit = true;
-  const miss = false;
   const turn = "player";
   render(
     <TestEnemyArea
@@ -76,22 +69,12 @@ test("attackCom should be called when a cell is clicked", async() => {
       comShipSegmentsOnBoard={[]}
       gameOn = {true}
       attackCom={mockAttackCom}
-      turn={"player"}
+      turn={turn}
     />
   );
   const square = screen.getByTestId("cell-0-0");
-
-  while (!square) {
-    await waitFor(
-      () => {
-        square = screen.queryByTestId("Computer-place-ships-btn");
-      },
-      { timeout: 1000 }
-    );
-  }
   act(() => {
     userEvent.click(square);
     expect(mockAttackCom).toHaveBeenCalledWith(0, 0, testBoard, testShips);
   })
-
 });
