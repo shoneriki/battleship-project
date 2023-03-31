@@ -11,7 +11,7 @@ import userEvent from "@testing-library/user-event";
 import "@testing-library/jest-dom/extend-expect";
 import { ShipConstructor } from "../components/ShipConstructor";
 import EnemyArea from "../components/PlayerArea";
-import TestComputerBoard from "../components/TestComputerBoard";
+import TestEnemyArea from "../components/TestEnemyArea";
 import AppSection, {attackCom} from "../App";
 import { act } from "react-test-renderer";
 
@@ -44,25 +44,54 @@ test("computer board can place ships", async () => {
   ).not.toBeInTheDocument();
 });
 
-test("attackCom should hit a ship and return true", () => {
+test("attackCom should be called when a cell is clicked", async() => {
+  const mockAttackCom = jest.fn();
   const testShips = [
-    ShipConstructor("Destroyer")
-  ]
-  const comBoard = [
+    ShipConstructor("destroyer"),
+  ];
+  const testBoard = [
     [
-      { v: 0, h:0, hasShip: "des" },
-      { v: 0, h:0, hasShip: "des" },
-      { v: 0, h:0, hasShip: 0 },
+      { v: 0, h: 0, hasShip: "des", hit: false, miss: false },
+      { v: 0, h: 1, hasShip: "des", hit: false, miss: false },
     ],
     [
-      { hasShip: 0, hit: false, miss: false },
-      { hasShip: 1, hit: false, miss: false },
+      { v: 1, h: 0, hasShip: 0, hit: false, miss: false },
+      { v: 1, h: 1, hasShip: 0, hit: false, miss: false },
     ],
   ];
-  const comShips = [{ name: "Test Ship", length: 1, hp: 1 }];
+  const setComShips = jest.fn();
+  const comPlaceAllShips = jest.fn();
+  const handlePlaceComputerShips = jest.fn();
+  const allComShipsPlaced = true;
+  const gameOn = true;
 
-  const result = attackCom(0, 1, comBoard, testShips);
+  const hit = true;
+  const miss = false;
+  const turn = "player";
+  render(
+    <TestEnemyArea
+      Player="Computer"
+      comBoard={testBoard}
+      comShips={testShips}
+      comShipSegmentsOnBoard={[]}
+      gameOn = {true}
+      attackCom={mockAttackCom}
+      turn={"player"}
+    />
+  );
+  const square = screen.getByTestId("cell-0-0");
 
-  expect(result).toBe(true);
-  expect(comBoard[0][1].hit).toBe(true);
+  while (!square) {
+    await waitFor(
+      () => {
+        square = screen.queryByTestId("Computer-place-ships-btn");
+      },
+      { timeout: 1000 }
+    );
+  }
+  act(() => {
+    userEvent.click(square);
+    expect(mockAttackCom).toHaveBeenCalledWith(0, 0, testBoard, testShips);
+  })
+
 });

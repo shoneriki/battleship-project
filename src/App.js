@@ -292,7 +292,6 @@ const AppMain = () => {
       }
       // setTurn("Computer")
     }
-    return [hit, miss];
   };
 
   /*end attack logic */

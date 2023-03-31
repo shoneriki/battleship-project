@@ -34,7 +34,6 @@ const EnemyArea = ({
 }) => {
 
   const Info = ({ Player, comShips, comShipSegmentsOnBoard }) => {
-
     return (
       <>
         <PlayerTitle>{Player}</PlayerTitle>
