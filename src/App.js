@@ -290,7 +290,7 @@ const AppMain = () => {
         newBoard[v][h].miss = true;
         setMissedComCoords([...missedComCoords, [v, h]]);
       }
-      // setTurn("Computer")
+      setTurn("Computer")
     }
   };
 
@@ -367,49 +367,48 @@ const AppMain = () => {
   };
 
 
-  const attackPlayer = (board, ships) => {
+  const attackPlayer = (board, ships, getRandomCoords = () => {
+    const v = Math.floor(Math.random() * boardSize)
+    const h = Math.floor(Math.random() * boardSize)
+    return [v,h];
+  }) => {
     if (!gameOn) return;
     if (turn === "player") return;
     if (turn !== "player") {
-    }
-    const v = Math.floor(Math.random() * boardSize);
-    const h = Math.floor(Math.random() * boardSize);
+      const [v,h] = getRandomCoords();
 
-    const newBoard = [...board];
-    const cell = newBoard[v][h];
-    console.log("cell", cell);
-    if (cell.hit || cell.miss) {
-      return;
-    }
-
-    if (cell.hasShip !== 0) {
-      console.log("hit a ship from computer?");
-      const shipIndex = ships.findIndex(
-        (ship) => ship.name.slice(0, 3) === cell.hasShip
-      );
-      const newShips = [...ships];
-      newShips[shipIndex] = {
-        ...newShips[shipIndex],
-        hp: (newShips[shipIndex].hp -= 1),
-      };
-      setHumanShips(newShips);
-      setHumanBoard(newBoard);
-      newBoard[v][h].hit = true;
-      setHitComCoords([...hitComCoords, [v, h]]);
-      console.log("hitComCoords", hitComCoords);
-      if (newShips[shipIndex].hp <= 0) {
-        const newArray = [...humanShips];
-        newArray.splice(shipIndex, 1);
-        setHumanShips(newArray);
+      const newBoard = [...board];
+      const cell = newBoard[v][h];
+      console.log("cell", cell);
+      if (cell.hit || cell.miss) {
+        return;
       }
-    } else {
-      console.log("miss from computer?");
-      newBoard[v][h].miss = true;
-      setHumanBoard(newBoard);
-      setMissedComCoords([...missedComCoords, [v, h]]);
+
+      if (cell.hasShip !== 0) {
+        console.log("hit a ship from computer?");
+        const shipIndex = ships.findIndex(
+          (ship) => ship.name.slice(0, 3) === cell.hasShip
+        );
+        const newShips = [...ships];
+        newShips[shipIndex].isHit();
+        setHumanShips(newShips);
+        setHumanBoard(newBoard);
+        newBoard[v][h].hit = true;
+        setHitComCoords([...hitComCoords, [v, h]]);
+        console.log("hitComCoords", hitComCoords);
+        if (newShips[shipIndex].hp <= 0) {
+          const newArray = [...humanShips];
+          newArray.splice(shipIndex, 1);
+          setHumanShips(newArray);
+        }
+      } else {
+        console.log("miss from computer?");
+        newBoard[v][h].miss = true;
+        setHumanBoard(newBoard);
+        setMissedComCoords([...missedComCoords, [v, h]]);
+      }
     }
-    // setTurn("player")
-    return [hit, miss];
+    setTurn("player")
   };
 
   /* END COMPUTER SIDE FUNCTIONS-------------------------------------------------- */

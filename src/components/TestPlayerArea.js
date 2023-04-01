@@ -1,22 +1,25 @@
-// In PlayerBoard.js
-import classNames from "classnames"
-import { useState, useEffect } from "react";
-import { ShipConstructor } from "./ShipConstructor";
+import classNames from 'classnames';
+import {useState, useEffect} from 'react';
+import {ShipConstructor} from './ShipConstructor';
 
 import {
+  PlayerTitle,
   Board,
   BoardBody,
   TableRow,
   ComSquare,
+  ShipInfo,
+  Labels,
+  ShipStats,
 } from "./StyledComponents";
 
-const TestEnemyArea = ({Player,comBoard, comShips, gameOn, attackCom, turn}) => {
+const TestPlayerArea = ({Player, playerBoard, playerShips, gameOn, attackPlayer, turn}) => {
 
-  const TestComputerBoard = () => {
+  const TestPlayerBoard = () => {
     return (
       <Board>
         <BoardBody data-testid="test-board">
-          {comBoard.map((row, v) => (
+          {playerBoard.map((row, v) => (
             <TableRow key={v}>
               {row.map((cell, h) => (
                 <ComSquare
@@ -24,9 +27,6 @@ const TestEnemyArea = ({Player,comBoard, comShips, gameOn, attackCom, turn}) => 
                   v={cell.v}
                   h={cell.h}
                   hasShip={cell.hasShip}
-                  onClick={
-                    gameOn ? () => attackCom(v, h, comBoard, comShips) : null
-                  }
                   className={classNames({
                     hit: cell.hit,
                     miss: cell.miss,
@@ -34,9 +34,6 @@ const TestEnemyArea = ({Player,comBoard, comShips, gameOn, attackCom, turn}) => 
                   })}
                   gameOn={gameOn}
                   data-testid={`${Player}-cell-${v}-${h}`}
-                  style={{
-                    cursor: gameOn && turn === "player" ? "pointer" : "default",
-                  }}
                 ></ComSquare>
               ))}
             </TableRow>
@@ -44,15 +41,11 @@ const TestEnemyArea = ({Player,comBoard, comShips, gameOn, attackCom, turn}) => 
         </BoardBody>
       </Board>
     );
-  };
-
-  return (
+  }
+  return(
     <section>
-      <TestComputerBoard Player={"Computer"} />
+      <TestPlayerBoard Player={"Player"} />
     </section>
-  );
+  )
 }
-
-
-
-export default TestEnemyArea
+export default TestPlayerArea

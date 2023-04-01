@@ -72,7 +72,7 @@ test("attackCom should be called, with a resulting hit", async() => {
       turn={turn}
     />
   );
-  const square = screen.getByTestId("cell-0-0");
+  const square = screen.getByTestId("Computer-cell-0-0");
   act(() => {
     userEvent.click(square);
     expect(mockAttackCom).toHaveBeenCalledWith(0, 0, testBoard, testShips);
@@ -110,7 +110,7 @@ test("attackCom called with resulting miss", async () => {
       turn={turn}
     />
   );
-  const square = screen.getByTestId("cell-1-0");
+  const square = screen.getByTestId("Computer-cell-1-0");
   act(() => {
     userEvent.click(square);
     expect(mockAttackCom).toHaveBeenCalledWith(1, 0, testBoard, testShips);
@@ -121,5 +121,3 @@ test("attackCom called with resulting miss", async () => {
     }, 100);
   });
 });
-
-

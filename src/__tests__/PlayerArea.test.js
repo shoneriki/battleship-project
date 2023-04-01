@@ -4,8 +4,11 @@ import userEvent from "@testing-library/user-event";
 import '@testing-library/jest-dom/extend-expect'
 import {ShipConstructor}  from "../components/ShipConstructor";
 import PlayerArea from "../components/PlayerArea";
+import TestPlayerArea from "../components/TestPlayerArea"
 import AppSection from "../App";
 import { act } from "react-test-renderer";
+import {expect, jest, test} from '@jest/globals'
+
 
 /* react tests --------------------------------------------------------------*/
 
@@ -73,6 +76,41 @@ test("when all ships are placed, ships can't be placed", async () => {
   await waitFor(() => {
     expect(playerInfo).not.toBeInTheDocument()
   })
+
+})
+
+test("computer able to attack player", async () => {
+  const getRandomCoords = jest.fn().mockReturnValue([0,0])
+  const mockAttackPlayer = jest.fn();
+
+  const testShips = [
+    ShipConstructor("destroyer"),
+  ];
+  const testBoard = [
+    [
+      {v: 0, h: 0, hasShip: "des", hit: false, miss: false},
+      {v: 0, h: 1, hasShip: "des", hit: false, miss: false},
+    ],
+    [
+      {v: 1, h: 0, hasShip: 0, hit: false, miss: false},
+      {v: 1, h: 1, hasShip: 0, hit: false, miss: false},
+    ]
+  ]
+  render(<TestPlayerArea
+    Player={"Player"}
+    playerBoard={testBoard}
+    playerShips={testShips}
+    gameOn={true}
+    attackPlayer={mockAttackPlayer}
+    turn={"computer"}
+  />)
+  const square = screen.getByTestId("Player-cell-0-0")
+  mockAttackPlayer(testBoard, testShips, getRandomCoords)
+  setTimeout(() => {
+    expect(
+      getComputedStyle(square).getPropertyValue("background-color")
+    ).toBe("red")
+  }, 100)
 
 })
 
