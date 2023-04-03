@@ -15,21 +15,28 @@ import {
 const PlayerArea = ({
   Player,
   humanBoard,
+  humanDirection,
   humanPlaceShip,
-  humanRandomPlaceShips,
+  randomPlaceShips,
   handleRandomPlayerShipPlacement,
+  shipsToPlace,
   humanShips,
   humanShipCoords,
   humanShipSegmentsOnBoard,
-  humanShipsSunk,
-  humanDirection,
   allHumanShipsPlaced,
   humanShip,
   setHumanShip,
   gameOn,
-}) => {
+  turn,
 
-  const Info = ({ Player, humanDirection }) => {
+}) => {
+  if(allHumanShipsPlaced) {
+    console.log("allHumanShipsPlaced is true from playerArea")
+  }
+  if(gameOn) {
+    console.log("gameOn is true from playerArea")
+  }
+  const Info = ({ Player, humanDirection, gameOn }) => {
     return (
       <>
         <PlayerTitle>{Player}</PlayerTitle>
@@ -43,7 +50,7 @@ const PlayerArea = ({
                 {humanShip.length}
               </h6>
               <PlayerShipButtons>
-                {humanShips.map((ship) => {
+                {shipsToPlace.map((ship) => {
                   return (
                     <button key={ship.name} onClick={(e) => setHumanShip(ship)}>
                       {ship.name}
@@ -63,20 +70,20 @@ const PlayerArea = ({
             </PlaceAllPlayerShips>
           </ShipDashboard>
         )}
-          <section>
-            {gameOn && (
-              <ShipInfo data-testid={`${Player}-ship-info`}>
-                {humanShips.map((ship) => {
-                  return (
-                    <ShipStats key={ship.name}>
-                      <h6>{ship.name}</h6>
-                      <h6>hp: {ship.hp}</h6>
-                    </ShipStats>
-                  );
-                })}
-              </ShipInfo>
-            )}
-          </section>
+        <section>
+          {gameOn && (
+            <ShipInfo data-testid={`${Player}-ship-info`}>
+              {humanShips.map((ship) => {
+                return (
+                  <ShipStats key={ship.name}>
+                    <h6>{ship.name}</h6>
+                    <h6>hp: {ship.hp}</h6>
+                  </ShipStats>
+                );
+              })}
+            </ShipInfo>
+          )}
+        </section>
       </>
     );
   };
@@ -134,6 +141,7 @@ const PlayerArea = ({
       <Info
         Player={Player}
         humanDirection={humanDirection}
+        gameOn={gameOn}
       />
       <PlayerBoard
         Player={Player}

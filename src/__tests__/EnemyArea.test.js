@@ -21,23 +21,11 @@ test("computer board renders", () => {
   expect(ComBoard).toBeInTheDocument();
 });
 
-test("computer board can place ships", async () => {
+test("computer board can place ships and once ships are placed, the button disappears", async () => {
   render(<AppSection />);
-  let secondButton = screen.queryByTestId("Computer-place-ships-btn");
-  while (!secondButton) {
-    await waitFor(
-      () => {
-        secondButton = screen.queryByTestId("Computer-place-ships-btn");
-      },
-      { timeout: 1000 }
-    );
-  }
+  const secondButton = screen.queryByTestId("Computer-place-ships-btn");
   act(() => {
     userEvent.click(secondButton);
-  });
-  await waitFor(() => screen.queryByTestId("Computer-place-ships-btn"), {
-    timeout: 1000,
-    interval: 100,
   });
   expect(
     screen.queryByTestId("Computer-place-ships-btn")

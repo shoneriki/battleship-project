@@ -39,6 +39,8 @@ const AppMain = () => {
   const [humanShipSegmentsOnBoard, setHumanShipSegmentsOnBoard] = useState([]);
   // if certain string does not exist in the playerSegmentsOnBoard, then that ship is sunk
   // figure out what to push to the below playerShipsSunk array. Maybe just add 1 once?
+  const [humanShipsPlaced, setHumanShipsPlaced] = useState([])
+  const [shipsToPlace, setShipsToPlace] = useState(humanShips);
 
   // useStates for hit and miss logic
   const [hit, setHit] = useState(false);
@@ -76,10 +78,11 @@ const AppMain = () => {
 
   // useEffects for placing player ships
   useEffect(() => {
+
     setHumanShip(
-      humanShips.length !== 0 ? humanShips[0] : setAllHumanShipsPlaced(true)
+      shipsToPlace.length > 0 ? shipsToPlace[0] : setAllHumanShipsPlaced(true)
     );
-  }, [humanShips, setAllHumanShipsPlaced]);
+  }, [shipsToPlace, humanShip])
 
 
   useEffect(() => {
@@ -108,7 +111,11 @@ const AppMain = () => {
     if (allHumanShipsPlaced && allComShipsPlaced) {
       setGameOn(true);
     }
-  }, [allHumanShipsPlaced, allComShipsPlaced]);
+  }, [allHumanShipsPlaced, allComShipsPlaced, humanShipSegmentsOnBoard]);
+
+  useEffect(() => {
+    console.log("gameOn from app?", gameOn)
+  }, [gameOn])
 
   useEffect(() => {
     // console.log("comShips", comShips);
@@ -158,6 +165,9 @@ const AppMain = () => {
         }
       }
       /*end of check for if ship is out of bounds*/
+      if(allHumanShipsPlaced) {
+        throw new Error("all ships placed")
+      }
 
       /* check for ship overlaps with already placed ship*/
       for (let i = 0; i < length; i++) {
@@ -190,14 +200,19 @@ const AppMain = () => {
       }
       setHumanShipCoords(shipCoords);
       setHumanShipSegmentsOnBoard(segmentsOnBoard);
-      const newShipsToBePlaced = humanShips.filter(
-        (item) => item.name !== ship.name
-      );
-      setHumanShips(newShipsToBePlaced);
+      setHumanShipsPlaced([...humanShipsPlaced, ship.name])
+      setShipsToPlace(
+        shipsToPlace.filter((shipToPlace) => shipToPlace !== ship)
+      )
+      console.log("humanShipsPlaced", humanShipsPlaced)
+      if (segmentsOnBoard.length === 17 && humanShipsPlaced.length === 5) {
+        setAllHumanShipsPlaced(true);
+      }
     }
     setHumanBoard(newBoard);
+    return [newBoard, shipCoords, segmentsOnBoard];
   };
-  
+
   const randomPlaceShips = (board, ships) => {
     const newBoard = [...board];
     const shipCoords = [];
@@ -255,7 +270,7 @@ const AppMain = () => {
     setHumanShipCoords(newShipCoords);
     setHumanShipSegmentsOnBoard(newShipSegmentsOnBoard);
     const allShipsPlaced = newShipSegmentsOnBoard.length === 17;
-    setAllHumanShipsPlaced(allShipsPlaced);
+    setAllHumanShipsPlaced(true);
   };
 
   /*end Player PLACE SHIP LOGIC */
@@ -434,6 +449,7 @@ const AppMain = () => {
             /* for placing ships randomly */
             randomPlaceShips={randomPlaceShips}
             handleRandomPlayerShipPlacement={handleRandomPlayerShipPlacement}
+            shipsToPlace={shipsToPlace}
             /*end of placing ships randomly */
             humanShips={humanShips}
             humanShipCoords={humanShipCoords}
