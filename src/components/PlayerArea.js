@@ -30,12 +30,6 @@ const PlayerArea = ({
   turn,
 
 }) => {
-  if(allHumanShipsPlaced) {
-    console.log("allHumanShipsPlaced is true from playerArea")
-  }
-  if(gameOn) {
-    console.log("gameOn is true from playerArea")
-  }
   const Info = ({ Player, humanDirection, gameOn }) => {
     return (
       <>
@@ -71,7 +65,7 @@ const PlayerArea = ({
           </ShipDashboard>
         )}
         <section>
-          {gameOn && (
+          {allHumanShipsPlaced && (
             <ShipInfo data-testid={`${Player}-ship-info`}>
               {humanShips.map((ship) => {
                 return (

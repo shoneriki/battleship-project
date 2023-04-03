@@ -31,7 +31,6 @@ const AppMain = () => {
   const [humanShips, setHumanShips] = useState(initialShips);
 
   const [humanDirection, setHumanDirection] = useState("h");
-  const [humanShip, setHumanShip] = useState(humanShips[0]);
   const [allHumanShipsPlaced, setAllHumanShipsPlaced] = useState(false);
 
   const [humanShipCoords, setHumanShipCoords] = useState([]);
@@ -41,6 +40,7 @@ const AppMain = () => {
   // figure out what to push to the below playerShipsSunk array. Maybe just add 1 once?
   const [humanShipsPlaced, setHumanShipsPlaced] = useState([])
   const [shipsToPlace, setShipsToPlace] = useState(humanShips);
+  const [humanShip, setHumanShip] = useState(shipsToPlace[0]);
 
   // useStates for hit and miss logic
   const [hit, setHit] = useState(false);
@@ -78,11 +78,10 @@ const AppMain = () => {
 
   // useEffects for placing player ships
   useEffect(() => {
-
     setHumanShip(
       shipsToPlace.length > 0 ? shipsToPlace[0] : setAllHumanShipsPlaced(true)
     );
-  }, [shipsToPlace, humanShip])
+  }, [shipsToPlace])
 
 
   useEffect(() => {
