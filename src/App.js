@@ -111,7 +111,7 @@ const AppMain = () => {
   }, [allHumanShipsPlaced, allComShipsPlaced]);
 
   useEffect(() => {
-    console.log("comShips", comShips);
+    // console.log("comShips", comShips);
   }, [comShips]);
 
   useEffect(() => {
@@ -197,6 +197,7 @@ const AppMain = () => {
     }
     setHumanBoard(newBoard);
   };
+  
   const randomPlaceShips = (board, ships) => {
     const newBoard = [...board];
     const shipCoords = [];
@@ -343,15 +344,15 @@ const AppMain = () => {
             newBoard[vIndex][hIndex].hasShip = shipSegment;
             shipCoords.push([vIndex, hIndex]);
           }
-          console.log("shipCoords for computer", shipCoords);
           segmentsOnBoard.push(
             ...Array(ship.length).fill(ship.name.slice(0, 3))
-          );
-          validPlacement = true;
+            );
+            validPlacement = true;
+          }
         }
       }
-    }
 
+    console.log("shipCoords for computer", shipCoords);
     return [newBoard, shipCoords, segmentsOnBoard];
   };
 

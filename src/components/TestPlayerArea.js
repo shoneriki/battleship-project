@@ -11,9 +11,36 @@ import {
   ShipInfo,
   Labels,
   ShipStats,
+
+  ShipDashboard,
+  ShipSelector,
+
+
 } from "./StyledComponents";
 
 const TestPlayerArea = ({Player, playerBoard, playerShips, gameOn, attackPlayer, turn}) => {
+
+    const TestInfo = ({ Player }) => {
+      return (
+        <>
+          <PlayerTitle>{Player}</PlayerTitle>
+          <section>
+            {gameOn && (
+              <ShipInfo data-testid={`${Player}-ship-info`}>
+                {playerShips.map((ship) => {
+                  return (
+                    <ShipStats data-testid={`${ship}-stats`} key={ship.name}>
+                      <h6 data-testid={`${ship}-name`}>{ship.name}</h6>
+                      <h6 data-testid={`${ship}-hp`}>hp: {ship.hp}</h6>
+                    </ShipStats>
+                  );
+                })}
+              </ShipInfo>
+            )}
+          </section>
+        </>
+      );
+    };
 
   const TestPlayerBoard = () => {
     return (
@@ -44,6 +71,7 @@ const TestPlayerArea = ({Player, playerBoard, playerShips, gameOn, attackPlayer,
   }
   return(
     <section>
+      <TestInfo Player={"Player"}/>
       <TestPlayerBoard Player={"Player"} />
     </section>
   )

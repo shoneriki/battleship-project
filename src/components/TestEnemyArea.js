@@ -11,7 +11,7 @@ import {
 } from "./StyledComponents";
 
 const TestEnemyArea = ({Player,comBoard, comShips, gameOn, attackCom, turn}) => {
-
+  
   const TestComputerBoard = () => {
     return (
       <Board>
