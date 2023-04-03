@@ -19,19 +19,17 @@ const AppMain = () => {
       }))
     );
   };
-  const initialShips = [
+  const [humanShips, setHumanShips] = useState([
     ShipConstructor("carrier"),
     ShipConstructor("battleship"),
     ShipConstructor("cruiser"),
     ShipConstructor("submarine"),
     ShipConstructor("destroyer"),
-  ];
+  ]);
 
   const [humanBoard, setHumanBoard] = useState(initialBoard(boardSize));
-  const [humanShips, setHumanShips] = useState(initialShips);
 
   const [humanDirection, setHumanDirection] = useState("h");
-  const [humanShip, setHumanShip] = useState(humanShips[0]);
   const [allHumanShipsPlaced, setAllHumanShipsPlaced] = useState(false);
 
   const [humanShipCoords, setHumanShipCoords] = useState([]);
@@ -39,6 +37,9 @@ const AppMain = () => {
   const [humanShipSegmentsOnBoard, setHumanShipSegmentsOnBoard] = useState([]);
   // if certain string does not exist in the playerSegmentsOnBoard, then that ship is sunk
   // figure out what to push to the below playerShipsSunk array. Maybe just add 1 once?
+  const [humanShipsPlaced, setHumanShipsPlaced] = useState([])
+  const [shipsToPlace, setShipsToPlace] = useState(humanShips);
+  const [humanShip, setHumanShip] = useState(shipsToPlace[0]);
 
   // useStates for hit and miss logic
   const [hit, setHit] = useState(false);
@@ -77,9 +78,9 @@ const AppMain = () => {
   // useEffects for placing player ships
   useEffect(() => {
     setHumanShip(
-      humanShips.length !== 0 ? humanShips[0] : setAllHumanShipsPlaced(true)
+      shipsToPlace.length > 0 ? shipsToPlace[0] : setAllHumanShipsPlaced(true)
     );
-  }, [humanShips, setAllHumanShipsPlaced]);
+  }, [shipsToPlace])
 
 
   useEffect(() => {
@@ -108,10 +109,14 @@ const AppMain = () => {
     if (allHumanShipsPlaced && allComShipsPlaced) {
       setGameOn(true);
     }
-  }, [allHumanShipsPlaced, allComShipsPlaced]);
+  }, [allHumanShipsPlaced, allComShipsPlaced, humanShipSegmentsOnBoard]);
 
   useEffect(() => {
-    console.log("comShips", comShips);
+    console.log("gameOn from app?", gameOn)
+  }, [gameOn])
+
+  useEffect(() => {
+    // console.log("comShips", comShips);
   }, [comShips]);
 
   useEffect(() => {
@@ -158,6 +163,9 @@ const AppMain = () => {
         }
       }
       /*end of check for if ship is out of bounds*/
+      if(allHumanShipsPlaced) {
+        throw new Error("all ships placed")
+      }
 
       /* check for ship overlaps with already placed ship*/
       for (let i = 0; i < length; i++) {
@@ -190,13 +198,19 @@ const AppMain = () => {
       }
       setHumanShipCoords(shipCoords);
       setHumanShipSegmentsOnBoard(segmentsOnBoard);
-      const newShipsToBePlaced = humanShips.filter(
-        (item) => item.name !== ship.name
-      );
-      setHumanShips(newShipsToBePlaced);
+      setHumanShipsPlaced([...humanShipsPlaced, ship.name])
+      setShipsToPlace(
+        shipsToPlace.filter((shipToPlace) => shipToPlace !== ship)
+      )
+      console.log("humanShipsPlaced", humanShipsPlaced)
+      if (segmentsOnBoard.length === 17 && humanShipsPlaced.length === 5) {
+        setAllHumanShipsPlaced(true);
+      }
     }
     setHumanBoard(newBoard);
+    return [newBoard, shipCoords, segmentsOnBoard];
   };
+
   const randomPlaceShips = (board, ships) => {
     const newBoard = [...board];
     const shipCoords = [];
@@ -249,12 +263,12 @@ const AppMain = () => {
 
   const handleRandomPlayerShipPlacement = () => {
     const [newBoard, newShipCoords, newShipSegmentsOnBoard] =
-      randomPlaceShips(humanBoard, humanShips);
+      randomPlaceShips(humanBoard, shipsToPlace);
     setHumanBoard(newBoard);
     setHumanShipCoords(newShipCoords);
     setHumanShipSegmentsOnBoard(newShipSegmentsOnBoard);
     const allShipsPlaced = newShipSegmentsOnBoard.length === 17;
-    setAllHumanShipsPlaced(allShipsPlaced);
+    setAllHumanShipsPlaced(true);
   };
 
   /*end Player PLACE SHIP LOGIC */
@@ -290,7 +304,7 @@ const AppMain = () => {
         newBoard[v][h].miss = true;
         setMissedComCoords([...missedComCoords, [v, h]]);
       }
-      // setTurn("Computer")
+      setTurn("Computer")
     }
   };
 
@@ -343,15 +357,15 @@ const AppMain = () => {
             newBoard[vIndex][hIndex].hasShip = shipSegment;
             shipCoords.push([vIndex, hIndex]);
           }
-          console.log("shipCoords for computer", shipCoords);
           segmentsOnBoard.push(
             ...Array(ship.length).fill(ship.name.slice(0, 3))
-          );
-          validPlacement = true;
+            );
+            validPlacement = true;
+          }
         }
       }
-    }
 
+    console.log("shipCoords for computer", shipCoords);
     return [newBoard, shipCoords, segmentsOnBoard];
   };
 
@@ -367,49 +381,48 @@ const AppMain = () => {
   };
 
 
-  const attackPlayer = (board, ships) => {
+  const attackPlayer = (board, ships, getRandomCoords = () => {
+    const v = Math.floor(Math.random() * boardSize)
+    const h = Math.floor(Math.random() * boardSize)
+    return [v,h];
+  }) => {
     if (!gameOn) return;
     if (turn === "player") return;
     if (turn !== "player") {
-    }
-    const v = Math.floor(Math.random() * boardSize);
-    const h = Math.floor(Math.random() * boardSize);
+      const [v,h] = getRandomCoords();
 
-    const newBoard = [...board];
-    const cell = newBoard[v][h];
-    console.log("cell", cell);
-    if (cell.hit || cell.miss) {
-      return;
-    }
-
-    if (cell.hasShip !== 0) {
-      console.log("hit a ship from computer?");
-      const shipIndex = ships.findIndex(
-        (ship) => ship.name.slice(0, 3) === cell.hasShip
-      );
-      const newShips = [...ships];
-      newShips[shipIndex] = {
-        ...newShips[shipIndex],
-        hp: (newShips[shipIndex].hp -= 1),
-      };
-      setHumanShips(newShips);
-      setHumanBoard(newBoard);
-      newBoard[v][h].hit = true;
-      setHitComCoords([...hitComCoords, [v, h]]);
-      console.log("hitComCoords", hitComCoords);
-      if (newShips[shipIndex].hp <= 0) {
-        const newArray = [...humanShips];
-        newArray.splice(shipIndex, 1);
-        setHumanShips(newArray);
+      const newBoard = [...board];
+      const cell = newBoard[v][h];
+      console.log("cell", cell);
+      if (cell.hit || cell.miss) {
+        return;
       }
-    } else {
-      console.log("miss from computer?");
-      newBoard[v][h].miss = true;
-      setHumanBoard(newBoard);
-      setMissedComCoords([...missedComCoords, [v, h]]);
+
+      if (cell.hasShip !== 0) {
+        console.log("hit a ship from computer?");
+        const shipIndex = ships.findIndex(
+          (ship) => ship.name.slice(0, 3) === cell.hasShip
+        );
+        const newShips = [...ships];
+        newShips[shipIndex].isHit();
+        setHumanShips(newShips);
+        setHumanBoard(newBoard);
+        newBoard[v][h].hit = true;
+        setHitComCoords([...hitComCoords, [v, h]]);
+        console.log("hitComCoords", hitComCoords);
+        if (newShips[shipIndex].hp <= 0) {
+          const newArray = [...humanShips];
+          newArray.splice(shipIndex, 1);
+          setHumanShips(newArray);
+        }
+      } else {
+        console.log("miss from computer?");
+        newBoard[v][h].miss = true;
+        setHumanBoard(newBoard);
+        setMissedComCoords([...missedComCoords, [v, h]]);
+      }
     }
-    // setTurn("player")
-    return [hit, miss];
+    setTurn("player")
   };
 
   /* END COMPUTER SIDE FUNCTIONS-------------------------------------------------- */
@@ -434,6 +447,7 @@ const AppMain = () => {
             /* for placing ships randomly */
             randomPlaceShips={randomPlaceShips}
             handleRandomPlayerShipPlacement={handleRandomPlayerShipPlacement}
+            shipsToPlace={shipsToPlace}
             /*end of placing ships randomly */
             humanShips={humanShips}
             humanShipCoords={humanShipCoords}

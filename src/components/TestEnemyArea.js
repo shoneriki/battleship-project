@@ -4,18 +4,14 @@ import { useState, useEffect } from "react";
 import { ShipConstructor } from "./ShipConstructor";
 
 import {
-  PlayerTitle,
   Board,
   BoardBody,
   TableRow,
   ComSquare,
-  ShipInfo,
-  Labels,
-  ShipStats,
 } from "./StyledComponents";
 
 const TestEnemyArea = ({Player,comBoard, comShips, gameOn, attackCom, turn}) => {
-
+  
   const TestComputerBoard = () => {
     return (
       <Board>
@@ -37,7 +33,7 @@ const TestEnemyArea = ({Player,comBoard, comShips, gameOn, attackCom, turn}) => 
                     default: !cell.hit && !cell.miss,
                   })}
                   gameOn={gameOn}
-                  data-testid={`cell-${v}-${h}`}
+                  data-testid={`${Player}-cell-${v}-${h}`}
                   style={{
                     cursor: gameOn && turn === "player" ? "pointer" : "default",
                   }}

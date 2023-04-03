@@ -21,23 +21,11 @@ test("computer board renders", () => {
   expect(ComBoard).toBeInTheDocument();
 });
 
-test("computer board can place ships", async () => {
+test("computer board can place ships and once ships are placed, the button disappears", async () => {
   render(<AppSection />);
-  let secondButton = screen.queryByTestId("Computer-place-ships-btn");
-  while (!secondButton) {
-    await waitFor(
-      () => {
-        secondButton = screen.queryByTestId("Computer-place-ships-btn");
-      },
-      { timeout: 1000 }
-    );
-  }
+  const secondButton = screen.queryByTestId("Computer-place-ships-btn");
   act(() => {
     userEvent.click(secondButton);
-  });
-  await waitFor(() => screen.queryByTestId("Computer-place-ships-btn"), {
-    timeout: 1000,
-    interval: 100,
   });
   expect(
     screen.queryByTestId("Computer-place-ships-btn")
@@ -72,7 +60,7 @@ test("attackCom should be called, with a resulting hit", async() => {
       turn={turn}
     />
   );
-  const square = screen.getByTestId("cell-0-0");
+  const square = screen.getByTestId("Computer-cell-0-0");
   act(() => {
     userEvent.click(square);
     expect(mockAttackCom).toHaveBeenCalledWith(0, 0, testBoard, testShips);
@@ -110,7 +98,7 @@ test("attackCom called with resulting miss", async () => {
       turn={turn}
     />
   );
-  const square = screen.getByTestId("cell-1-0");
+  const square = screen.getByTestId("Computer-cell-1-0");
   act(() => {
     userEvent.click(square);
     expect(mockAttackCom).toHaveBeenCalledWith(1, 0, testBoard, testShips);
@@ -121,5 +109,3 @@ test("attackCom called with resulting miss", async () => {
     }, 100);
   });
 });
-
-

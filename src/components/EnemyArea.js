@@ -54,7 +54,8 @@ const EnemyArea = ({
         </section>
         <section>
           {
-            gameOn && (
+            allComShipsPlaced
+             && (
             <ShipInfo data-testid={`${Player}-ship-info`}>
               {comShips.map((ship) => {
                 return (
