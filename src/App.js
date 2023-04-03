@@ -19,16 +19,15 @@ const AppMain = () => {
       }))
     );
   };
-  const initialShips = [
+  const [humanShips, setHumanShips] = useState([
     ShipConstructor("carrier"),
     ShipConstructor("battleship"),
     ShipConstructor("cruiser"),
     ShipConstructor("submarine"),
     ShipConstructor("destroyer"),
-  ];
+  ]);
 
   const [humanBoard, setHumanBoard] = useState(initialBoard(boardSize));
-  const [humanShips, setHumanShips] = useState(initialShips);
 
   const [humanDirection, setHumanDirection] = useState("h");
   const [allHumanShipsPlaced, setAllHumanShipsPlaced] = useState(false);
@@ -264,7 +263,7 @@ const AppMain = () => {
 
   const handleRandomPlayerShipPlacement = () => {
     const [newBoard, newShipCoords, newShipSegmentsOnBoard] =
-      randomPlaceShips(humanBoard, humanShips);
+      randomPlaceShips(humanBoard, shipsToPlace);
     setHumanBoard(newBoard);
     setHumanShipCoords(newShipCoords);
     setHumanShipSegmentsOnBoard(newShipSegmentsOnBoard);
