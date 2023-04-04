@@ -115,7 +115,7 @@ const PlayerArea = ({
                             alert(error.message);
                           }
                         }
-                      : undefined
+                      : null
                   }
                 ></Square>
               ))}

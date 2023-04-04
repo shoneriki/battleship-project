@@ -46,6 +46,9 @@ const AppMain = () => {
   const [miss, setMiss] = useState(false);
   const [hitComCoords, setHitComCoords] = useState([]);
   const [missedComCoords, setMissedComCoords] = useState([]);
+
+  const [hitPlayerCoords, setHitPlayerCoords] = useState([]);
+  const [missedPlayerCoords, setMissedPlayerCoords] = useState([]);
   // end useStates for hit and miss logic
 
   // computer useStates
@@ -112,7 +115,7 @@ const AppMain = () => {
   }, [allHumanShipsPlaced, allComShipsPlaced, humanShipSegmentsOnBoard]);
 
   useEffect(() => {
-    console.log("gameOn from app?", gameOn)
+    // console.log("gameOn from app?", gameOn)
   }, [gameOn])
 
   useEffect(() => {
@@ -122,10 +125,18 @@ const AppMain = () => {
   useEffect(() => {
     if (comShips.length === 0 || hitComCoords.length === 17) {
       setGameOn(false);
-      setWinner("Player");
+      setWinner("You");
       setLoser("Computer");
     }
   }, [gameOn, comShips, hitComCoords, winner, loser]);
+
+    useEffect(() => {
+      if (humanShips.length === 0 || hitPlayerCoords.length === 17) {
+        setGameOn(false);
+        setWinner("Computer");
+        setLoser("You");
+      }
+    }, [gameOn, humanShips, hitPlayerCoords, winner, loser]);
   // end useEffect for both sides/gameon
 
 /* end USEEFFECTS -------------------------------------------------------------*/
@@ -267,13 +278,64 @@ const AppMain = () => {
     setHumanBoard(newBoard);
     setHumanShipCoords(newShipCoords);
     setHumanShipSegmentsOnBoard(newShipSegmentsOnBoard);
-    const allShipsPlaced = newShipSegmentsOnBoard.length === 17;
+    // const allShipsPlaced = newShipSegmentsOnBoard.length === 17;
     setAllHumanShipsPlaced(true);
   };
 
   /*end Player PLACE SHIP LOGIC */
 
   /*attack logic*/
+    const attackPlayer = (
+      board,
+      ships,
+      getRandomCoords = () => {
+        const v = Math.floor(Math.random() * boardSize);
+        const h = Math.floor(Math.random() * boardSize);
+        return [v, h];
+      }
+    ) => {
+      if (!gameOn) return;
+      if (turn === "player") return;
+      if (turn !== "player") {
+        const [v, h] = getRandomCoords();
+
+        const newBoard = [...board];
+        const cell = newBoard[v][h];
+        console.log("cell", cell);
+        if (cell.hit || cell.miss) {
+          return;
+        }
+
+        if (cell.hasShip !== 0) {
+          console.log("hit a ship from computer?");
+          const shipIndex = ships.findIndex(
+            (ship) => ship.name.slice(0, 3) === cell.hasShip
+          );
+          const newShips = [...ships];
+          newShips[shipIndex].isHit();
+          setHumanShips(newShips);
+          setHumanBoard(newBoard);
+          newBoard[v][h].hit = true;
+          setHitPlayerCoords([...hitPlayerCoords, [v, h]]);
+          console.log("hitPlayerCoords", hitPlayerCoords);
+          console.log("hit v", v)
+          console.log("hit h", h)
+          if (newShips[shipIndex].hp <= 0) {
+            const newArray = [...humanShips];
+            newArray.splice(shipIndex, 1);
+            setHumanShips(newArray);
+          }
+        } else {
+          console.log("miss from computer?");
+          console.log("miss v", v)
+          console.log("miss h", h)
+          newBoard[v][h].miss = true;
+          setHumanBoard(newBoard);
+          setMissedComCoords([...missedComCoords, [v, h]]);
+        }
+      }
+      setTurn("player");
+    };
 
   const attackCom = (v, h, board, ships) => {
     if (!gameOn) return;
@@ -307,6 +369,12 @@ const AppMain = () => {
       setTurn("Computer")
     }
   };
+
+  setTimeout(() => {
+    if (turn === "Computer") {
+      attackPlayer(humanBoard, humanShips);
+    }
+  },1000)
 
   /*end attack logic */
 
@@ -381,49 +449,7 @@ const AppMain = () => {
   };
 
 
-  const attackPlayer = (board, ships, getRandomCoords = () => {
-    const v = Math.floor(Math.random() * boardSize)
-    const h = Math.floor(Math.random() * boardSize)
-    return [v,h];
-  }) => {
-    if (!gameOn) return;
-    if (turn === "player") return;
-    if (turn !== "player") {
-      const [v,h] = getRandomCoords();
 
-      const newBoard = [...board];
-      const cell = newBoard[v][h];
-      console.log("cell", cell);
-      if (cell.hit || cell.miss) {
-        return;
-      }
-
-      if (cell.hasShip !== 0) {
-        console.log("hit a ship from computer?");
-        const shipIndex = ships.findIndex(
-          (ship) => ship.name.slice(0, 3) === cell.hasShip
-        );
-        const newShips = [...ships];
-        newShips[shipIndex].isHit();
-        setHumanShips(newShips);
-        setHumanBoard(newBoard);
-        newBoard[v][h].hit = true;
-        setHitComCoords([...hitComCoords, [v, h]]);
-        console.log("hitComCoords", hitComCoords);
-        if (newShips[shipIndex].hp <= 0) {
-          const newArray = [...humanShips];
-          newArray.splice(shipIndex, 1);
-          setHumanShips(newArray);
-        }
-      } else {
-        console.log("miss from computer?");
-        newBoard[v][h].miss = true;
-        setHumanBoard(newBoard);
-        setMissedComCoords([...missedComCoords, [v, h]]);
-      }
-    }
-    setTurn("player")
-  };
 
   /* END COMPUTER SIDE FUNCTIONS-------------------------------------------------- */
 
@@ -432,6 +458,11 @@ const AppMain = () => {
   return (
     <AppSection>
       <GameTitle data-testid="game-title">Battleship</GameTitle>
+      {
+        gameOn && (
+          <Turn>{turn}'s turn</Turn>
+        )
+      }
       <section>
         {winner !== "" && loser !== "" ? (
           <Winner winner={winner} loser={loser}>{`${winner} wins!`}</Winner>
