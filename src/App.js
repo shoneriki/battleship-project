@@ -312,7 +312,6 @@ const AppMain = () => {
       }
 
       if (cell.hasShip !== 0) {
-        console.log("hit a ship from computer?");
         const shipIndex = ships.findIndex(
           (ship) => ship.name.slice(0, 3) === cell.hasShip
         );
@@ -322,8 +321,6 @@ const AppMain = () => {
         setHumanBoard(newBoard);
         newBoard[v][h].hit = true;
         setHitPlayerCoords([...hitPlayerCoords, [v, h]]);
-        console.log("hitPlayerCoords", hitPlayerCoords);
-        console.log("hit cell", cell)
         if (newShips[shipIndex].hp <= 0) {
           console.log("ship sunk", newShips[shipIndex])
           const newArray = [...humanShips];
@@ -331,16 +328,11 @@ const AppMain = () => {
           setHumanShips(newArray);
         }
       } else {
-        console.log("miss from computer?");
-        console.log("missed cell", cell)
         newBoard[v][h].miss = true;
         setHumanBoard(newBoard);
         setMissedPlayerCoords([...missedPlayerCoords, [v, h]]);
-        console.log("missedPlayerCoords", missedPlayerCoords)
       }
     }
-    console.log("attack player end")
-    // setTurn("player");
     currentTurn.current = "player";
   };
 
@@ -351,8 +343,6 @@ const AppMain = () => {
       const newBoard = [...board];
       const cell = newBoard[v][h];
       if (cell.hit || cell.miss) {
-        console.log("cell.hit?", cell.hit)
-        console.log("cell.miss?", cell.miss)
         return;
       }
 
@@ -360,7 +350,6 @@ const AppMain = () => {
         const shipIndex = ships.findIndex(
           (ship) => ship.name.slice(0, 3) === cell.hasShip
         );
-        alert(`hit ${ships[shipIndex].name}`)
         const newShips = [...ships];
         newShips[shipIndex].isHit();
         setComShips(newShips);
@@ -385,7 +374,6 @@ const AppMain = () => {
 
   setTimeout(() => {
     if (currentTurn.current === "Computer") {
-      console.log("currentTurn.current", currentTurn.current)
       attackPlayer(humanBoard, humanShips);
     }
   },2000)
