@@ -169,5 +169,5 @@ test("computer able to attack player", async () => {
     expect(
       getComputedStyle(square).getPropertyValue("background-color")
     ).toBe("red")
-  }, 1000)
+  }, 500)
 })

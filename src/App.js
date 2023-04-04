@@ -348,9 +348,13 @@ const AppMain = () => {
     if (!gameOn) return;
     if (currentTurn.current !== "player") return;
     if (currentTurn.current === "player") {
-      console.log("attackCom being executed")
       const newBoard = [...board];
       const cell = newBoard[v][h];
+      if (cell.hit || cell.miss) {
+        console.log("cell.hit?", cell.hit)
+        console.log("cell.miss?", cell.miss)
+        return;
+      }
 
       if (cell.hasShip !== 0) {
         const shipIndex = ships.findIndex(
