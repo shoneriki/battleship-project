@@ -290,12 +290,12 @@ const AppMain = () => {
   const attackPlayer = (
     board,
     ships,
-    getRandomCoords = () => {
+    getCoords = () => {
       const v = Math.floor(Math.random() * boardSize);
       const h = Math.floor(Math.random() * boardSize);
       if(hitPlayerCoords.includes([v,h]) || missedPlayerCoords.includes([v,h])){
         console.log("redoing random coords because already hit or missed there")
-        return getRandomCoords();
+        return getCoords();
       }
       return [v, h];
     }
@@ -303,7 +303,7 @@ const AppMain = () => {
     if (!gameOn) return;
     if (currentTurn.current === "player") return;
     if (currentTurn.current !== "player") {
-      const [v, h] = getRandomCoords();
+      const [v, h] = getCoords();
 
       const newBoard = [...board];
       const cell = newBoard[v][h];
