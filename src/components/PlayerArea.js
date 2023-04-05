@@ -97,7 +97,13 @@ const PlayerArea = ({
                   allHumanShipsPlaced={allHumanShipsPlaced}
                   data-testid={`${Player}-cell-${v}-${h}`}
                   style={{
-                    backgroundColor: cell.hasShip ? "green" : "blue",
+                    backgroundColor: cell.hasShip
+                      ? cell.hit
+                        ? "red"
+                        : "green"
+                      : cell.miss
+                      ? "gray"
+                      : "blue",
                     cursor: allHumanShipsPlaced ? "default" : "pointer",
                   }}
                   onClick={
@@ -115,7 +121,7 @@ const PlayerArea = ({
                             alert(error.message);
                           }
                         }
-                      : undefined
+                      : null
                   }
                 ></Square>
               ))}

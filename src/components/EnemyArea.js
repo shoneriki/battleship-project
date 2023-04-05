@@ -53,7 +53,7 @@ const EnemyArea = ({
           }
         </section>
         <section>
-          {
+          {/* {
             allComShipsPlaced
              && (
             <ShipInfo data-testid={`${Player}-ship-info`}>
@@ -66,7 +66,7 @@ const EnemyArea = ({
                 );
               })}
             </ShipInfo>
-          )}
+          )} */}
         </section>
       </>
     );
