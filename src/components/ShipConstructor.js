@@ -11,13 +11,19 @@ export const ShipConstructor = (name) =>  {
     name: name,
     hp: ships[name],
     length: ships[name],
-    isHit: function() {
-      this.hp -= 1
+    isHit: function () {
+      this.hp -= 1;
     },
-    isSunk: function() {
-      return this.hp <= 0
-    }
-  }
+    isSunk: function () {
+      return this.hp <= 0;
+    },
+    copy: function () {
+      const newShip = ShipConstructor(this.name);
+      newShip.hp = this.hp;
+      newShip.length = this.length;
+      return newShip;
+    },
+  };
 
   return ship
 }

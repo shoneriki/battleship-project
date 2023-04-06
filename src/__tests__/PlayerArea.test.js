@@ -174,101 +174,6 @@ test("computer able to attack player", async () => {
 
 /*functions to be used for the next test*/
 
-// const getAdjacentCoord = (v, h, board, hitCoords) => {
-//   const directions = [
-//     // [h(orizontal), v(ertocal)]
-//     [-1, 0], // up
-//     [0, 1], // right
-//     [1, 0], // down
-//     [0, -1], // left
-//   ];
-//   // randomly select one of the above arrays out of the directions array. i.e. directions[0] or [-1,0]
-//   const randomDirection =
-//     directions[Math.floor(Math.random() * directions.length)];
-//   // destructure randomDirection with vDiff, hDiff (if [-1,0], vDiff === -1, hDiff === 0)
-//   const [vDiff, hDiff] = randomDirection;
-//   const newV = v + vDiff;
-//   const newH = h + hDiff;
-//   if (
-//     newV >= 0 &&
-//     newV < board.length &&
-//     newH >= 0 &&
-//     newH < board[0].length
-//   ) {
-//     const hitCoordExists = hitCoords.some(
-//       ([v, h]) => v === newV && h === newH
-//     );
-//     if (!hitCoordExists) {
-//       return [newV, newH];
-//     }
-//   }
-//   return getAdjacentCoord(v, h, board, hitCoords);
-// };
-
-// const getOppositeAdjacentCoord = (
-//   lastHitV,
-//   lastHitH,
-//   adjacentV,
-//   adjacentH,
-//   board,
-//   hitPlayerCoords
-// ) => {
-//   const isAdjacentCoordValid = (v, h) => {
-//     return (
-//       v >= 0 &&
-//       v < board.length &&
-//       h >= 0 &&
-//       h < board[0].length &&
-//       h >= 0 &&
-//       h < board[0].length &&
-//       !hitPlayerCoords.some(
-//         ([vertical, horizontal]) => vertical === v && horizontal === h
-//       )
-//     );
-//   };
-
-//   const vDirection = lastHitV - adjacentV;
-//   const hDirection = lastHitH - adjacentH;
-
-//   const nextVCoord = adjacentV + vDirection;
-//   const nextHCoord = adjacentH + hDirection;
-
-//   if (
-//     isAdjacentCoordValid(nextVCoord, nextHCoord) &&
-//     board[nextVCoord][nextHCoord].hasShip !== 0
-//   ) {
-//     return [nextVCoord, nextHCoord];
-//   }
-
-//   const oppositeVCoord = lastHitV + vDirection * -1;
-//   const oppositeHCoord = lastHitH + hDirection * -1;
-
-//   if (
-//     isAdjacentCoordValid(oppositeVCoord, oppositeHCoord) &&
-//     board[oppositeVCoord][oppositeHCoord].hasShip !== 0
-//   ) {
-//     return [oppositeVCoord, oppositeHCoord];
-//   }
-
-//   const getNextValidAdjacentCoord = () => {
-//     const adjacentCoords = [
-//       [adjacentH - 1, adjacentV],
-//       [adjacentH + 1, adjacentV],
-//       [adjacentH, adjacentV - 1],
-//       [adjacentH - 1, adjacentV + 1],
-//     ];
-
-//     const validCoords = adjacentCoords.filter((h, v) =>
-//       isAdjacentCoordValid(h, v)
-//     );
-//     return validCoords[Math.floor(Math.random() * validCoords.length)];
-//   };
-//   return getNextValidAdjacentCoord();
-// };
-
-// const adjacentCoord = jest.fn(() => [0,1])
-// const getOppositeAdjacentCoord = jest.fn(() => [0,2])
-
 /* end functions to be used for the next test*/
 
 test("when computer hits player's ship, next attack should be near that previous hit", async () => {
@@ -293,56 +198,80 @@ test("when computer hits player's ship, next attack should be near that previous
   ];
 
   const hitCoords = [];
-  const mockGetCoords = jest.fn();
-  mockGetCoords.mockReturnValueOnce([0, 1]).mockReturnValueOnce([0, 2]);
 
-  const mockAttackPlayer = jest.fn((board, ships) => {
-    const [v, h] = mockGetCoords(board, ships);
+  const getRandomCoords = (board) => {
+    const v = Math.floor(Math.random() * board.length);
+    const h = Math.floor(Math.random() * board.length);
+    return [v,h]
+  }
+
+  const getSmartCoords = (lastHit, board, hitCoords) => {
+    const [v, h] = lastHit;
+
+    const getAdjacentCoords = (v, h) => {
+      const adjacentCoords = [
+        [v - 1, h],
+        [v + 1, h],
+        [v, h - 1],
+        [v, h + 1],
+      ];
+      return adjacentCoords;
+    };
+
+    const getValidCoords = (coords, board) =>
+      coords.filter(
+        ([v, h]) =>
+          v >= 0 &&
+          v < board.length &&
+          h >= 0 &&
+          h < board.length &&
+          !board[v][h].hit &&
+          !board[v][h].miss
+      );
+
+      const direction = hitCoords.length >= 2 ?
+      [
+        // find vertical difference of last two hits
+        // lastHit should be same as hitCoords[hitCoords.length - 1]
+        lastHit[0] - hitCoords[hitCoords.length - 2][0],
+        // find horizontal difference of last two hits
+        lastHit[1] - hitCoords[hitCoords.length - 2][1]
+      ]
+      : null;
+      let validCoords;
+      if(direction !== null) {
+        const nextCoords = [v + direction[0], h + direction[1]]
+        validCoords = getValidCoords([nextCoords], board);
+      } else {
+        const adjacentCoords = getAdjacentCoords(v,h);
+        validCoords = getValidCoords(adjacentCoords, board);
+      }
+      const randomIndex = Math.floor(Math.random() * validCoords.length);
+      return validCoords[randomIndex]
+  }
+
+  const mockAttackPlayer = jest.fn((board, ships, hitCoords, forceHitCoords) => {
+    let coords
+    if (hitCoords.length === 0) {
+      if(forceHitCoords) {
+        coords = forceHitCoords;
+      } else{
+        coords = getRandomCoords(board);
+      }
+    } else {
+     coords = getSmartCoords(hitCoords[hitCoords.length - 1], board, hitCoords);
+    }
+    const [v, h] = coords;
     const cell = board[v][h];
+
     if (cell.hasShip !== 0) {
       const ship = ships.find(
-        (ship) => ship.name.slice(0, 3).toLowerCase() === cell.hasShip
+        (ship) => ship.name.slice(0, 3) === cell.hasShip
       );
       ship.isHit();
       cell.hit = true;
       hitCoords.push([v, h]);
-      const getAdjacentCoords = (v, h) => {
-        const adjacentCoords = [
-          [v - 1, h],
-          [v + 1, h],
-          [v, h - 1],
-          [v, h + 1],
-        ];
-        const validCoords = adjacentCoords.filter(
-          ([v, h]) =>
-            v >= 0 &&
-            v < board.length &&
-            h >= 0 &&
-            h < board[0].length &&
-            !board[v][h].hit &&
-            !board[v][h].miss
-        );
-        return validCoords;
-      };
-      const adjacentCoords = getAdjacentCoords(v, h);
-      console.log("adjacentCoords", adjacentCoords)
-
-      // Make second attack to adjacent cell
-      if (adjacentCoords.length > 0) {
-        const [nextV, nextH] = adjacentCoords[0];
-        const nextCell = board[nextV][nextH];
-        if (nextCell.hasShip !== 0) {
-          const nextShip = ships.find(
-            (ship) => ship.name.slice(0, 3).toLowerCase() === nextCell.hasShip
-          );
-          nextShip.isHit();
-          nextCell.hit = true;
-          hitCoords.push([nextV, nextH]);
-        } else {
-          nextCell.miss = true;
-        }
-      }
-    } else {
+      } else {
       cell.miss = true;
     }
   });
@@ -358,12 +287,16 @@ test("when computer hits player's ship, next attack should be near that previous
     />
   );
 
-  mockAttackPlayer(testBoard, testShips);
+  mockAttackPlayer(testBoard, testShips, hitCoords, [0,1]);
 
   expect(hitCoords).toContainEqual([0, 1]);
 
   // Call mockAttackPlayer again to simulate another attack to the adjacent cell
-  mockAttackPlayer(testBoard, testShips);
+  mockAttackPlayer(testBoard, testShips, hitCoords, [0,2]);
+
+  expect(testBoard[0][1].hit).toBe(true);
+
+  expect(testBoard[0][2].hit).toBe(true);
 
   expect(hitCoords).toEqual(
     expect.arrayContaining([
@@ -371,4 +304,6 @@ test("when computer hits player's ship, next attack should be near that previous
       [0, 2],
     ])
   );
+
 });
+  // Call mockAttackPlayer again to simulate another attack to the adjacent cell
