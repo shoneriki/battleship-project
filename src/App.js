@@ -125,24 +125,24 @@ const AppMain = () => {
     // console.log("comShips", comShips);
   }, [comShips]);
 
-    useEffect(() => {
-      if (currentTurn.current === "Computer") {
-        setTimeout(() => {
-          attackPlayer(humanBoard, humanShips, hitPlayerCoords, null);
-        }, 2000);
-      }
-    }, [
-      currentTurn.current,
-      humanBoard,
-      humanShips,
-      hitPlayerCoords,
-      computerAttacking,
-    ]);
+  useEffect(() => {
+    if (currentTurn.current === "Computer") {
+      setTimeout(() => {
+        attackPlayer(humanBoard, humanShips, hitPlayerCoords, null);
+      }, 2000);
+    }
+  }, [
+    currentTurn.current,
+    humanBoard,
+    humanShips,
+    hitPlayerCoords,
+    computerAttacking,
+  ]);
 
   useEffect(() => {
     if (comShips.length === 0 || hitComCoords.length === 17) {
       setGameOn(false);
-      setWinner("You");
+      setWinner("Player");
       setLoser("Computer");
     }
   }, [gameOn, comShips, hitComCoords, winner, loser]);
@@ -151,7 +151,7 @@ const AppMain = () => {
     if (humanShips.length === 0 || hitPlayerCoords.length === 17) {
       setGameOn(false);
       setWinner("Computer");
-      setLoser("You");
+      setLoser("Player");
     }
   }, [gameOn, humanShips, hitPlayerCoords, winner, loser]);
   // end useEffect for both sides/gameon
@@ -163,7 +163,7 @@ const AppMain = () => {
   /* PLACE SHIP LOGIC */
 
   const humanPlaceShip = (ship, v, h, direction, board) => {
-    const newBoard = [...board];
+    const newBoard = board.map((v) => v.map((cell) => ({ ...cell })));
     const { length } = ship;
     const shipCoords = [...humanShipCoords];
     const segmentsOnBoard = [...humanShipSegmentsOnBoard];
@@ -240,7 +240,7 @@ const AppMain = () => {
   };
 
   const randomPlaceShips = (board, ships) => {
-    const newBoard = [...board];
+    const newBoard = board.map((row) => row.map((cell) => ({ ...cell })));
     const shipCoords = [];
     const segmentsOnBoard = [];
 
@@ -400,7 +400,7 @@ const AppMain = () => {
     if (currentTurn.current === "player") return;
     if (currentTurn.current !== "player") {
       setComputerAttacking(true);
-      let newBoard = [...board]
+      let newBoard = board.map(row => row.map(cell => ({...cell})))
       let coords;
       if (hitCoords.length === 0) {
         if (forceHitCoords) {
@@ -416,7 +416,11 @@ const AppMain = () => {
         );
       }
       const [v, h] = coords;
-      const cell = board[v][h];
+      const cell = newBoard[v][h];
+      if (cell.hit || cell.miss) {
+        // Call attackPlayer again to get new coordinates and try again
+        return attackPlayer(board, ships, hitCoords, forceHitCoords);
+      }
 
       if (cell.hasShip !== 0) {
         console.log("hit ship", cell.hasShip)
@@ -432,15 +436,22 @@ const AppMain = () => {
         setHitPlayerCoords([...hitPlayerCoords, [v,h]])
         console.log("inside cell.hasShip in attackPlayer hitPlayerCoords", hitPlayerCoords)
         if(newShips[shipIndex].isSunk()){
-          const newShipsArray = ships.map(ship => ship.copy())
-          newShipsArray.splice(shipIndex, 1)
-          setHumanShips(newShipsArray)
-          console.log("humanShips in side sunk check in attackPlayer", humanShips)
+          console.log("some ship was sunk", newShips[shipIndex].name);
+          const newShipsArray = ships.map((ship) => ship.copy());
+          newShipsArray.splice(shipIndex, 1);
+          setHumanShips(newShipsArray);
+          console.log(
+            "humanShips in side sunk check in attackPlayer",
+            humanShips
+          );
 
           // remove hit cells associated with sunk ship
-          const newHitCoords = hitPlayerCoords.filter(([v,h]) => board[v][h].hasShip !== cell.hasShip)
-          setHitPlayerCoords(newHitCoords)
-          console.log("newHitCoords after ship has sunk?",newHitCoords)
+          // const newHitCoords = hitPlayerCoords.filter(
+          //   ([v, h]) => board[v][h].hasShip !== cell.hasShip
+          // );
+          // setHitPlayerCoords(newHitCoords);
+          // console.log("newHitCoords after ship has sunk?", newHitCoords);
+
         }
       }
       } else {
@@ -507,7 +518,7 @@ const AppMain = () => {
   // computer place ships logic
 
   const comPlaceAllShips = (board, ships) => {
-    const newBoard = [...board];
+    const newBoard = board.map(v => v.map(cell => ({...cell})));
     const shipCoords = [];
     const segmentsOnBoard = [];
 
