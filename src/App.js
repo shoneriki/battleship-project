@@ -65,6 +65,7 @@ const AppMain = () => {
   const [comShipCoords, setComShipCoords] = useState([]);
   const [comShipSegmentsOnBoard, setComShipSegmentsOnBoard] = useState([]);
   const [allComShipsPlaced, setAllComShipsPlaced] = useState(false);
+  const [computerAttacking, setComputerAttacking] = useState(false)
   // end computer useStates
 
   // useStates for both sides
@@ -384,6 +385,7 @@ const AppMain = () => {
     if (!gameOn) return;
     if (currentTurn.current === "player") return;
     if (currentTurn.current !== "player") {
+      setComputerAttacking(true);
       let newBoard = [...board]
       let coords;
       if (hitCoords.length === 0) {
@@ -407,7 +409,7 @@ const AppMain = () => {
         const shipIndex = ships.findIndex(
           (ship) => ship.name.slice(0, 3) === cell.hasShip
         );
-        const newShips = [...ships];
+        const newShips = ships.map(ship => ship.copy());
         newShips[shipIndex].isHit();
         setHumanShips(newShips);
         cell.hit = true;
@@ -415,7 +417,7 @@ const AppMain = () => {
         setHitPlayerCoords([...hitPlayerCoords, [v,h]])
         console.log("inside cell.hasShip in attackPlayer hitPlayerCoords", hitPlayerCoords)
         if(newShips[shipIndex].isSunk()){
-          const newShipsArray = [...ships]
+          const newShipsArray = ships.map(ship => ship.copy())
           newShipsArray.splice(shipIndex, 1)
           setHumanShips(newShipsArray)
           console.log("humanShips in side sunk check in attackPlayer", humanShips)
@@ -428,6 +430,7 @@ const AppMain = () => {
       }
     }
     currentTurn.current = "player";
+    setComputerAttacking(false);
   }
 
 
@@ -435,11 +438,13 @@ const AppMain = () => {
 
   //player attack logic
 
-  setTimeout(() => {
+  useEffect(() => {
     if (currentTurn.current === "Computer") {
-      attackPlayer(humanBoard, humanShips, hitPlayerCoords, null);
+      setTimeout(() => {
+        attackPlayer(humanBoard, humanShips, hitPlayerCoords, null);
+      }, 2000);
     }
-  },2000)
+  }, [currentTurn.current, humanBoard, humanShips, hitPlayerCoords, computerAttacking]);
 
   const attackCom = (v, h, board, ships) => {
     if (!gameOn) return;
