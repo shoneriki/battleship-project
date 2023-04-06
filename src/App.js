@@ -287,54 +287,159 @@ const AppMain = () => {
   /*end Player PLACE SHIP LOGIC */
 
   /*attack logic*/
-  const attackPlayer = (
-    board,
-    ships,
-    getCoords = () => {
-      const v = Math.floor(Math.random() * boardSize);
-      const h = Math.floor(Math.random() * boardSize);
-      if(hitPlayerCoords.includes([v,h]) || missedPlayerCoords.includes([v,h])){
-        console.log("redoing random coords because already hit or missed there")
-        return getCoords();
-      }
-      return [v, h];
+
+  // computer attack logic
+
+  const getRandomCoords = (board) => {
+    console.log("inside random coords")
+    const v = Math.floor(Math.random() * board.length);
+    const h = Math.floor(Math.random() * board.length);
+    return [v, h];
+  };
+
+  const getSmartCoords = (lastHit, board, hitCoords) => {
+    console.log("inside getSmartCoords A")
+    const [v, h] = lastHit;
+
+    const getAdjacentCoords = (v, h) => {
+      const adjacentCoords = [
+        [v - 1, h],
+        [v + 1, h],
+        [v, h - 1],
+        [v, h + 1],
+      ];
+      console.log("adjacentCoords B", adjacentCoords)
+      return adjacentCoords;
+    };
+
+    const getValidCoords = (coords, board) => {
+      console.log("inside getValidCoords C")
+      return coords.filter(
+        ([v, h]) =>
+          v >= 0 &&
+          v < board.length &&
+          h >= 0 &&
+          h < board.length &&
+          !board[v][h].hit &&
+          !board[v][h].miss
+      );
     }
-  ) => {
+
+    const direction =
+      hitCoords.length >= 2 &&
+      // check that absolute value of the vertical difference between the last two hits is 1
+      ((hitCoords[hitCoords.length - 1][0] ===
+        hitCoords[hitCoords.length - 2][0] &&
+        Math.abs(
+          hitCoords[hitCoords.length - 1][1] -
+            hitCoords[hitCoords.length - 2][1]
+        ) === 1) ||
+        // check that absolute value of the horizontal difference between the last two hits is 1
+        (hitCoords[hitCoords.length - 1][1] ===
+          hitCoords[hitCoords.length - 2][1] &&
+          Math.abs(
+            hitCoords[hitCoords.length - 1][0] -
+              hitCoords[hitCoords.length - 2][0]
+          ) === 1))
+        ? [
+            // find vertical difference of last two hits
+            hitCoords[hitCoords.length - 1][0] -
+              hitCoords[hitCoords.length - 2][0],
+            // find horizontal difference of last two hits
+            hitCoords[hitCoords.length - 1][1] -
+              hitCoords[hitCoords.length - 2][1],
+          ]
+        : null;
+    console.log("direction D", direction)
+    let validCoords;
+    if (direction) {
+      console.log("inside direction if E")
+      const nextCoords = [v + direction[0], h + direction[1]];
+      validCoords = getValidCoords([nextCoords], board);
+      console.log("validCoords inside direction if E", validCoords)
+      if(validCoords.length === 0) {
+        console.log("inside validCoords.length === 0 if condition E2")
+        // try opposite direction
+        const oppositeCoords = [v - direction[0], h - direction[1]];
+        validCoords = getValidCoords([oppositeCoords], board);
+        console.log("validCoords inside validCoords.length === 0 ", validCoords)
+      }
+      console.log("validCoords inside direction if E2 with validCoords length", validCoords)
+    } else {
+      console.log("inside direction else F")
+      const adjacentCoords = getAdjacentCoords(v, h);
+      validCoords = getValidCoords(adjacentCoords, board);
+      console.log("inside direction else F validCoords", validCoords)
+    }
+    if(validCoords.length === 0) {
+      // if validCoords can't be found still, resort to random coords
+      return getRandomCoords(board);
+    }
+    const randomIndex = Math.floor(Math.random() * validCoords.length);
+    console.log("validCoords[randomIndex] G", validCoords[randomIndex])
+    return validCoords[randomIndex];
+  };
+
+  const attackPlayer = (board, ships, hitCoords, forceHitCoords) => {
     if (!gameOn) return;
     if (currentTurn.current === "player") return;
     if (currentTurn.current !== "player") {
-      const [v, h] = getCoords();
-
-      const newBoard = [...board];
-      const cell = newBoard[v][h];
-      if (cell.hit || cell.miss) {
-        return;
+      let newBoard = [...board]
+      let coords;
+      if (hitCoords.length === 0) {
+        if (forceHitCoords) {
+          coords = forceHitCoords;
+        } else {
+          coords = getRandomCoords(board);
+        }
+      } else {
+        coords = getSmartCoords(
+          hitCoords[hitCoords.length - 1],
+          newBoard,
+          hitCoords
+        );
       }
+      const [v, h] = coords;
+      const cell = board[v][h];
 
       if (cell.hasShip !== 0) {
+        console.log("hit ship", cell.hasShip)
         const shipIndex = ships.findIndex(
           (ship) => ship.name.slice(0, 3) === cell.hasShip
         );
         const newShips = [...ships];
         newShips[shipIndex].isHit();
         setHumanShips(newShips);
-        setHumanBoard(newBoard);
-        newBoard[v][h].hit = true;
-        setHitPlayerCoords([...hitPlayerCoords, [v, h]]);
-        if (newShips[shipIndex].hp <= 0) {
-          console.log("ship sunk", newShips[shipIndex])
-          const newArray = [...humanShips];
-          newArray.splice(shipIndex, 1);
-          setHumanShips(newArray);
+        cell.hit = true;
+        setHumanBoard(newBoard)
+        setHitPlayerCoords([...hitPlayerCoords, [v,h]])
+        console.log("inside cell.hasShip in attackPlayer hitPlayerCoords", hitPlayerCoords)
+        if(newShips[shipIndex].isSunk()){
+          const newShipsArray = [...ships]
+          newShipsArray.splice(shipIndex, 1)
+          setHumanShips(newShipsArray)
+          console.log("humanShips in side sunk check in attackPlayer", humanShips)
         }
       } else {
-        newBoard[v][h].miss = true;
+        cell.miss = true;
         setHumanBoard(newBoard);
         setMissedPlayerCoords([...missedPlayerCoords, [v, h]]);
+        console.log("missedPlayerCoords inside attackPlayer", missedPlayerCoords)
       }
     }
     currentTurn.current = "player";
-  };
+  }
+
+
+  //end computer attack logic
+
+  //player attack logic
+
+  setTimeout(() => {
+    if (currentTurn.current === "Computer") {
+      attackPlayer(humanBoard, humanShips, hitPlayerCoords, null);
+    }
+  },2000)
 
   const attackCom = (v, h, board, ships) => {
     if (!gameOn) return;
@@ -372,11 +477,6 @@ const AppMain = () => {
     }
   };
 
-  setTimeout(() => {
-    if (currentTurn.current === "Computer") {
-      attackPlayer(humanBoard, humanShips);
-    }
-  },2000)
 
   /*end attack logic */
 
