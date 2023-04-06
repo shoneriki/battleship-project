@@ -125,6 +125,20 @@ const AppMain = () => {
     // console.log("comShips", comShips);
   }, [comShips]);
 
+    useEffect(() => {
+      if (currentTurn.current === "Computer") {
+        setTimeout(() => {
+          attackPlayer(humanBoard, humanShips, hitPlayerCoords, null);
+        }, 2000);
+      }
+    }, [
+      currentTurn.current,
+      humanBoard,
+      humanShips,
+      hitPlayerCoords,
+      computerAttacking,
+    ]);
+
   useEffect(() => {
     if (comShips.length === 0 || hitComCoords.length === 17) {
       setGameOn(false);
@@ -437,14 +451,6 @@ const AppMain = () => {
   //end computer attack logic
 
   //player attack logic
-
-  useEffect(() => {
-    if (currentTurn.current === "Computer") {
-      setTimeout(() => {
-        attackPlayer(humanBoard, humanShips, hitPlayerCoords, null);
-      }, 2000);
-    }
-  }, [currentTurn.current, humanBoard, humanShips, hitPlayerCoords, computerAttacking]);
 
   const attackCom = (v, h, board, ships) => {
     if (!gameOn) return;
