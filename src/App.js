@@ -423,6 +423,7 @@ const AppMain = () => {
         const shipIndex = ships.findIndex(
           (ship) => ship.name.slice(0, 3) === cell.hasShip
         );
+        if(shipIndex  !== -1)  {
         const newShips = ships.map(ship => ship.copy());
         newShips[shipIndex].isHit();
         setHumanShips(newShips);
@@ -435,7 +436,13 @@ const AppMain = () => {
           newShipsArray.splice(shipIndex, 1)
           setHumanShips(newShipsArray)
           console.log("humanShips in side sunk check in attackPlayer", humanShips)
+
+          // remove hit cells associated with sunk ship
+          const newHitCoords = hitPlayerCoords.filter(([v,h]) => board[v][h].hasShip !== cell.hasShip)
+          setHitPlayerCoords(newHitCoords)
+          console.log("newHitCoords after ship has sunk?",newHitCoords)
         }
+      }
       } else {
         cell.miss = true;
         setHumanBoard(newBoard);
