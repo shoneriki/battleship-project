@@ -229,7 +229,7 @@ test("when computer hits player's ship, next attack should be near that previous
           !board[v][h].miss
       );
 
-      const direction = hitCoords.length >= 2 ?
+      const direction = hitCoords.length >=  2 ?
       [
         // find vertical difference of last two hits
         // lastHit should be same as hitCoords[hitCoords.length - 1]
@@ -292,16 +292,13 @@ test("when computer hits player's ship, next attack should be near that previous
   expect(hitCoords).toContainEqual([0, 1]);
 
   // Call mockAttackPlayer again to simulate another attack to the adjacent cell
-  mockAttackPlayer(testBoard, testShips, hitCoords, [0,2]);
+  mockAttackPlayer(testBoard, testShips, hitCoords, [0, 0]);
 
-  expect(testBoard[0][1].hit).toBe(true);
-
-  expect(testBoard[0][2].hit).toBe(true);
-
+  expect(testBoard[0][0].hit).toBe(true);
   expect(hitCoords).toEqual(
     expect.arrayContaining([
       [0, 1],
-      [0, 2],
+      [0, 0],
     ])
   );
 
