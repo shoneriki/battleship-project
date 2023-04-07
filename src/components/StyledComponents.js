@@ -56,7 +56,7 @@ export const Board = styled.table`
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-top: 10%;
+  margin: 4% 0;
   @media only screen and (max-width: 1300px) {
     display: flex;
     justify-content: center;
@@ -137,6 +137,7 @@ export const PlayerShipButtons = styled.section`
   justify-content: center;
   align-items: center;
   flex-wrap: wrap;
+  margin: 8px 0;
 `
 
 export const PlaceAllPlayerShips = styled.section`
@@ -149,12 +150,67 @@ export const PlaceAllPlayerShips = styled.section`
   width: 100%;
 `
 
+export const StyledBtn = styled.button`
+  background-color: #1e90ff;
+  background-image: linear-gradient(to bottom right, #1e90ff, #187bcd);
+  border: none;
+  color: white;
+  text-align: center;
+  text-decoration: none;
+  font-size: 16px;
+  padding: 10px 20px;
+  margin: 4px 2px;
+  cursor: pointer;
+  border-radius: 16px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
+  transition: 0.3s;
+
+  &:hover {
+    background-color: #187bcd;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+  }
+
+  &:active {
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+    transform: translateY(1px);
+  }
+
+  &:disabled {
+    background-color: #cccccc;
+    color: #666666;
+    box-shadow: none;
+    cursor: not-allowed;
+  }
+`;
+
+export const ShipBtn = styled.button`
+  background-color: yellow;
+  color: black;
+  border: none;
+  padding: 4px 8px;
+  margin: 4px 4px;
+  border-radius: 16px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
+  transition: 0.3s;
+
+  &:hover {
+    background-color: yellow;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+  }
+
+  &:active {
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+    transform: translateY(1px);
+  }
+`;
+
 export const ShipSelector = styled.section`
   display: flex;
   flex-direction: column;
 `
 
-export const Winner = styled.h6`
+export const Winner = styled.h1`
   text-align: center;
 `
 export const Turn = styled.h1`
@@ -166,5 +222,5 @@ export const Labels = styled.tr`
   width: 100%
 `
 export const ShipStats = styled.section`
-  margin: 0 8px;
+  margin: 8px 8px;
 `

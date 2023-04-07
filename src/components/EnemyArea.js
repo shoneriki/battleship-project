@@ -10,6 +10,7 @@ import {
   ShipInfo,
   Labels,
   ShipStats,
+  StyledBtn,
 } from "./StyledComponents";
 
 const EnemyArea = ({
@@ -33,17 +34,17 @@ const EnemyArea = ({
   comShipSegmentsOnBoard,
 }) => {
 
-  const Info = ({ Player, comShips, comShipSegmentsOnBoard }) => {
+  const Info = ({ Player, comShips, comShipSegmentsOnBoard, gameOn, turn }) => {
     return (
       <>
         <PlayerTitle>{Player}</PlayerTitle>
         {!allComShipsPlaced && (
-          <button
+          <StyledBtn
             onClick={handlePlaceComputerShips}
             data-testid={`${Player}-place-ships-btn`}
           >
             Place Ships
-          </button>
+          </StyledBtn>
         )}
         <section>
           {
@@ -53,20 +54,21 @@ const EnemyArea = ({
           }
         </section>
         <section>
-          {/* {
+          {
             allComShipsPlaced
              && (
             <ShipInfo data-testid={`${Player}-ship-info`}>
-              {comShips.map((ship) => {
+              {/* {comShips.map((ship) => {
                 return (
                   <ShipStats key={ship.name}>
                     <h6>{ship.name}</h6>
                     <h6>hp: {ship.hp}</h6>
                   </ShipStats>
                 );
-              })}
+              })} */}
+              <h6>Ships Placed</h6>
             </ShipInfo>
-          )} */}
+          )}
         </section>
       </>
     );

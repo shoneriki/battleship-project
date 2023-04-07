@@ -10,6 +10,8 @@ import {
   ShipSelector,
   PlayerShipButtons,
   PlaceAllPlayerShips,
+  StyledBtn,
+  ShipBtn,
 } from "./StyledComponents";
 
 const PlayerArea = ({
@@ -37,7 +39,6 @@ const PlayerArea = ({
         {!allHumanShipsPlaced && (
           <ShipDashboard data-testid={`${Player}-ship-info`}>
             <ShipSelector>
-              <h6> h for horizontal, v for vertical</h6>
               <h6>
                 {humanShip.name},
                 {humanDirection === "h" ? "horizontal" : "vertical"},{" "}
@@ -46,21 +47,21 @@ const PlayerArea = ({
               <PlayerShipButtons>
                 {shipsToPlace.map((ship) => {
                   return (
-                    <button key={ship.name} onClick={(e) => setHumanShip(ship)}>
-                      {ship.name}
-                    </button>
+                    <ShipBtn key={ship.name} onClick={(e) => setHumanShip(ship)}>
+                      {ship.name.charAt(0).toUpperCase() + ship.name.slice(1)}
+                    </ShipBtn>
                   );
                 })}
               </PlayerShipButtons>
             </ShipSelector>
 
             <PlaceAllPlayerShips>
-              <button
+              <StyledBtn
                 onClick={handleRandomPlayerShipPlacement}
                 data-testid={`${Player}-place-ships-btn`}
               >
-                please place ships for me
-              </button>
+                Please Place Ships For Me
+              </StyledBtn>
             </PlaceAllPlayerShips>
           </ShipDashboard>
         )}
@@ -70,8 +71,10 @@ const PlayerArea = ({
               {humanShips.map((ship) => {
                 return (
                   <ShipStats key={ship.name}>
-                    <h6>{ship.name}</h6>
-                    <h6>hp: {ship.hp}</h6>
+                    <h6>
+                      {ship.name.charAt(0).toUpperCase() + ship.name.slice(1)}
+                    </h6>
+                    <h6>HP: {ship.hp}</h6>
                   </ShipStats>
                 );
               })}
