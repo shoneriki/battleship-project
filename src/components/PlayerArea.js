@@ -40,8 +40,8 @@ const PlayerArea = ({
           <ShipDashboard data-testid={`${Player}-ship-info`}>
             <ShipSelector>
               <h6>
-                {humanShip.name},
-                {humanDirection === "h" ? "horizontal" : "vertical"},{" "}
+                {humanShip.name.charAt(0).toUpperCase() + humanShip.name.slice(1)}, {" "}
+                {humanDirection === "h" ? "Horizontal" : "Vertical"}, {" "}
                 {humanShip.length}
               </h6>
               <PlayerShipButtons>
@@ -103,15 +103,6 @@ const PlayerArea = ({
                   data-testid={`${Player}-cell-${v}-${h}`}
                   gameOn={gameOn}
                   turn={turn}
-                  // style={{
-                  //   backgroundColor: cell.hasShip
-                  //     ? cell.hit
-                  //       ? "red"
-                  //       : "green"
-                  //     : cell.miss
-                  //     ? "gray"
-                  //     : "blue",
-                  // }}
                   onClick={
                     !allHumanShipsPlaced
                       ? () => {
