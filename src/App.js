@@ -129,7 +129,7 @@ const AppMain = () => {
       }, 2000);
     }
   }, [
-    currentTurn,
+    currentTurn.current,
     humanBoard,
     humanShips,
     hitPlayerCoords,
