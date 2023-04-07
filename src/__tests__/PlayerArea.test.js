@@ -172,10 +172,6 @@ test("computer able to attack player", async () => {
   }, 500)
 })
 
-/*functions to be used for the next test*/
-
-/* end functions to be used for the next test*/
-
 test("when computer hits player's ship, next attack should be near that previous hit", async () => {
   const testShips = [ShipConstructor("cruiser")];
 
@@ -303,4 +299,3 @@ test("when computer hits player's ship, next attack should be near that previous
   );
 
 });
-  // Call mockAttackPlayer again to simulate another attack to the adjacent cell

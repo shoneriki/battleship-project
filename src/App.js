@@ -66,7 +66,6 @@ const AppMain = () => {
   // end computer useStates
 
   // useStates for both sides
-  // const [turn, setTurn] = useState("player");
   const [winner, setWinner] = useState("");
   const [loser, setLoser] = useState("");
 
@@ -191,7 +190,7 @@ const AppMain = () => {
           throw new Error("ship is out of bounds");
         }
       }
-      /*end of check for if ship is out of bounds*/
+      /* end of check for if ship is out of bounds*/
       if(allHumanShipsPlaced) {
         throw new Error("all ships placed")
       }
@@ -231,7 +230,6 @@ const AppMain = () => {
       setShipsToPlace(
         shipsToPlace.filter((shipToPlace) => shipToPlace !== ship)
       )
-      console.log("humanShipsPlaced", humanShipsPlaced)
       if (segmentsOnBoard.length === 17 && humanShipsPlaced.length === 5) {
         setAllHumanShipsPlaced(true);
       }
@@ -307,7 +305,6 @@ const AppMain = () => {
   // computer attack logic
 
   const getRandomCoords = (board) => {
-    console.log("inside random coords")
     const v = Math.floor(Math.random() * board.length);
     const h = Math.floor(Math.random() * board.length);
     return [v, h];
@@ -412,7 +409,6 @@ const AppMain = () => {
       }
 
       if (cell.hasShip !== 0) {
-        console.log("hit ship", cell.hasShip)
         const shipIndex = ships.findIndex(
           (ship) => ship.name.slice(0, 3) === cell.hasShip
         );
@@ -537,7 +533,7 @@ const AppMain = () => {
         }
       }
 
-    console.log("shipCoords for computer", shipCoords);
+    // console.log("shipCoords for computer", shipCoords);
     return [newBoard, shipCoords, segmentsOnBoard];
   };
 

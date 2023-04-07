@@ -1,4 +1,3 @@
-// In PlayerBoard.js
 import classNames from "classnames"
 import { useState, useEffect } from "react";
 import { ShipConstructor } from "./ShipConstructor";
@@ -11,7 +10,7 @@ import {
 } from "./StyledComponents";
 
 const TestEnemyArea = ({Player,comBoard, comShips, gameOn, attackCom, turn}) => {
-  
+
   const TestComputerBoard = () => {
     return (
       <Board>
