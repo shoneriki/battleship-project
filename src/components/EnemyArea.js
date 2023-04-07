@@ -10,6 +10,7 @@ import {
   ShipInfo,
   Labels,
   ShipStats,
+  PlayerWrapper,
 } from "./StyledComponents";
 
 const EnemyArea = ({
@@ -108,14 +109,14 @@ const EnemyArea = ({
 
   // v for vertical, h for horizontal
   return (
-    <section>
+    <PlayerWrapper>
       <Info
         Player={Player}
         comShips={comShips}
         comShipSegmentsOnBoard={comShipSegmentsOnBoard}
       />
       <PlayerBoard Player={Player} />
-    </section>
+    </PlayerWrapper>
   );
 };
 export default EnemyArea

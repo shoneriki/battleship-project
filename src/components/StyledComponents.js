@@ -21,6 +21,7 @@ export const Boards = styled.section`
   display: flex;
   flex-direction: row;
   width: 100%;
+  align-items: center;
   text-align: center;
   @media only screen and (max-width: 1100px) {
     display: flex;
@@ -48,6 +49,12 @@ export const BoardSection = styled.section`
 
 export const PlayerTitle = styled.h1`
   text-align: center;
+`;
+
+export const PlayerWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 `;
 
 export const Board = styled.table`

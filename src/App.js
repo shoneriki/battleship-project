@@ -6,7 +6,7 @@ import {AppSection, Boards, GameTitle, BoardSection, Winner, Turn} from "./compo
 
 
 const AppMain = () => {
-  const currentTurn = useRef("player")
+  const currentTurn = useRef("Player")
 
 /* USESTATES-----------------------------------------------------------------*/
 
@@ -382,8 +382,8 @@ const AppMain = () => {
 
   const attackPlayer = (board, ships, hitCoords, forceHitCoords) => {
     if (!gameOn) return;
-    if (currentTurn.current === "player") return;
-    if (currentTurn.current !== "player") {
+    if (currentTurn.current === "Player") return;
+    if (currentTurn.current !== "Player") {
       setComputerAttacking(true);
       let newBoard = board.map(row => row.map(cell => ({...cell})))
       let coords;
@@ -431,7 +431,7 @@ const AppMain = () => {
         setMissedPlayerCoords([...missedPlayerCoords, [v, h]]);
       }
     }
-    currentTurn.current = "player";
+    currentTurn.current = "Player";
     setComputerAttacking(false);
   }
 
@@ -442,8 +442,8 @@ const AppMain = () => {
 
   const attackCom = (v, h, board, ships) => {
     if (!gameOn) return;
-    if (currentTurn.current !== "player") return;
-    if (currentTurn.current === "player") {
+    if (currentTurn.current !== "Player") return;
+    if (currentTurn.current === "Player") {
       const newBoard = [...board];
       const cell = newBoard[v][h];
       if (cell.hit || cell.miss) {

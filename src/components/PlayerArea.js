@@ -10,6 +10,7 @@ import {
   ShipSelector,
   PlayerShipButtons,
   PlaceAllPlayerShips,
+  PlayerWrapper,
 } from "./StyledComponents";
 
 const PlayerArea = ({
@@ -137,7 +138,7 @@ const PlayerArea = ({
 
   // v for vertical, h for horizontal
   return (
-    <section>
+    <PlayerWrapper>
       <Info
         Player={Player}
         humanDirection={humanDirection}
@@ -146,7 +147,7 @@ const PlayerArea = ({
       <PlayerBoard
         Player={Player}
       />
-    </section>
+    </PlayerWrapper>
   );
 };
 
