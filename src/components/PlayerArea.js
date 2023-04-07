@@ -97,18 +97,21 @@ const PlayerArea = ({
                   v={cell.v}
                   h={cell.h}
                   hasShip={cell.hasShip}
+                  hit={cell.hit}
+                  miss={cell.miss}
                   allHumanShipsPlaced={allHumanShipsPlaced}
                   data-testid={`${Player}-cell-${v}-${h}`}
-                  style={{
-                    backgroundColor: cell.hasShip
-                      ? cell.hit
-                        ? "red"
-                        : "green"
-                      : cell.miss
-                      ? "gray"
-                      : "blue",
-                    cursor: allHumanShipsPlaced ? "default" : "pointer",
-                  }}
+                  gameOn={gameOn}
+                  turn={turn}
+                  // style={{
+                  //   backgroundColor: cell.hasShip
+                  //     ? cell.hit
+                  //       ? "red"
+                  //       : "green"
+                  //     : cell.miss
+                  //     ? "gray"
+                  //     : "blue",
+                  // }}
                   onClick={
                     !allHumanShipsPlaced
                       ? () => {

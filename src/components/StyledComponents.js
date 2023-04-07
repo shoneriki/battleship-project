@@ -93,14 +93,26 @@ export const Square = styled.td`
   height: 10%;
   padding: 16px;
   font-size: 8px;
-  cursor: pointer;
-  background-color: blue;
+  ${"" /* cursor: ${({ gameOn }) => (!gameOn ? "pointer" : "default")}; */}
+  ${"" /* background-color: blue; */}
+  background-color: ${({ hasShip, hit, miss }) => {
+    if (hasShip) {
+      return hit ? "red" : "green";
+    } else {
+      return miss ? "gray" : "blue";
+    }
+  }};
 
   @media only screen and (max-width: 800px) {
     width: calc(10% - 8px);
   }
   @media only screen and (min-width: 801px) and (max-width: 1100px) {
     width: calc(10% - 64px);
+  }
+
+  &:hover {
+    background-color: ${({ gameOn }) => !gameOn && "yellow"};
+    cursor: ${({ gameOn, turn }) => (!gameOn ? "pointer" : "not-allowed")};
   }
   &.hit {
     background-color: red;
@@ -115,8 +127,14 @@ export const Square = styled.td`
   }
 `;
 export const ComSquare = styled(Square)`
-  cursor: default;
-`
+  cursor: not-allowed;
+  &:hover {
+    background-color: ${({ gameOn, turn }) =>
+      gameOn && turn === "Player" && "yellow"};
+    cursor: ${({ gameOn, turn }) =>
+      gameOn && turn === "Player" ? "pointer" : "not-allowed"};
+  }
+`;
 export const ShipDashboard = styled.section`
   display: flex;
   flex-direction: column;
@@ -155,11 +173,8 @@ export const StyledBtn = styled.button`
   background-image: linear-gradient(to bottom right, #1e90ff, #187bcd);
   border: none;
   color: white;
-  text-align: center;
-  text-decoration: none;
   font-size: 16px;
-  padding: 10px 20px;
-  margin: 4px 2px;
+  padding: 8px 16px;
   cursor: pointer;
   border-radius: 16px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
@@ -185,7 +200,7 @@ export const StyledBtn = styled.button`
 
 export const ShipBtn = styled.button`
   background-color: yellow;
-  color: black;
+  color: gray;
   border: none;
   padding: 4px 8px;
   margin: 4px 4px;

@@ -119,6 +119,10 @@ const AppMain = () => {
   }, [gameOn])
 
   useEffect(() => {
+    handlePlaceComputerShips()
+  },[])
+
+  useEffect(() => {
     // console.log("comShips", comShips);
   }, [comShips]);
 
@@ -533,7 +537,7 @@ const AppMain = () => {
         }
       }
 
-    // console.log("shipCoords for computer", shipCoords);
+    console.log("shipCoords for computer", shipCoords);
     return [newBoard, shipCoords, segmentsOnBoard];
   };
 
@@ -560,12 +564,12 @@ const AppMain = () => {
       <GameTitle data-testid="game-title">Battleship</GameTitle>
       {
         gameOn && (
-          <Turn>{currentTurn.current}'s turn</Turn>
+          <Turn>{currentTurn.current}'s Turn</Turn>
         )
       }
       <section>
         {winner !== "" && loser !== "" ? (
-          <Winner winner={winner} loser={loser}>{`${winner} wins!`}</Winner>
+          <Winner winner={winner} loser={loser}>{`${winner} Wins!`}</Winner>
         ) : null}
       </section>
       <Boards>
@@ -601,6 +605,7 @@ const AppMain = () => {
             handlePlaceComputerShips={handlePlaceComputerShips}
             allComShipsPlaced={allComShipsPlaced}
             gameOn={gameOn}
+            winner={winner}
             // attack logic
             attackCom={attackCom}
             hit={hit}
