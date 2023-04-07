@@ -6,7 +6,7 @@ import {AppSection, Boards, GameTitle, BoardSection, Winner, Turn} from "./compo
 
 
 const AppMain = () => {
-  const currentTurn = useRef("player")
+  const currentTurn = useRef("Player")
 
 /* USESTATES-----------------------------------------------------------------*/
 
@@ -117,6 +117,10 @@ const AppMain = () => {
   useEffect(() => {
     // console.log("gameOn from app?", gameOn)
   }, [gameOn])
+
+  useEffect(() => {
+    handlePlaceComputerShips()
+  },[])
 
   useEffect(() => {
     // console.log("comShips", comShips);
@@ -382,8 +386,8 @@ const AppMain = () => {
 
   const attackPlayer = (board, ships, hitCoords, forceHitCoords) => {
     if (!gameOn) return;
-    if (currentTurn.current === "player") return;
-    if (currentTurn.current !== "player") {
+    if (currentTurn.current === "Player") return;
+    if (currentTurn.current !== "Player") {
       setComputerAttacking(true);
       let newBoard = board.map(row => row.map(cell => ({...cell})))
       let coords;
@@ -431,7 +435,7 @@ const AppMain = () => {
         setMissedPlayerCoords([...missedPlayerCoords, [v, h]]);
       }
     }
-    currentTurn.current = "player";
+    currentTurn.current = "Player";
     setComputerAttacking(false);
   }
 
@@ -442,8 +446,8 @@ const AppMain = () => {
 
   const attackCom = (v, h, board, ships) => {
     if (!gameOn) return;
-    if (currentTurn.current !== "player") return;
-    if (currentTurn.current === "player") {
+    if (currentTurn.current !== "Player") return;
+    if (currentTurn.current === "Player") {
       const newBoard = [...board];
       const cell = newBoard[v][h];
       if (cell.hit || cell.miss) {
@@ -533,7 +537,7 @@ const AppMain = () => {
         }
       }
 
-    // console.log("shipCoords for computer", shipCoords);
+    console.log("shipCoords for computer", shipCoords);
     return [newBoard, shipCoords, segmentsOnBoard];
   };
 
@@ -560,12 +564,12 @@ const AppMain = () => {
       <GameTitle data-testid="game-title">Battleship</GameTitle>
       {
         gameOn && (
-          <Turn>{currentTurn.current}'s turn</Turn>
+          <Turn>{currentTurn.current}'s Turn</Turn>
         )
       }
       <section>
         {winner !== "" && loser !== "" ? (
-          <Winner winner={winner} loser={loser}>{`${winner} wins!`}</Winner>
+          <Winner winner={winner} loser={loser}>{`${winner} Wins!`}</Winner>
         ) : null}
       </section>
       <Boards>
@@ -601,6 +605,7 @@ const AppMain = () => {
             handlePlaceComputerShips={handlePlaceComputerShips}
             allComShipsPlaced={allComShipsPlaced}
             gameOn={gameOn}
+            winner={winner}
             // attack logic
             attackCom={attackCom}
             hit={hit}

@@ -10,6 +10,7 @@ import {
   ShipInfo,
   Labels,
   ShipStats,
+  StyledBtn,
 } from "./StyledComponents";
 
 const EnemyArea = ({
@@ -22,6 +23,7 @@ const EnemyArea = ({
   handlePlaceComputerShips,
   allComShipsPlaced,
   gameOn,
+  winner,
   // attack logic
   attackCom,
   hit,
@@ -33,18 +35,18 @@ const EnemyArea = ({
   comShipSegmentsOnBoard,
 }) => {
 
-  const Info = ({ Player, comShips, comShipSegmentsOnBoard }) => {
+  const Info = ({ Player, comShips, comShipSegmentsOnBoard, gameOn, turn }) => {
     return (
       <>
         <PlayerTitle>{Player}</PlayerTitle>
-        {!allComShipsPlaced && (
-          <button
-            onClick={handlePlaceComputerShips}
+        {/* {!allComShipsPlaced && (
+          <StyledBtn
+            // onClick={handlePlaceComputerShips}
             data-testid={`${Player}-place-ships-btn`}
           >
             Place Ships
-          </button>
-        )}
+          </StyledBtn>
+        )} */}
         <section>
           {
             gameOn && turn === "computer" && (
@@ -53,26 +55,27 @@ const EnemyArea = ({
           }
         </section>
         <section>
-          {/* {
+          {
             allComShipsPlaced
              && (
             <ShipInfo data-testid={`${Player}-ship-info`}>
-              {comShips.map((ship) => {
+              {/* {comShips.map((ship) => {
                 return (
                   <ShipStats key={ship.name}>
                     <h6>{ship.name}</h6>
                     <h6>hp: {ship.hp}</h6>
                   </ShipStats>
                 );
-              })}
+              })} */}
+              <h6>Ships Placed</h6>
             </ShipInfo>
-          )} */}
+          )}
         </section>
       </>
     );
   };
 
-  const PlayerBoard = ({ Player }) => {
+  const PlayerBoard = ({ Player, winner }) => {
     return (
       <Board>
         <BoardBody data-testid={`${Player}-board`}>
@@ -85,7 +88,7 @@ const EnemyArea = ({
                   h={cell.h}
                   hasShip={cell.hasShip}
                   onClick={
-                    gameOn ? () => attackCom(v, h, comBoard, comShips) : null
+                    gameOn && winner === "" ? () => attackCom(v, h, comBoard, comShips) : null
                   }
                   className={classNames({
                     hit: cell.hit,
@@ -94,9 +97,7 @@ const EnemyArea = ({
                   })}
                   gameOn={gameOn}
                   data-testid={`${Player}-cell-${v}-${h}`}
-                  style={{
-                    cursor: gameOn && turn === "player" ? "pointer" : "default",
-                  }}
+                  turn={turn}
                 ></ComSquare>
               ))}
             </TableRow>
@@ -114,7 +115,10 @@ const EnemyArea = ({
         comShips={comShips}
         comShipSegmentsOnBoard={comShipSegmentsOnBoard}
       />
-      <PlayerBoard Player={Player} />
+      <PlayerBoard
+        Player={Player}
+        winner={winner}
+      />
     </section>
   );
 };
