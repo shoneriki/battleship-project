@@ -34,10 +34,7 @@ const AppMain = () => {
   const [allHumanShipsPlaced, setAllHumanShipsPlaced] = useState(false);
 
   const [humanShipCoords, setHumanShipCoords] = useState([]);
-  // if shipCoord is hit, find what hasShip value is and take that string out of the playerSegmentsOnBoard array
   const [humanShipSegmentsOnBoard, setHumanShipSegmentsOnBoard] = useState([]);
-  // if certain string does not exist in the playerSegmentsOnBoard, then that ship is sunk
-  // figure out what to push to the below playerShipsSunk array. Maybe just add 1 once?
   const [humanShipsPlaced, setHumanShipsPlaced] = useState([])
   const [shipsToPlace, setShipsToPlace] = useState(humanShips);
   const [humanShip, setHumanShip] = useState(shipsToPlace[0]);
@@ -132,7 +129,7 @@ const AppMain = () => {
       }, 2000);
     }
   }, [
-    currentTurn.current,
+    currentTurn,
     humanBoard,
     humanShips,
     hitPlayerCoords,
@@ -313,7 +310,6 @@ const AppMain = () => {
   };
 
   const getSmartCoords = (lastHit, board, hitCoords) => {
-    console.log("inside getSmartCoords A")
     const [v, h] = lastHit;
 
     const getAdjacentCoords = (v, h) => {
@@ -323,12 +319,10 @@ const AppMain = () => {
         [v, h - 1],
         [v, h + 1],
       ];
-      console.log("adjacentCoords B", adjacentCoords)
       return adjacentCoords;
     };
 
     const getValidCoords = (coords, board) => {
-      console.log("inside getValidCoords C")
       return coords.filter(
         ([v, h]) =>
           v >= 0 &&
@@ -365,33 +359,24 @@ const AppMain = () => {
               hitCoords[hitCoords.length - 2][1],
           ]
         : null;
-    console.log("direction D", direction)
     let validCoords;
     if (direction) {
-      console.log("inside direction if E")
       const nextCoords = [v + direction[0], h + direction[1]];
       validCoords = getValidCoords([nextCoords], board);
-      console.log("validCoords inside direction if E", validCoords)
       if(validCoords.length === 0) {
-        console.log("inside validCoords.length === 0 if condition E2")
         // try opposite direction
         const oppositeCoords = [v - direction[0], h - direction[1]];
         validCoords = getValidCoords([oppositeCoords], board);
-        console.log("validCoords inside validCoords.length === 0 ", validCoords)
       }
-      console.log("validCoords inside direction if E2 with validCoords length", validCoords)
     } else {
-      console.log("inside direction else F")
       const adjacentCoords = getAdjacentCoords(v, h);
       validCoords = getValidCoords(adjacentCoords, board);
-      console.log("inside direction else F validCoords", validCoords)
     }
     if(validCoords.length === 0) {
       // if validCoords can't be found still, resort to random coords
       return getRandomCoords(board);
     }
     const randomIndex = Math.floor(Math.random() * validCoords.length);
-    console.log("validCoords[randomIndex] G", validCoords[randomIndex])
     return validCoords[randomIndex];
   };
 
@@ -434,31 +419,16 @@ const AppMain = () => {
         cell.hit = true;
         setHumanBoard(newBoard)
         setHitPlayerCoords([...hitPlayerCoords, [v,h]])
-        console.log("inside cell.hasShip in attackPlayer hitPlayerCoords", hitPlayerCoords)
         if(newShips[shipIndex].isSunk()){
-          console.log("some ship was sunk", newShips[shipIndex].name);
           const newShipsArray = ships.map((ship) => ship.copy());
           newShipsArray.splice(shipIndex, 1);
           setHumanShips(newShipsArray);
-          console.log(
-            "humanShips in side sunk check in attackPlayer",
-            humanShips
-          );
-
-          // remove hit cells associated with sunk ship
-          // const newHitCoords = hitPlayerCoords.filter(
-          //   ([v, h]) => board[v][h].hasShip !== cell.hasShip
-          // );
-          // setHitPlayerCoords(newHitCoords);
-          // console.log("newHitCoords after ship has sunk?", newHitCoords);
-
         }
       }
       } else {
         cell.miss = true;
         setHumanBoard(newBoard);
         setMissedPlayerCoords([...missedPlayerCoords, [v, h]]);
-        console.log("missedPlayerCoords inside attackPlayer", missedPlayerCoords)
       }
     }
     currentTurn.current = "player";
@@ -501,7 +471,6 @@ const AppMain = () => {
         newBoard[v][h].miss = true;
         setMissedComCoords([...missedComCoords, [v, h]]);
       }
-      // setTurn("Computer")
       currentTurn.current = "Computer";
     }
   };
@@ -564,7 +533,7 @@ const AppMain = () => {
         }
       }
 
-    console.log("shipCoords for computer", shipCoords);
+    // console.log("shipCoords for computer", shipCoords);
     return [newBoard, shipCoords, segmentsOnBoard];
   };
 
