@@ -78,6 +78,7 @@ const AppMain = () => {
 
   // useEffects for placing player ships
   useEffect(() => {
+    console.log("inside setHumanShip useEffect 1")
     setHumanShip(
       shipsToPlace.length > 0 ? shipsToPlace[0] : setAllHumanShipsPlaced(true)
     );
@@ -85,6 +86,7 @@ const AppMain = () => {
 
 
   useEffect(() => {
+    console.log("inside setHumanShip useEffect 2")
     const handleKeyUp = (e) => {
       if (e.key === "h" && humanDirection !== "h") {
         setHumanDirection("h");
@@ -101,23 +103,26 @@ const AppMain = () => {
 
   // useEffect for attacking computer ship
 
-  useEffect(() => {}, [hitComCoords, missedComCoords]);
-  useEffect(() => {}, [hitPlayerCoords, missedPlayerCoords]);
+  useEffect(() => {console.log("useEffect 3 using hitComCoords, missedComCoords ")}, [hitComCoords, missedComCoords]);
+  useEffect(() => {console.log("useEffect 4 using hitPlayerCoords, missedPlayerCoords")}, [hitPlayerCoords, missedPlayerCoords]);
 
   // end useEffect for attacking computer ship
 
   // useEffect for both sides/gameon
   useEffect(() => {
     if (allHumanShipsPlaced && allComShipsPlaced) {
+      console.log("useEffect 5 allHumanShipsPlaced && allComShipsPlaced, humanShipSegmentsOnBoard")
       setGameOn(true);
     }
   }, [allHumanShipsPlaced, allComShipsPlaced, humanShipSegmentsOnBoard]);
 
   useEffect(() => {
+    console.log("useEffect 6 gameOn")
     // console.log("gameOn from app?", gameOn)
   }, [gameOn])
 
   useEffect(() => {
+    console.log("useEffect 7 placing computer ships ")
     handlePlaceComputerShips()
   },[])
 
@@ -144,6 +149,7 @@ const AppMain = () => {
       setGameOn(false);
       setWinner("Player");
       setLoser("Computer");
+      alert("Player Won!")
     }
   }, [gameOn, comShips, hitComCoords, winner, loser]);
 
@@ -152,6 +158,7 @@ const AppMain = () => {
       setGameOn(false);
       setWinner("Computer");
       setLoser("Player");
+      alert("Computer Won!")
     }
   }, [gameOn, humanShips, hitPlayerCoords, winner, loser]);
   // end useEffect for both sides/gameon
@@ -420,6 +427,12 @@ const AppMain = () => {
         setHumanBoard(newBoard)
         setHitPlayerCoords([...hitPlayerCoords, [v,h]])
         if(newShips[shipIndex].isSunk()){
+          alert(
+            `The Computer Sank Your ${
+              ships[shipIndex].name.charAt(0).toUpperCase() +
+              ships[shipIndex].name.slice(1)
+            }`
+          );
           const newShipsArray = ships.map((ship) => ship.copy());
           newShipsArray.splice(shipIndex, 1);
           setHumanShips(newShipsArray);
@@ -461,7 +474,7 @@ const AppMain = () => {
         setComBoard(newBoard);
         setHitComCoords([...hitComCoords, [v, h]]);
         if (newShips[shipIndex].isSunk()) {
-          alert(`sunk ${ships[shipIndex].name}`)
+          alert(`You Sunk Their ${ships[shipIndex].name.charAt(0).toUpperCase() + ships[shipIndex].name.slice(1)}`)
           const newArray = [...comShips];
           newArray.splice(shipIndex, 1);
           setComShips(newArray);

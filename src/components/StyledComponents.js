@@ -93,8 +93,6 @@ export const Square = styled.td`
   height: 10%;
   padding: 16px;
   font-size: 8px;
-  ${"" /* cursor: ${({ gameOn }) => (!gameOn ? "pointer" : "default")}; */}
-  ${"" /* background-color: blue; */}
   background-color: ${({ hasShip, hit, miss }) => {
     if (hasShip) {
       return hit ? "red" : "green";
@@ -173,7 +171,7 @@ export const StyledBtn = styled.button`
   background-image: linear-gradient(to bottom right, #1e90ff, #187bcd);
   border: none;
   color: white;
-  font-size: 16px;
+  font-size: 12px;
   padding: 8px 16px;
   cursor: pointer;
   border-radius: 16px;
