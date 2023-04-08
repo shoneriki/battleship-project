@@ -1,7 +1,8 @@
 import styled from "styled-components";
+import 'react-toastify/dist/ReactToastify.css';
 
 
-/* styles for appMain*/
+/* styles for appMain---------------------------------------------------------*/
 
 export const AppSection = styled.main`
   width: 100%;
@@ -44,11 +45,13 @@ export const BoardSection = styled.section`
   text-align: center;
 `;
 
-/* end styles for appMain*/
+/* end styles for appMain-----------------------------------------------------*/
 
 export const PlayerTitle = styled.h1`
   text-align: center;
 `;
+
+/*  board ---------------------------------------------------------------------*/
 
 export const Board = styled.table`
   width: 100%;
@@ -133,6 +136,8 @@ export const ComSquare = styled(Square)`
       gameOn && turn === "Player" ? "pointer" : "not-allowed"};
   }
 `;
+/*board end------------------------------------------------------------------ */
+
 export const ShipDashboard = styled.section`
   display: flex;
   flex-direction: column;
