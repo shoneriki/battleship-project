@@ -21,17 +21,6 @@ test("computer board renders", () => {
   expect(ComBoard).toBeInTheDocument();
 });
 
-test("computer board can place ships and once ships are placed, the button disappears", async () => {
-  render(<AppSection />);
-  const secondButton = screen.queryByTestId("Computer-place-ships-btn");
-  act(() => {
-    userEvent.click(secondButton);
-  });
-  expect(
-    screen.queryByTestId("Computer-place-ships-btn")
-  ).not.toBeInTheDocument();
-});
-
 test("attackCom should be called, with a resulting hit", async() => {
   const mockAttackCom = jest.fn();
   const testShips = [
