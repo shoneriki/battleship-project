@@ -3,7 +3,8 @@ import EnemyArea from "./components/EnemyArea";
 import {ShipConstructor} from "./components/ShipConstructor"
 import { useState, useEffect, useRef } from "react";
 import {AppSection, Boards, GameTitle, BoardSection, Winner, Turn} from "./components/StyledComponents"
-
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const AppMain = () => {
   const currentTurn = useRef("Player")
@@ -70,6 +71,9 @@ const AppMain = () => {
   const [loser, setLoser] = useState("");
 
   const [gameOn, setGameOn] = useState(false);
+
+  const [show, setShow] = useState(true)
+  const [message, setMessage] = useState("Welcome to Battleship!")
   // useStates for both sides
 
 /* end USESTATES -----------------------------------------------------------*/
@@ -109,6 +113,7 @@ const AppMain = () => {
   // useEffect for both sides/gameon
   useEffect(() => {
     if (allHumanShipsPlaced && allComShipsPlaced) {
+      toast.success("game on")
       setGameOn(true);
     }
   }, [allHumanShipsPlaced, allComShipsPlaced, humanShipSegmentsOnBoard]);
@@ -144,6 +149,7 @@ const AppMain = () => {
       setGameOn(false);
       setWinner("Player");
       setLoser("Computer");
+      toast.success("Player Won!")
     }
   }, [gameOn, comShips, hitComCoords, winner, loser]);
 
@@ -152,8 +158,11 @@ const AppMain = () => {
       setGameOn(false);
       setWinner("Computer");
       setLoser("Player");
+      toast.error("Computer Won!")
     }
   }, [gameOn, humanShips, hitPlayerCoords, winner, loser]);
+
+
   // end useEffect for both sides/gameon
 
 /* end USEEFFECTS -------------------------------------------------------------*/
@@ -420,6 +429,12 @@ const AppMain = () => {
         setHumanBoard(newBoard)
         setHitPlayerCoords([...hitPlayerCoords, [v,h]])
         if(newShips[shipIndex].isSunk()){
+          toast.warning(
+            `The Computer Sank Your ${
+              ships[shipIndex].name.charAt(0).toUpperCase() +
+              ships[shipIndex].name.slice(1)
+            }`
+          );
           const newShipsArray = ships.map((ship) => ship.copy());
           newShipsArray.splice(shipIndex, 1);
           setHumanShips(newShipsArray);
@@ -461,7 +476,7 @@ const AppMain = () => {
         setComBoard(newBoard);
         setHitComCoords([...hitComCoords, [v, h]]);
         if (newShips[shipIndex].isSunk()) {
-          alert(`sunk ${ships[shipIndex].name}`)
+          toast.success(`You Sunk Their ${ships[shipIndex].name.charAt(0).toUpperCase() + ships[shipIndex].name.slice(1)}`)
           const newArray = [...comShips];
           newArray.splice(shipIndex, 1);
           setComShips(newArray);
@@ -534,6 +549,7 @@ const AppMain = () => {
       }
 
     // console.log("shipCoords for computer", shipCoords);
+    toast.success("Computer Ships Placed! Please place your ships on your board");
     return [newBoard, shipCoords, segmentsOnBoard];
   };
 
@@ -548,7 +564,12 @@ const AppMain = () => {
     setAllComShipsPlaced(allShipsPlaced);
   };
 
+  //end computer place ships logic
 
+  // toast functions
+
+
+  // end toast functions
 
 
   /* END COMPUTER SIDE FUNCTIONS-------------------------------------------------- */
@@ -558,11 +579,20 @@ const AppMain = () => {
   return (
     <AppSection>
       <GameTitle data-testid="game-title">Battleship</GameTitle>
-      {
-        gameOn && (
-          <Turn>{currentTurn.current}'s Turn</Turn>
-        )
-      }
+
+      <ToastContainer
+        position="top-center"
+        autoClose={2000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+      />
+      {gameOn && <Turn>{currentTurn.current}'s Turn</Turn>}
       <section>
         {winner !== "" && loser !== "" ? (
           <Winner winner={winner} loser={loser}>{`${winner} Wins!`}</Winner>
