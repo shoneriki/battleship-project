@@ -113,7 +113,7 @@ const AppMain = () => {
   // useEffect for both sides/gameon
   useEffect(() => {
     if (allHumanShipsPlaced && allComShipsPlaced) {
-      toast.success("game on")
+      toast.success("Game Start")
       setGameOn(true);
     }
   }, [allHumanShipsPlaced, allComShipsPlaced, humanShipSegmentsOnBoard]);
