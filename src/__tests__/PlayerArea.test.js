@@ -248,14 +248,14 @@ test("when computer hits player's ship, next attack should be near that previous
 
   const mockAttackPlayer = jest.fn((board, ships, hitCoords, forceHitCoords) => {
     let coords
-    if (hitCoords.length === 0) {
-      if(forceHitCoords) {
-        coords = forceHitCoords;
-      } else{
+    if(forceHitCoords) {
+      coords = forceHitCoords;
+    } else{
+      if(hitCoords.length === 0) {
         coords = getRandomCoords(board);
+      } else {
+        coords = getSmartCoords(hitCoords[hitCoords.length - 1], board, hitCoords)
       }
-    } else {
-     coords = getSmartCoords(hitCoords[hitCoords.length - 1], board, hitCoords);
     }
     const [v, h] = coords;
     const cell = board[v][h];
