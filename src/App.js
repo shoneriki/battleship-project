@@ -3,8 +3,10 @@ import EnemyArea from "./components/EnemyArea";
 import {ShipConstructor} from "./components/ShipConstructor"
 import { useState, useEffect, useRef } from "react";
 import {AppSection, Boards, GameTitle, BoardSection, Winner, Turn} from "./components/StyledComponents"
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+
+import {useToast} from "./components/useToast"
+import Toast from "./components/Toast"
+
 
 const AppMain = () => {
   const currentTurn = useRef("Player")
@@ -72,8 +74,8 @@ const AppMain = () => {
 
   const [gameOn, setGameOn] = useState(false);
 
-  const [show, setShow] = useState(true)
-  const [message, setMessage] = useState("Welcome to Battleship!")
+
+  const {toasts, showToast, removeToast} = useToast()
   // useStates for both sides
 
 /* end USESTATES -----------------------------------------------------------*/
@@ -113,7 +115,7 @@ const AppMain = () => {
   // useEffect for both sides/gameon
   useEffect(() => {
     if (allHumanShipsPlaced && allComShipsPlaced) {
-      toast.success("Game Start")
+      showToast("Game Start", 1000, "success")
       setGameOn(true);
     }
   }, [allHumanShipsPlaced, allComShipsPlaced, humanShipSegmentsOnBoard]);
@@ -149,7 +151,7 @@ const AppMain = () => {
       setGameOn(false);
       setWinner("Player");
       setLoser("Computer");
-      toast.success("Player Won!")
+      showToast("You Win!", 1000, "win")
     }
   }, [gameOn, comShips, hitComCoords, winner, loser]);
 
@@ -158,7 +160,7 @@ const AppMain = () => {
       setGameOn(false);
       setWinner("Computer");
       setLoser("Player");
-      toast.error("Computer Won!")
+      showToast("Computer Wins!", 1000, "lose")
     }
   }, [gameOn, humanShips, hitPlayerCoords, winner, loser]);
 
@@ -429,11 +431,11 @@ const AppMain = () => {
         setHumanBoard(newBoard)
         setHitPlayerCoords([...hitPlayerCoords, [v,h]])
         if(newShips[shipIndex].isSunk()){
-          toast.warning(
+          showToast(
             `The Computer Sank Your ${
               ships[shipIndex].name.charAt(0).toUpperCase() +
               ships[shipIndex].name.slice(1)
-            }`
+            }`, 1000, "warning"
           );
           const newShipsArray = ships.map((ship) => ship.copy());
           newShipsArray.splice(shipIndex, 1);
@@ -476,7 +478,7 @@ const AppMain = () => {
         setComBoard(newBoard);
         setHitComCoords([...hitComCoords, [v, h]]);
         if (newShips[shipIndex].isSunk()) {
-          toast.success(`You Sunk Their ${ships[shipIndex].name.charAt(0).toUpperCase() + ships[shipIndex].name.slice(1)}`)
+          showToast(`You Sunk Their ${ships[shipIndex].name.charAt(0).toUpperCase() + ships[shipIndex].name.slice(1)}`, 1000, "success")
           const newArray = [...comShips];
           newArray.splice(shipIndex, 1);
           setComShips(newArray);
@@ -549,7 +551,7 @@ const AppMain = () => {
       }
 
     // console.log("shipCoords for computer", shipCoords);
-    toast.success("Computer Ships Placed! Please place your ships on your board");
+    showToast("Computer Ships Placed! Please place your ships on your board", 1000, "success");
     return [newBoard, shipCoords, segmentsOnBoard];
   };
 
@@ -579,19 +581,19 @@ const AppMain = () => {
   return (
     <AppSection>
       <GameTitle data-testid="game-title">Battleship</GameTitle>
-
-      <ToastContainer
-        position="top-center"
-        autoClose={2000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="colored"
-      />
+      {
+        toasts.map((toast) => {
+          return (
+            <Toast
+              key={toast.id}
+              message={toast.message}
+              duration={toast.duration}
+              onRemove={() => removeToast(toast.id)}
+              type={toast.type}
+            />
+          )
+        })
+      }
       {gameOn && <Turn>{currentTurn.current}'s Turn</Turn>}
       <section>
         {winner !== "" && loser !== "" ? (
