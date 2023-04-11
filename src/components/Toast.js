@@ -38,9 +38,9 @@ const ToastMessage = styled.section`
     } else if (type === "success") {
       return "#90ee90";
     } else if (type === "win") {
-      return "#0275d8"
+      return "#0275d8";
     } else if (type === "lose") {
-      return "ee4b24"
+      return "#ee4b24";
     } else {
       return "#0275d8";
     }

@@ -551,7 +551,7 @@ const AppMain = () => {
       }
 
     // console.log("shipCoords for computer", shipCoords);
-    showToast("Computer Ships Placed! Please place your ships on your board", 1000, "success");
+    showToast("Computer Ships Placed! Please place your ships on your board", 1500, "success");
     console.log("test show toast?");
     return [newBoard, shipCoords, segmentsOnBoard];
   };
