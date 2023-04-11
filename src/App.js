@@ -43,8 +43,6 @@ const AppMain = () => {
   const [humanShip, setHumanShip] = useState(shipsToPlace[0]);
 
   // useStates for hit and miss logic
-  const [hit, setHit] = useState(false);
-  const [miss, setMiss] = useState(false);
   const [hitComCoords, setHitComCoords] = useState([]);
   const [missedComCoords, setMissedComCoords] = useState([]);
 
@@ -74,6 +72,7 @@ const AppMain = () => {
 
   const [gameOn, setGameOn] = useState(false);
 
+  const [turn, setTurn] = useState("Player")
 
   const {toasts, showToast, removeToast} = useToast()
   // useStates for both sides
@@ -115,14 +114,10 @@ const AppMain = () => {
   // useEffect for both sides/gameon
   useEffect(() => {
     if (allHumanShipsPlaced && allComShipsPlaced) {
-      showToast("Game Start", 1000, "success")
       setGameOn(true);
+      showToast("Game Started. Your Turn", 1000, "success")
     }
-  }, [allHumanShipsPlaced, allComShipsPlaced, humanShipSegmentsOnBoard]);
-
-  useEffect(() => {
-    // console.log("gameOn from app?", gameOn)
-  }, [gameOn])
+  }, [ gameOn, allHumanShipsPlaced, allComShipsPlaced, humanShipSegmentsOnBoard]);
 
   useEffect(() => {
     handlePlaceComputerShips()
@@ -449,6 +444,10 @@ const AppMain = () => {
       }
     }
     currentTurn.current = "Player";
+
+    if(gameOn) {
+      showToast("Your Turn", 1000, "success");
+    }
     setComputerAttacking(false);
   }
 
@@ -593,7 +592,7 @@ const AppMain = () => {
           )
         })
       }
-      {gameOn && <Turn>{currentTurn.current}'s Turn</Turn>}
+      {/* {gameOn && <Turn>{currentTurn.current}'s Turn</Turn>} */}
       <section>
         {winner !== "" && loser !== "" ? (
           <Winner winner={winner} loser={loser}>{`${winner} Wins!`}</Winner>

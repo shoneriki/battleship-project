@@ -5,6 +5,7 @@ import 'react-toastify/dist/ReactToastify.css';
 /* styles for appMain---------------------------------------------------------*/
 
 export const AppSection = styled.main`
+  background-color: #fffafa;
   width: 100%;
   min-height: 30vh;
   display: flex;
@@ -175,7 +176,7 @@ export const StyledBtn = styled.button`
   background-color: #1e90ff;
   background-image: linear-gradient(to bottom right, #1e90ff, #187bcd);
   border: none;
-  color: white;
+  color: #fffafa;
   font-size: 12px;
   padding: 8px 16px;
   cursor: pointer;
@@ -203,7 +204,7 @@ export const StyledBtn = styled.button`
 
 export const ShipBtn = styled.button`
   background-color: yellow;
-  color: gray;
+  color: black;
   border: none;
   padding: 4px 8px;
   margin: 4px 4px;
@@ -272,7 +273,7 @@ export const DesktopSection = styled.section`
   align-items: center;
   font-size: 12px;
   padding: 8px 16px;
-  
+
   @media only screen and (max-width: 800px) {
     display: none;
     justify-content: center;

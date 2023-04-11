@@ -41,7 +41,9 @@ const PlayerArea = ({
       <>
         <PlayerTitle>{Player}</PlayerTitle>
         <DesktopSection>
-          <h6>{humanDirection === "h"? "press v to change to vertical" : "press h to change to horizontal"} </h6>
+          {!gameOn && (
+            <h6>{humanDirection === "h"? "press v to change to vertical" : "press h to change to horizontal"} </h6>
+          )}
         </DesktopSection>
         {!allHumanShipsPlaced && (
           <ShipDashboard data-testid={`${Player}-ship-info`}>

@@ -45,7 +45,7 @@ const ToastMessage = styled.section`
       return "#0275d8";
     }
   }};
-  color: black;
+  color: #fffafa;
   padding: 8px 16px;
   border-radius: 16px;
   margin-bottom: 8px;

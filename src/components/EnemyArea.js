@@ -39,16 +39,20 @@ const EnemyArea = ({
           </StyledBtn>
         )} */}
         <section>
-          {gameOn && turn === "Computer" && <h6> Computer's turn </h6>}
-        </section>
-        <section>
           <h6>Ships Placed</h6>
           {allComShipsPlaced && (
             <ShipInfo data-testid={`${Player}-ship-info`}>
               {comShips.map((ship) => {
                 return (
                   <ShipStats key={ship.name}>
-                    <h6>{ship.name}</h6>
+                    <h6>
+                      {ship.name.charAt(0).toUpperCase() + ship.name.slice(1)}
+                    </h6>
+                    <h6>
+                      Length:
+                      <br/>
+                      {ship.length}
+                    </h6>
                   </ShipStats>
                 );
               })}
