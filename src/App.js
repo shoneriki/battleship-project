@@ -77,8 +77,6 @@ const AppMain = () => {
   const [showWinToast, setShowWinToast] = useState(false);
   const [showLoseToast, setShowLoseToast] = useState(false);
 
-
-
   const {toasts, showToast, removeToast, useSingleToast} = useToast()
   // useStates for both sides
 
@@ -129,7 +127,7 @@ const AppMain = () => {
       setShowGameStartToast(false)
     }
   },[showGameStartToast])
-  useSingleToast("Game On!", 1500, "success", showGameStartToast && !winner && !loser)
+  useSingleToast("Game On! You get to go first", 1500, "success", showGameStartToast && !winner && !loser)
 
   useEffect(() => {
     handlePlaceComputerShips()
@@ -146,25 +144,14 @@ const AppMain = () => {
     // console.log("comShips", comShips);
   }, [comShips]);
 
-  useEffect(() => {
-    if (currentTurn.current === "Computer") {
-      setTimeout(() => {
-        attackPlayer(humanBoard, humanShips, hitPlayerCoords, null);
-      }, 2000);
-    }
-  }, [
-    currentTurn.current,
-    humanBoard,
-    humanShips,
-    hitPlayerCoords,
-    computerAttacking,
-  ]);
 
   useEffect(() => {
     if (comShips.length === 0 || hitComCoords.length === 17) {
       setGameOn(false);
       setWinner("Player");
       setLoser("Computer");
+      console.log("winner from useEffect", winner)
+      console.log("loser from useEffect", loser)
     }
   }, [gameOn, comShips, hitComCoords, winner, loser]);
 
@@ -175,6 +162,26 @@ const AppMain = () => {
       setLoser("Player");
     }
   }, [gameOn, humanShips, hitPlayerCoords, winner, loser]);
+
+ useEffect(() => {
+   if (currentTurn.current === "Computer" && winner === "" && loser === "") {
+     setTimeout(() => {
+       attackPlayer(humanBoard, humanShips, hitPlayerCoords, null);
+       if (winner === "" && loser === "") {
+         showToast("Your Turn", 1500, "warning");
+       }
+     }, 2000);
+   }
+ }, [
+   currentTurn.current,
+   humanBoard,
+   humanShips,
+   hitPlayerCoords,
+   computerAttacking,
+   winner,
+   loser,
+ ]);
+
 
  useEffect(() => {
    if (winner === "Player") {
@@ -481,11 +488,8 @@ const AppMain = () => {
       }
     }
     setComputerAttacking(false);
-    if (gameOn && !winner && !loser) {
+    if (gameOn && winner === "" && loser === "") {
       currentTurn.current = "Player";
-      if(!winner && !loser) {
-        showToast("Your Turn", 1500, "success")
-      }
     }
   }
 
@@ -603,12 +607,6 @@ const AppMain = () => {
   };
 
   //end computer place ships logic
-
-  // toast functions
-
-
-  // end toast functions
-
 
   /* END COMPUTER SIDE FUNCTIONS-------------------------------------------------- */
 
