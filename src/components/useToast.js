@@ -1,10 +1,11 @@
 import {useState, useEffect} from "react";
+import {v4 as uuidv4} from "uuid";
 
 export const useToast = () => {
   const [toasts, setToasts] = useState([]);
 
   const showToast = (message, duration = 1000, type) => {
-    const id = Date.now();
+    const id = uuidv4();
     setToasts((prevToasts) => [...prevToasts, { id, message, duration, type }]);
   };
 
