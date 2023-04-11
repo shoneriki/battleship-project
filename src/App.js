@@ -633,12 +633,15 @@ const AppMain = () => {
 
       </ToastWrapper>
       {gameOn && <Turn>{currentTurn.current}'s Turn</Turn>}
+      <RestartBtn
+        onClick = {() => window.location.reload()}
+        winner = {winner}
+      >
+        {winner !== "" ? "Reload?": "Play Again?"}
+      </RestartBtn>
       {winner !== "" && loser !== "" ? (
         <WinnerDisplay>
           <Winner winner={winner} loser={loser}>{`${winner} Wins!`}</Winner>
-          <RestartBtn onClick = {() => window.location.reload()}>
-            Play Again?
-          </RestartBtn>
         </WinnerDisplay>
       ) : null}
       <Boards>
