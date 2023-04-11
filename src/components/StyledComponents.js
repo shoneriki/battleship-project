@@ -202,6 +202,11 @@ export const StyledBtn = styled.button`
   }
 `;
 
+export const RestartBtn = styled(StyledBtn)`
+  background-color: blue;
+  background-image: linear-gradient(to bottom right, blue, green);
+`;
+
 export const ShipBtn = styled.button`
   background-color: yellow;
   color: black;
@@ -232,6 +237,13 @@ export const ShipSelector = styled.section`
 export const Winner = styled.h1`
   text-align: center;
 `
+
+export const WinnerDisplay = styled.section`
+  text-align:center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`
 export const Turn = styled.h1`
   text-align: center;
 `
@@ -256,15 +268,10 @@ export const MobileSection = styled.section`
   }
 `;
 
-export const MobileBtn = styled.button`
-  background-color: purple;
-  border: none;
-  color: white;
-  font-size: 12px;
-  padding: 8px 16px;
-  cursor: pointer;
-  border-radius: 16px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
+export const MobileBtn = styled(StyledBtn)`
+  background-color: pink;
+  background-image: linear-gradient(to bottom right, pink, purple)
+
 `
 
 export const DesktopSection = styled.section`

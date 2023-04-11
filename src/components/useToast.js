@@ -1,4 +1,4 @@
-import {useState} from "react";
+import {useState, useEffect} from "react";
 
 export const useToast = () => {
   const [toasts, setToasts] = useState([]);
@@ -12,5 +12,13 @@ export const useToast = () => {
     setToasts((prevToasts) => prevToasts.filter((toast) => toast.id !== id));
   }
 
-  return { toasts, showToast, removeToast}
+  const useSingleToast = (message, duration, type, trigger) => {
+    useEffect(() => {
+      if (trigger) {
+        showToast(message, duration, type);
+      }
+    }, [trigger, message, duration, type, showToast]);
+  }
+
+  return { toasts, showToast, removeToast, useSingleToast}
 }

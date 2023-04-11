@@ -1,7 +1,7 @@
 import React, {useEffect} from "react";
 import { useToast } from "./useToast";
 
-export const TestComponent = ({ message, duration, type }) => {
+export const TestToast = ({ message, duration, type }) => {
   const { showToast, toasts, removeToast } = useToast();
 
   useEffect(() => {

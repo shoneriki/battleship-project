@@ -19,17 +19,18 @@ const fadeOut = keyframes`
   }
   ;`
 
-const ToastWrapper = styled.section`
+export const ToastWrapper = styled.section`
   position: fixed;
   top: 16px;
-  right: 0;
-  left: 0;
+  left: 50%;
+  transform: translateX(-50%);
   display: flex;
+  flex-direction: column;
   justify-content: center;
   z-index: 9999;
 `
 
-const ToastMessage = styled.section`
+export const ToastMessage = styled.section`
   background-color: ${({ type }) => {
     if (type === "warning") {
       return "#f0ad4e";
@@ -50,6 +51,7 @@ const ToastMessage = styled.section`
   border-radius: 16px;
   margin-bottom: 8px;
   font-size: 16px;
+  text-align: center;
   opacity: ${({ show }) => (show ? 1 : 0)}
   animation: ${({ show }) => (show ? fadeIn : fadeOut)} 0.3s ease-in-out;
 `;
@@ -70,7 +72,6 @@ const Toast = ({message, duration=1000, onRemove, type}) => {
     }
   },[message, duration, onRemove, type])
   return (
-    <ToastWrapper>
       <ToastMessage
         className={`toast-container ${show ? "show" : "hide"}`}
         show={show}
@@ -78,7 +79,6 @@ const Toast = ({message, duration=1000, onRemove, type}) => {
       >
         {message}
       </ToastMessage>
-    </ToastWrapper>
   );
 }
 

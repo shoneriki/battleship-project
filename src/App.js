@@ -2,8 +2,8 @@ import PlayerArea from "./components/PlayerArea";
 import EnemyArea from "./components/EnemyArea";
 import {ShipConstructor} from "./components/ShipConstructor"
 import { useState, useEffect, useRef } from "react";
-import {AppSection, Boards, GameTitle, BoardSection, Winner, Turn} from "./components/StyledComponents"
-
+import {AppSection, Boards, GameTitle, BoardSection, Winner, RestartBtn, WinnerDisplay, Turn} from "./components/StyledComponents"
+import {ToastWrapper} from "./components/Toast"
 import {useToast} from "./components/useToast"
 import Toast from "./components/Toast"
 
@@ -72,9 +72,14 @@ const AppMain = () => {
 
   const [gameOn, setGameOn] = useState(false);
 
-  const [turn, setTurn] = useState("Player")
+  const [showGameStartToast, setShowGameStartToast] = useState(false);
+  const [comPlaceShipToast, setComPlaceShipToast] = useState(false);
+  const [showWinToast, setShowWinToast] = useState(false);
+  const [showLoseToast, setShowLoseToast] = useState(false);
 
-  const {toasts, showToast, removeToast} = useToast()
+
+
+  const {toasts, showToast, removeToast, useSingleToast} = useToast()
   // useStates for both sides
 
 /* end USESTATES -----------------------------------------------------------*/
@@ -115,13 +120,27 @@ const AppMain = () => {
   useEffect(() => {
     if (allHumanShipsPlaced && allComShipsPlaced) {
       setGameOn(true);
-      showToast("Game Started. Your Turn", 1000, "success")
+      setShowGameStartToast(true);
     }
   }, [ gameOn, allHumanShipsPlaced, allComShipsPlaced, humanShipSegmentsOnBoard]);
 
   useEffect(() => {
+    if(showGameStartToast) {
+      setShowGameStartToast(false)
+    }
+  },[showGameStartToast])
+  useSingleToast("Game On!", 1500, "success", showGameStartToast && !winner && !loser)
+
+  useEffect(() => {
     handlePlaceComputerShips()
+    setComPlaceShipToast(true)
   },[])
+  useEffect(() => {
+    if(comPlaceShipToast) {
+      setComPlaceShipToast(false)
+    }
+  },[comPlaceShipToast])
+  useSingleToast("Computer Ships Placed! Please place your ships on your board", 1500, "success", comPlaceShipToast);
 
   useEffect(() => {
     // console.log("comShips", comShips);
@@ -146,7 +165,6 @@ const AppMain = () => {
       setGameOn(false);
       setWinner("Player");
       setLoser("Computer");
-      showToast("You Win!", 1000, "win")
     }
   }, [gameOn, comShips, hitComCoords, winner, loser]);
 
@@ -155,9 +173,27 @@ const AppMain = () => {
       setGameOn(false);
       setWinner("Computer");
       setLoser("Player");
-      showToast("Computer Wins!", 1000, "lose")
     }
   }, [gameOn, humanShips, hitPlayerCoords, winner, loser]);
+
+ useEffect(() => {
+   if (winner === "Player") {
+     setShowWinToast(true);
+   } else if (loser === "Player") {
+    setShowLoseToast(true);
+   }
+ }, [winner, loser]);
+
+ useSingleToast("You Win!", 1000, "win", showWinToast);
+ useSingleToast("Computer Wins!", 1000, "lose", showLoseToast);
+
+ useEffect(() => {
+   if (showWinToast) {
+     setShowWinToast(false);
+   } else if(showLoseToast) {
+      setShowLoseToast(false)
+   }
+ }, [showWinToast, showLoseToast]);
 
 
   // end useEffect for both sides/gameon
@@ -300,7 +336,6 @@ const AppMain = () => {
     setHumanBoard(newBoard);
     setHumanShipCoords(newShipCoords);
     setHumanShipSegmentsOnBoard(newShipSegmentsOnBoard);
-    // const allShipsPlaced = newShipSegmentsOnBoard.length === 17;
     setAllHumanShipsPlaced(true);
   };
 
@@ -421,6 +456,8 @@ const AppMain = () => {
         if(shipIndex  !== -1)  {
         const newShips = ships.map(ship => ship.copy());
         newShips[shipIndex].isHit();
+        showToast(`Computer hit ${ships[shipIndex].name.charAt(0).toUpperCase() +
+              ships[shipIndex].name.slice(1)}`, 1500, "warning")
         setHumanShips(newShips);
         cell.hit = true;
         setHumanBoard(newBoard)
@@ -430,7 +467,7 @@ const AppMain = () => {
             `The Computer Sank Your ${
               ships[shipIndex].name.charAt(0).toUpperCase() +
               ships[shipIndex].name.slice(1)
-            }`, 1000, "warning"
+            }`, 1500, "warning"
           );
           const newShipsArray = ships.map((ship) => ship.copy());
           newShipsArray.splice(shipIndex, 1);
@@ -443,12 +480,13 @@ const AppMain = () => {
         setMissedPlayerCoords([...missedPlayerCoords, [v, h]]);
       }
     }
-    currentTurn.current = "Player";
-
-    if(gameOn) {
-      showToast("Your Turn", 1000, "success");
-    }
     setComputerAttacking(false);
+    if (gameOn && !winner && !loser) {
+      currentTurn.current = "Player";
+      if(!winner && !loser) {
+        showToast("Your Turn", 1500, "success")
+      }
+    }
   }
 
 
@@ -477,7 +515,7 @@ const AppMain = () => {
         setComBoard(newBoard);
         setHitComCoords([...hitComCoords, [v, h]]);
         if (newShips[shipIndex].isSunk()) {
-          showToast(`You Sunk Their ${ships[shipIndex].name.charAt(0).toUpperCase() + ships[shipIndex].name.slice(1)}`, 1000, "success")
+          showToast(`You Sunk Their ${ships[shipIndex].name.charAt(0).toUpperCase() + ships[shipIndex].name.slice(1)}`, 1500, "success")
           const newArray = [...comShips];
           newArray.splice(shipIndex, 1);
           setComShips(newArray);
@@ -549,8 +587,7 @@ const AppMain = () => {
         }
       }
 
-    // console.log("shipCoords for computer", shipCoords);
-    showToast("Computer Ships Placed! Please place your ships on your board", 1500, "success");
+    console.log("shipCoords for computer", shipCoords);
     return [newBoard, shipCoords, segmentsOnBoard];
   };
 
@@ -579,6 +616,7 @@ const AppMain = () => {
   return (
     <AppSection>
       <GameTitle data-testid="game-title">Battleship</GameTitle>
+      <ToastWrapper>
       {
         toasts.map((toast) => {
           return (
@@ -592,12 +630,17 @@ const AppMain = () => {
           )
         })
       }
-      {/* {gameOn && <Turn>{currentTurn.current}'s Turn</Turn>} */}
-      <section>
-        {winner !== "" && loser !== "" ? (
+
+      </ToastWrapper>
+      {gameOn && <Turn>{currentTurn.current}'s Turn</Turn>}
+      {winner !== "" && loser !== "" ? (
+        <WinnerDisplay>
           <Winner winner={winner} loser={loser}>{`${winner} Wins!`}</Winner>
-        ) : null}
-      </section>
+          <RestartBtn onClick = {() => window.location.reload()}>
+            Play Again?
+          </RestartBtn>
+        </WinnerDisplay>
+      ) : null}
       <Boards>
         <BoardSection>
           <PlayerArea
