@@ -236,7 +236,7 @@ export const Turn = styled.h1`
 `
 
 export const MobileSection = styled.section`
-  display: flex;
+  display: none;
   justify-content: center;
   align-items: center;
   font-size: 12px;
@@ -244,8 +244,14 @@ export const MobileSection = styled.section`
   cursor: pointer;
 
   @media only screen and (max-width: 800px) {
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
   @media only screen and (min-width: 801px) and (max-width: 1100px) {
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 `;
 
@@ -259,6 +265,25 @@ export const MobileBtn = styled.button`
   border-radius: 16px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
 `
+
+export const DesktopSection = styled.section`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 12px;
+  padding: 8px 16px;
+  
+  @media only screen and (max-width: 800px) {
+    display: none;
+    justify-content: center;
+    align-items: center;
+  }
+  @media only screen and (min-width: 801px) and (max-width: 1100px) {
+    display: none;
+    justify-content: center;
+    align-items: center;
+  }
+`;
 
 export const Labels = styled.tr`
   display: flex;

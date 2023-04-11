@@ -14,6 +14,7 @@ import {
   ShipBtn,
   MobileSection,
   MobileBtn,
+  DesktopSection,
 } from "./StyledComponents";
 
 const PlayerArea = ({
@@ -39,6 +40,9 @@ const PlayerArea = ({
     return (
       <>
         <PlayerTitle>{Player}</PlayerTitle>
+        <DesktopSection>
+          <h6>{humanDirection === "h"? "press v to change to vertical" : "press h to change to horizontal"} </h6>
+        </DesktopSection>
         {!allHumanShipsPlaced && (
           <ShipDashboard data-testid={`${Player}-ship-info`}>
             <ShipSelector>
@@ -58,7 +62,9 @@ const PlayerArea = ({
               </PlayerShipButtons>
               <MobileSection>
                 <MobileBtn
-                  onClick={() => setHumanDirection("h" ? "v" : "h")}
+                  onClick={() => setHumanDirection(
+                    humanDirection === "h" ? "v" : "h"
+                  )}
                 >
                   Change To {humanDirection === "h" ? "Vertical" : "Horizontal"} Orientation
                 </MobileBtn>
