@@ -552,7 +552,6 @@ const AppMain = () => {
 
     // console.log("shipCoords for computer", shipCoords);
     showToast("Computer Ships Placed! Please place your ships on your board", 1500, "success");
-    console.log("test show toast?");
     return [newBoard, shipCoords, segmentsOnBoard];
   };
 
@@ -578,7 +577,6 @@ const AppMain = () => {
   /* END COMPUTER SIDE FUNCTIONS-------------------------------------------------- */
 
 /*FUNCTIONS end------------------------------------------------------------------*/
-
   return (
     <AppSection>
       <GameTitle data-testid="game-title">Battleship</GameTitle>
@@ -607,6 +605,7 @@ const AppMain = () => {
             Player="Player"
             humanBoard={humanBoard}
             humanDirection={humanDirection}
+            setHumanDirection={setHumanDirection}
             humanPlaceShip={humanPlaceShip}
             /* for placing ships randomly */
             randomPlaceShips={randomPlaceShips}
@@ -627,20 +626,12 @@ const AppMain = () => {
           <EnemyArea
             Player="Computer"
             comBoard={comBoard}
-            boardSize={boardSize}
             comShips={comShips}
-            setComShips={setComShips}
-            comPlaceAllShips={comPlaceAllShips}
-            handlePlaceComputerShips={handlePlaceComputerShips}
             allComShipsPlaced={allComShipsPlaced}
             gameOn={gameOn}
             winner={winner}
             // attack logic
             attackCom={attackCom}
-            hit={hit}
-            setHit={setHit}
-            miss={miss}
-            setMiss={setMiss}
             turn={currentTurn.current}
             // end attack logic
           />

@@ -12,12 +12,15 @@ import {
   PlaceAllPlayerShips,
   StyledBtn,
   ShipBtn,
+  MobileSection,
+  MobileBtn,
 } from "./StyledComponents";
 
 const PlayerArea = ({
   Player,
   humanBoard,
   humanDirection,
+  setHumanDirection,
   humanPlaceShip,
   randomPlaceShips,
   handleRandomPlayerShipPlacement,
@@ -53,6 +56,13 @@ const PlayerArea = ({
                   );
                 })}
               </PlayerShipButtons>
+              <MobileSection>
+                <MobileBtn
+                  onClick={() => setHumanDirection("h" ? "v" : "h")}
+                >
+                  Change To {humanDirection === "h" ? "Vertical" : "Horizontal"} Orientation
+                </MobileBtn>
+              </MobileSection>
             </ShipSelector>
 
             <PlaceAllPlayerShips>

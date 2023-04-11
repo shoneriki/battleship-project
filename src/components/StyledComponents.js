@@ -235,6 +235,31 @@ export const Turn = styled.h1`
   text-align: center;
 `
 
+export const MobileSection = styled.section`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 12px;
+  padding: 8px 16px;
+  cursor: pointer;
+
+  @media only screen and (max-width: 800px) {
+  }
+  @media only screen and (min-width: 801px) and (max-width: 1100px) {
+  }
+`;
+
+export const MobileBtn = styled.button`
+  background-color: purple;
+  border: none;
+  color: white;
+  font-size: 12px;
+  padding: 8px 16px;
+  cursor: pointer;
+  border-radius: 16px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
+`
+
 export const Labels = styled.tr`
   display: flex;
   width: 100%
