@@ -204,6 +204,9 @@ export const StyledBtn = styled.button`
 
 export const RestartBtn = styled(StyledBtn)`
   background-color: blue;
+  width: 25%;
+  text-align-center;
+  margin: 0 auto;
   background-image: linear-gradient(to bottom right, blue, green);
 `;
 
