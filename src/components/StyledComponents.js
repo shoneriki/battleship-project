@@ -24,6 +24,7 @@ export const AppSection = styled.main`
 export const Boards = styled.section`
   display: flex;
   flex-direction: row;
+  align-items: flex-start;
   width: 100%;
   text-align: center;
   @media only screen and (max-width: 800px) {
@@ -54,15 +55,23 @@ export const PlayerTitle = styled.h1`
   text-align: center;
 `;
 
+/*Info Container---------------------------------------------------------------*/
+
+export const InfoContainer = styled.section`
+  min-height: 30vh;
+`
+
+/*end of info container --------------------------------------------------------*/
+
 /*  board ---------------------------------------------------------------------*/
 
 export const Board = styled.table`
   width: 100%;
-  min-height: 100vh;
+  min-height: 30vh;
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin: 4% 0;
+  margin: 0;
   @media only screen and (max-width: 1300px) {
     display: flex;
     justify-content: center;

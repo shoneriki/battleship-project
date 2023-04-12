@@ -3,14 +3,15 @@ import { ShipConstructor } from "./ShipConstructor";
 import classNames from "classnames"
 import {
   PlayerTitle,
-  Board,
-  BoardBody,
-  TableRow,
-  ComSquare,
+  InfoContainer,
   ShipInfo,
   Labels,
   ShipStats,
   StyledBtn,
+  Board,
+  BoardBody,
+  TableRow,
+  ComSquare,
 } from "./StyledComponents";
 
 const EnemyArea = ({
@@ -28,7 +29,7 @@ const EnemyArea = ({
 }) => {
   const Info = ({ Player, gameOn, turn }) => {
     return (
-      <>
+      <InfoContainer>
         <PlayerTitle>{Player}</PlayerTitle>
         {/* {!allComShipsPlaced && (
           <StyledBtn
@@ -59,7 +60,7 @@ const EnemyArea = ({
             </ShipInfo>
           )}
         </section>
-      </>
+      </InfoContainer>
     );
   };
 
