@@ -138,7 +138,7 @@ const AppMain = () => {
       setComPlaceShipToast(false)
     }
   },[comPlaceShipToast])
-  useSingleToast("Computer Ships Placed! Please place your ships on your board", 1500, "success", comPlaceShipToast);
+  useSingleToast("Computer ships placed! Please place your ships on your board", 1500, "success", comPlaceShipToast);
 
   useEffect(() => {
     // console.log("comShips", comShips);
@@ -150,8 +150,6 @@ const AppMain = () => {
       setGameOn(false);
       setWinner("Player");
       setLoser("Computer");
-      console.log("winner from useEffect", winner)
-      console.log("loser from useEffect", loser)
     }
   }, [gameOn, comShips, hitComCoords, winner, loser]);
 
@@ -463,19 +461,14 @@ useSingleToast("Your Turn", undefined, "yourTurn", gameOn && currentTurn.current
         if(shipIndex  !== -1)  {
         const newShips = ships.map(ship => ship.copy());
         newShips[shipIndex].isHit();
-        showToast(`Computer hit ${ships[shipIndex].name.charAt(0).toUpperCase() +
+        showToast(`The computer hit ${ships[shipIndex].name.charAt(0).toUpperCase() +
               ships[shipIndex].name.slice(1)}`, 1500, "warning")
         setHumanShips(newShips);
         cell.hit = true;
         setHumanBoard(newBoard)
         setHitPlayerCoords([...hitPlayerCoords, [v,h]])
         if(newShips[shipIndex].isSunk()){
-          showToast(
-            `The Computer Sank Your ${
-              ships[shipIndex].name.charAt(0).toUpperCase() +
-              ships[shipIndex].name.slice(1)
-            }`, 1500, "warning"
-          );
+          showToast(`The computer sank your ${ships[shipIndex].name}`, 1500, "warning");
           const newShipsArray = ships.map((ship) => ship.copy());
           newShipsArray.splice(shipIndex, 1);
           setHumanShips(newShipsArray);
@@ -519,7 +512,7 @@ useSingleToast("Your Turn", undefined, "yourTurn", gameOn && currentTurn.current
         setComBoard(newBoard);
         setHitComCoords([...hitComCoords, [v, h]]);
         if (newShips[shipIndex].isSunk()) {
-          showToast(`You Sunk Their ${ships[shipIndex].name.charAt(0).toUpperCase() + ships[shipIndex].name.slice(1)}`, 1500, "success")
+          showToast(`You sunk their ${ships[shipIndex].name}`, 1500, "success")
           const newArray = [...comShips];
           newArray.splice(shipIndex, 1);
           setComShips(newArray);
