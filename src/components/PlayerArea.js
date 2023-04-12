@@ -12,7 +12,9 @@ import {
   MobileBtn,
   DesktopSection,
   InfoContainer,
-  
+  ShipName,
+  IndivStats,
+
   Board,
   BoardBody,
   TableRow,
@@ -103,10 +105,14 @@ const PlayerArea = ({
               {humanShips.map((ship) => {
                 return (
                   <ShipStats key={ship.name}>
-                    <h6>
+                    <ShipName>
                       {ship.name.charAt(0).toUpperCase() + ship.name.slice(1)}
-                    </h6>
-                    <h6>HP: {ship.hp}</h6>
+                    </ShipName>
+                    <IndivStats>
+                    hp:
+                    <br/>
+                    {ship.hp}
+                    </IndivStats>
                   </ShipStats>
                 );
               })}

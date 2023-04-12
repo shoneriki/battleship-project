@@ -47,6 +47,10 @@ export const BoardSection = styled.section`
   font-size: 20px;
   font-weight: bold;
   text-align: center;
+
+  @media only screen and (max-width: 800px) {
+    margin-bottom: 32px;
+  }
 `;
 
 /* end styles for appMain-----------------------------------------------------*/
@@ -58,7 +62,12 @@ export const PlayerTitle = styled.h1`
 /*Info Container---------------------------------------------------------------*/
 
 export const InfoContainer = styled.section`
-  min-height: 30vh;
+  min-height: 28vh;
+
+  @media only screen and (max-width: 800px) {
+    min-height: 16vh;
+  }
+
 `
 
 /*end of info container --------------------------------------------------------*/
@@ -320,4 +329,15 @@ export const Labels = styled.tr`
 `
 export const ShipStats = styled.section`
   margin: 8px 8px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+`
+
+export const ShipName = styled.h6`
+`
+
+export const IndivStats = styled.h6`
 `
