@@ -290,7 +290,7 @@ export const DesktopSection = styled.section`
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 12px;
+  font-size: 16px;
   padding: 8px 16px;
 
   @media only screen and (max-width: 800px) {

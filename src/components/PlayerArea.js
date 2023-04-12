@@ -56,7 +56,7 @@ const PlayerArea = ({
                 {`Please place
                 ${humanDirection === "h" ? "horizontal" : "vertical"} ${
                   humanShip.name
-                } with length of 
+                } with length of
                 ${humanShip.length}`} on the board or select another ship
               </h6>
               <PlayerShipButtons>
@@ -67,7 +67,8 @@ const PlayerArea = ({
                       onClick={(e) => setHumanShip(ship)}
                       highlight={humanShip.name === ship.name}
                     >
-                      {ship.name.charAt(0).toUpperCase() + ship.name.slice(1)}
+                      {`${ship.name.charAt(0).toUpperCase() + ship.name.slice(1)}
+                      ${ship.length}`}
                     </ShipBtn>
                   );
                 })}

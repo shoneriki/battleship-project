@@ -461,8 +461,7 @@ useSingleToast("Your Turn", undefined, "yourTurn", gameOn && currentTurn.current
         if(shipIndex  !== -1)  {
         const newShips = ships.map(ship => ship.copy());
         newShips[shipIndex].isHit();
-        showToast(`The computer hit ${ships[shipIndex].name.charAt(0).toUpperCase() +
-              ships[shipIndex].name.slice(1)}`, 1500, "warning")
+        showToast(`The computer hit your ${ships[shipIndex].name}`, 1500, "warning")
         setHumanShips(newShips);
         cell.hit = true;
         setHumanBoard(newBoard)
