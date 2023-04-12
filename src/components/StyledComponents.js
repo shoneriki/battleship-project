@@ -5,6 +5,8 @@ import 'react-toastify/dist/ReactToastify.css';
 /* styles for appMain---------------------------------------------------------*/
 
 export const AppSection = styled.main`
+  background-color: #eaf2f8;
+  color: #2c3e50;
   overflow: hidden;
   width: 100%;
   min-height: 30vh;
@@ -113,7 +115,7 @@ export const Square = styled.td`
   }
 
   &:hover {
-    background-color: ${({ gameOn }) => !gameOn && "yellow"};
+    background-color: ${({ gameOn }) => !gameOn && "#e1c16e"};
     cursor: ${({ gameOn, turn }) => (!gameOn ? "pointer" : "not-allowed")};
   }
   &.hit {
@@ -219,7 +221,7 @@ export const RestartBtn = styled(StyledBtn)`
 `;
 
 export const ShipBtn = styled.button`
-  background-color: #f39c12;
+  background-color: ${({ highlight }) => (highlight ? "#8B4000" : "#f39c12")};
   color: #ffffff;
   border: none;
   padding: 4px 8px;
@@ -229,7 +231,6 @@ export const ShipBtn = styled.button`
   transition: 0.3s;
 
   &:hover {
-    background-color: yellow;
     cursor: pointer;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
   }
@@ -289,7 +290,7 @@ export const DesktopSection = styled.section`
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 12px;
+  font-size: 16px;
   padding: 8px 16px;
 
   @media only screen and (max-width: 800px) {

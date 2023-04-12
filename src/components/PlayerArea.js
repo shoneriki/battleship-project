@@ -42,33 +42,45 @@ const PlayerArea = ({
         <PlayerTitle>{Player}</PlayerTitle>
         <DesktopSection>
           {!gameOn && (
-            <h6>{humanDirection === "h"? "press v to change to vertical" : "press h to change to horizontal"} </h6>
+            <h6>
+              {humanDirection === "h"
+                ? "Press v to change ship to vertical orientation"
+                : "Press h to change ship to horizontal orientation"}{" "}
+            </h6>
           )}
         </DesktopSection>
         {!allHumanShipsPlaced && (
           <ShipDashboard data-testid={`${Player}-ship-info`}>
             <ShipSelector>
               <h6>
-                {humanShip.name.charAt(0).toUpperCase() + humanShip.name.slice(1)}, {" "}
-                {humanDirection === "h" ? "Horizontal" : "Vertical"}, {" "}
-                {humanShip.length}
+                {`Please place
+                ${humanDirection === "h" ? "horizontal" : "vertical"} ${
+                  humanShip.name
+                } with length of
+                ${humanShip.length}`} on the board or select another ship
               </h6>
               <PlayerShipButtons>
                 {shipsToPlace.map((ship) => {
                   return (
-                    <ShipBtn key={ship.name} onClick={(e) => setHumanShip(ship)}>
-                      {ship.name.charAt(0).toUpperCase() + ship.name.slice(1)}
+                    <ShipBtn
+                      key={ship.name}
+                      onClick={(e) => setHumanShip(ship)}
+                      highlight={humanShip.name === ship.name}
+                    >
+                      {`${ship.name.charAt(0).toUpperCase() + ship.name.slice(1)}
+                      ${ship.length}`}
                     </ShipBtn>
                   );
                 })}
               </PlayerShipButtons>
               <MobileSection>
                 <MobileBtn
-                  onClick={() => setHumanDirection(
-                    humanDirection === "h" ? "v" : "h"
-                  )}
+                  onClick={() =>
+                    setHumanDirection(humanDirection === "h" ? "v" : "h")
+                  }
                 >
-                  Change To {humanDirection === "h" ? "Vertical" : "Horizontal"} Orientation
+                  Change To {humanDirection === "h" ? "Vertical" : "Horizontal"}{" "}
+                  Orientation
                 </MobileBtn>
               </MobileSection>
             </ShipSelector>
