@@ -9,7 +9,7 @@ export const AppSection = styled.main`
   color: #2c3e50;
   overflow: hidden;
   width: 100%;
-  min-height: 30vh;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
