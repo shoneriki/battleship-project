@@ -8,6 +8,9 @@ import {
   Labels,
   ShipStats,
   StyledBtn,
+  ShipName,
+  IndivStats,
+
   Board,
   BoardBody,
   TableRow,
@@ -46,14 +49,14 @@ const EnemyArea = ({
               {comShips.map((ship) => {
                 return (
                   <ShipStats key={ship.name}>
-                    <h6>
+                    <ShipName>
                       {ship.name.charAt(0).toUpperCase() + ship.name.slice(1)}
-                    </h6>
-                    <h6>
+                    </ShipName>
+                    <IndivStats>
                       Length:
                       <br/>
                       {ship.length}
-                    </h6>
+                    </IndivStats>
                   </ShipStats>
                 );
               })}
