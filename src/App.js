@@ -141,7 +141,6 @@ const AppMain = () => {
   useSingleToast("Computer ships placed! Please place your ships on your board", 1500, "success", comPlaceShipToast);
 
   useEffect(() => {
-    // console.log("comShips", comShips);
   }, [comShips]);
 
 
@@ -216,7 +215,6 @@ useSingleToast("Your Turn", undefined, "yourTurn", gameOn && currentTurn.current
     const segmentsOnBoard = [...humanShipSegmentsOnBoard];
 
     const shipPlacementValid = (v, h) => {
-      /* check for if ship goes out of bounds*/
       let hIncrement, vIncrement;
       if (direction === "h") {
         vIncrement = 0;
@@ -225,40 +223,28 @@ useSingleToast("Your Turn", undefined, "yourTurn", gameOn && currentTurn.current
         vIncrement = 1;
         hIncrement = 0;
       }
-      let vEnding = v + vIncrement * length;
-      let hEnding = h + hIncrement * length;
+
       for (let i = 0; i < length; i++) {
-        if (
-          vEnding > boardSize ||
-          hEnding > boardSize ||
-          vEnding < 0 ||
-          hEnding < 0
-        ) {
+        const currV = v + i * vIncrement;
+        const currH = h + i * hIncrement;
+
+        // Check for out-of-bounds
+        if (currV >= boardSize || currH >= boardSize || currV < 0 || currH < 0) {
           throw new Error("ship is out of bounds");
         }
-      }
-      /* end of check for if ship is out of bounds*/
-      if(allHumanShipsPlaced) {
-        throw new Error("all ships placed")
-      }
 
-      /* check for ship overlaps with already placed ship*/
-      for (let i = 0; i < length; i++) {
-        if (direction === "h") {
-          if (newBoard[v][h + i].hasShip !== 0) {
-            throw new Error("ship overlaps with another ship");
-          }
-        } else {
-          if (newBoard[v + i][h].hasShip !== 0) {
-            throw new Error("ship overlaps with another ship");
-          }
+        // Check for ship overlaps with already placed ship
+        if (newBoard[currV][currH].hasShip !== 0) {
+          throw new Error("ship overlaps with another ship");
         }
       }
-      /* end check for ship overlap*/
 
-      /* if both checks pass, return true*/
       return true;
     };
+
+    if (allHumanShipsPlaced) {
+      throw new Error("all ships placed");
+    }
 
     if (shipPlacementValid(v, h)) {
       for (let i = 0; i < length; i++) {
@@ -273,16 +259,30 @@ useSingleToast("Your Turn", undefined, "yourTurn", gameOn && currentTurn.current
       }
       setHumanShipCoords(shipCoords);
       setHumanShipSegmentsOnBoard(segmentsOnBoard);
-      setHumanShipsPlaced([...humanShipsPlaced, ship.name])
-      setShipsToPlace(
-        shipsToPlace.filter((shipToPlace) => shipToPlace !== ship)
-      )
+      setHumanShipsPlaced([...humanShipsPlaced, ship.name]);
+      setShipsToPlace(shipsToPlace.filter((shipToPlace) => shipToPlace !== ship));
       if (segmentsOnBoard.length === 17 && humanShipsPlaced.length === 5) {
         setAllHumanShipsPlaced(true);
       }
     }
     setHumanBoard(newBoard);
     return [newBoard, shipCoords, segmentsOnBoard];
+  };
+
+  const isShipPlacementValid = (newBoard, ship, v, h, direction, boardSize) => {
+    for (let i = 0; i < ship.length; i++) {
+      const vIndex = direction === "v" ? v + i : v;
+      const hIndex = direction === "h" ? h + i : h;
+
+      if (
+        vIndex >= boardSize ||
+        hIndex >= boardSize ||
+        newBoard[vIndex][hIndex].hasShip !== 0
+      ) {
+        return false;
+      }
+    }
+    return true;
   };
 
   const randomPlaceShips = (board, ships) => {
@@ -297,25 +297,7 @@ useSingleToast("Your Turn", undefined, "yourTurn", gameOn && currentTurn.current
         const h = Math.floor(Math.random() * (boardSize - ship.length + 1));
         const direction = Math.random() > 0.5 ? "h" : "v";
 
-        let validSegments = true;
-        for (let i = 0; i < ship.length; i++) {
-          const vIndex = direction === "v" ? v + i : v;
-          const hIndex = direction === "h" ? h + i : h;
-          const shipSegment = ship.name.slice(0, 3);
-
-          if (
-            vIndex >= boardSize ||
-            hIndex >= boardSize ||
-            newBoard[vIndex][hIndex].hasShip !== 0 ||
-            segmentsOnBoard.includes(shipSegment) ||
-            allHumanShipsPlaced
-          ) {
-            validSegments = false;
-            break;
-          }
-        }
-
-        if (validSegments) {
+        if (isShipPlacementValid(newBoard, ship, v, h, direction, boardSize)) {
           for (let i = 0; i < ship.length; i++) {
             const vIndex = direction === "h" ? v : v + i;
             const hIndex = direction === "h" ? h + i : h;
@@ -325,15 +307,14 @@ useSingleToast("Your Turn", undefined, "yourTurn", gameOn && currentTurn.current
             shipCoords.push([vIndex, hIndex]);
           }
 
-          segmentsOnBoard.push(
-            ...Array(ship.length).fill(ship.name.slice(0, 3))
-          );
+          segmentsOnBoard.push(...Array(ship.length).fill(ship.name.slice(0, 3)));
           validPlacement = true;
         }
       }
     }
     return [newBoard, shipCoords, segmentsOnBoard];
   };
+
 
   const handleRandomPlayerShipPlacement = () => {
     const [newBoard, newShipCoords, newShipSegmentsOnBoard] =
