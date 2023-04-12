@@ -630,7 +630,6 @@ useSingleToast("Your Turn", undefined, "yourTurn", gameOn && currentTurn.current
       }
 
       </ToastWrapper>
-      {gameOn && <Turn>{currentTurn.current}'s Turn</Turn>}
       <RestartBtn
         onClick = {() => window.location.reload()}
         winner = {winner}
