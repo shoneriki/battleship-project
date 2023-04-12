@@ -127,7 +127,7 @@ const AppMain = () => {
       setShowGameStartToast(false)
     }
   },[showGameStartToast])
-  useSingleToast("Game On! You get to go first", 1500, "success", showGameStartToast && !winner && !loser)
+  useSingleToast("Game On!", 1500, "success", showGameStartToast && !winner && !loser)
 
   useEffect(() => {
     handlePlaceComputerShips()
@@ -168,19 +168,19 @@ const AppMain = () => {
      setTimeout(() => {
        attackPlayer(humanBoard, humanShips, hitPlayerCoords, null);
        if (winner === "" && loser === "") {
-         showToast("Your Turn", 1500, "warning");
-       }
-     }, 2000);
-   }
- }, [
-   currentTurn.current,
-   humanBoard,
-   humanShips,
-   hitPlayerCoords,
-   computerAttacking,
-   winner,
-   loser,
- ]);
+      }
+    }, 2000);
+  }
+}, [
+  currentTurn.current,
+  humanBoard,
+  humanShips,
+  hitPlayerCoords,
+  computerAttacking,
+  winner,
+  loser,
+]);
+useSingleToast("Your Turn", undefined, "yourTurn", gameOn && currentTurn.current === "Player" && winner === "" && loser === "", true);
 
 
  useEffect(() => {
@@ -432,7 +432,7 @@ const AppMain = () => {
   const attackPlayer = (board, ships, hitCoords, forceHitCoords) => {
     if (!gameOn) return;
     if (currentTurn.current === "Player") return;
-    if (currentTurn.current !== "Player") {
+    if (gameOn && currentTurn.current !== "Player") {
       setComputerAttacking(true);
       let newBoard = board.map(row => row.map(cell => ({...cell})))
       let coords;
@@ -501,7 +501,7 @@ const AppMain = () => {
   const attackCom = (v, h, board, ships) => {
     if (!gameOn) return;
     if (currentTurn.current !== "Player") return;
-    if (currentTurn.current === "Player") {
+    if (gameOn && currentTurn.current === "Player") {
       const newBoard = [...board];
       const cell = newBoard[v][h];
       if (cell.hit || cell.miss) {
@@ -622,8 +622,9 @@ const AppMain = () => {
               key={toast.id}
               message={toast.message}
               duration={toast.duration}
-              onRemove={() => removeToast(toast.id)}
               type={toast.type}
+              persistent={toast.persistent}
+              onRemove={() => removeToast(toast.id)}
             />
           )
         })

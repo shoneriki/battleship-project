@@ -57,20 +57,23 @@ export const ToastMessage = styled.section`
 `;
 
 
-const Toast = ({message, duration=1000, onRemove, type}) => {
+const Toast = ({message, duration=1000, onRemove, type, persistent = false}) => {
   const [show, setShow] = useState(true);
 
   useEffect(() => {
     setShow(true);
-    const timer = setTimeout(() => {
-      setShow(false);
-      onRemove();
-    }, duration);
+    let timer
+    if (!persistent && duration !== undefined) {
+      timer = setTimeout(() => {
+        setShow(false);
+        onRemove();
+      }, duration);
+    }
 
     return () => {
       clearTimeout(timer)
     }
-  },[message, duration, onRemove, type])
+  },[message, duration, onRemove, type, persistent])
   return (
       <ToastMessage
         className={`toast-container ${show ? "show" : "hide"}`}
