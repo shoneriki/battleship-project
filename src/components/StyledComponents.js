@@ -5,6 +5,7 @@ import 'react-toastify/dist/ReactToastify.css';
 /* styles for appMain---------------------------------------------------------*/
 
 export const AppSection = styled.main`
+  background-color: #fffafa;
   width: 100%;
   min-height: 30vh;
   display: flex;
@@ -175,7 +176,7 @@ export const StyledBtn = styled.button`
   background-color: #1e90ff;
   background-image: linear-gradient(to bottom right, #1e90ff, #187bcd);
   border: none;
-  color: white;
+  color: #fffafa;
   font-size: 12px;
   padding: 8px 16px;
   cursor: pointer;
@@ -201,9 +202,14 @@ export const StyledBtn = styled.button`
   }
 `;
 
+export const RestartBtn = styled(StyledBtn)`
+  background-color: blue;
+  background-image: linear-gradient(to bottom right, blue, green);
+`;
+
 export const ShipBtn = styled.button`
   background-color: yellow;
-  color: gray;
+  color: black;
   border: none;
   padding: 4px 8px;
   margin: 4px 4px;
@@ -231,9 +237,61 @@ export const ShipSelector = styled.section`
 export const Winner = styled.h1`
   text-align: center;
 `
+
+export const WinnerDisplay = styled.section`
+  text-align:center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`
 export const Turn = styled.h1`
   text-align: center;
 `
+
+export const MobileSection = styled.section`
+  display: none;
+  justify-content: center;
+  align-items: center;
+  font-size: 12px;
+  padding: 8px 16px;
+  cursor: pointer;
+
+  @media only screen and (max-width: 800px) {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  @media only screen and (min-width: 801px) and (max-width: 1100px) {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+`;
+
+export const MobileBtn = styled(StyledBtn)`
+  background-color: pink;
+  background-image: linear-gradient(to bottom right, pink, purple)
+
+`
+
+export const DesktopSection = styled.section`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 12px;
+  padding: 8px 16px;
+
+  @media only screen and (max-width: 800px) {
+    display: none;
+    justify-content: center;
+    align-items: center;
+  }
+  @media only screen and (min-width: 801px) and (max-width: 1100px) {
+    display: none;
+    justify-content: center;
+    align-items: center;
+  }
+`;
 
 export const Labels = styled.tr`
   display: flex;

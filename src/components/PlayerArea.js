@@ -12,12 +12,16 @@ import {
   PlaceAllPlayerShips,
   StyledBtn,
   ShipBtn,
+  MobileSection,
+  MobileBtn,
+  DesktopSection,
 } from "./StyledComponents";
 
 const PlayerArea = ({
   Player,
   humanBoard,
   humanDirection,
+  setHumanDirection,
   humanPlaceShip,
   randomPlaceShips,
   handleRandomPlayerShipPlacement,
@@ -36,6 +40,11 @@ const PlayerArea = ({
     return (
       <>
         <PlayerTitle>{Player}</PlayerTitle>
+        <DesktopSection>
+          {!gameOn && (
+            <h6>{humanDirection === "h"? "press v to change to vertical" : "press h to change to horizontal"} </h6>
+          )}
+        </DesktopSection>
         {!allHumanShipsPlaced && (
           <ShipDashboard data-testid={`${Player}-ship-info`}>
             <ShipSelector>
@@ -53,6 +62,15 @@ const PlayerArea = ({
                   );
                 })}
               </PlayerShipButtons>
+              <MobileSection>
+                <MobileBtn
+                  onClick={() => setHumanDirection(
+                    humanDirection === "h" ? "v" : "h"
+                  )}
+                >
+                  Change To {humanDirection === "h" ? "Vertical" : "Horizontal"} Orientation
+                </MobileBtn>
+              </MobileSection>
             </ShipSelector>
 
             <PlaceAllPlayerShips>

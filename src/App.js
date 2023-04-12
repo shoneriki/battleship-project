@@ -2,8 +2,8 @@ import PlayerArea from "./components/PlayerArea";
 import EnemyArea from "./components/EnemyArea";
 import {ShipConstructor} from "./components/ShipConstructor"
 import { useState, useEffect, useRef } from "react";
-import {AppSection, Boards, GameTitle, BoardSection, Winner, Turn} from "./components/StyledComponents"
-
+import {AppSection, Boards, GameTitle, BoardSection, Winner, RestartBtn, WinnerDisplay, Turn} from "./components/StyledComponents"
+import {ToastWrapper} from "./components/Toast"
 import {useToast} from "./components/useToast"
 import Toast from "./components/Toast"
 
@@ -43,8 +43,6 @@ const AppMain = () => {
   const [humanShip, setHumanShip] = useState(shipsToPlace[0]);
 
   // useStates for hit and miss logic
-  const [hit, setHit] = useState(false);
-  const [miss, setMiss] = useState(false);
   const [hitComCoords, setHitComCoords] = useState([]);
   const [missedComCoords, setMissedComCoords] = useState([]);
 
@@ -74,8 +72,12 @@ const AppMain = () => {
 
   const [gameOn, setGameOn] = useState(false);
 
+  const [showGameStartToast, setShowGameStartToast] = useState(false);
+  const [comPlaceShipToast, setComPlaceShipToast] = useState(false);
+  const [showWinToast, setShowWinToast] = useState(false);
+  const [showLoseToast, setShowLoseToast] = useState(false);
 
-  const {toasts, showToast, removeToast} = useToast()
+  const {toasts, showToast, removeToast, useSingleToast} = useToast()
   // useStates for both sides
 
 /* end USESTATES -----------------------------------------------------------*/
@@ -115,43 +117,41 @@ const AppMain = () => {
   // useEffect for both sides/gameon
   useEffect(() => {
     if (allHumanShipsPlaced && allComShipsPlaced) {
-      showToast("Game Start", 1000, "success")
       setGameOn(true);
+      setShowGameStartToast(true);
     }
-  }, [allHumanShipsPlaced, allComShipsPlaced, humanShipSegmentsOnBoard]);
+  }, [ gameOn, allHumanShipsPlaced, allComShipsPlaced, humanShipSegmentsOnBoard]);
 
   useEffect(() => {
-    // console.log("gameOn from app?", gameOn)
-  }, [gameOn])
+    if(showGameStartToast) {
+      setShowGameStartToast(false)
+    }
+  },[showGameStartToast])
+  useSingleToast("Game On!", 1500, "success", showGameStartToast && !winner && !loser)
 
   useEffect(() => {
     handlePlaceComputerShips()
+    setComPlaceShipToast(true)
   },[])
+  useEffect(() => {
+    if(comPlaceShipToast) {
+      setComPlaceShipToast(false)
+    }
+  },[comPlaceShipToast])
+  useSingleToast("Computer Ships Placed! Please place your ships on your board", 1500, "success", comPlaceShipToast);
 
   useEffect(() => {
     // console.log("comShips", comShips);
   }, [comShips]);
 
-  useEffect(() => {
-    if (currentTurn.current === "Computer") {
-      setTimeout(() => {
-        attackPlayer(humanBoard, humanShips, hitPlayerCoords, null);
-      }, 2000);
-    }
-  }, [
-    currentTurn.current,
-    humanBoard,
-    humanShips,
-    hitPlayerCoords,
-    computerAttacking,
-  ]);
 
   useEffect(() => {
     if (comShips.length === 0 || hitComCoords.length === 17) {
       setGameOn(false);
       setWinner("Player");
       setLoser("Computer");
-      showToast("You Win!", 1000, "win")
+      console.log("winner from useEffect", winner)
+      console.log("loser from useEffect", loser)
     }
   }, [gameOn, comShips, hitComCoords, winner, loser]);
 
@@ -160,9 +160,47 @@ const AppMain = () => {
       setGameOn(false);
       setWinner("Computer");
       setLoser("Player");
-      showToast("Computer Wins!", 1000, "lose")
     }
   }, [gameOn, humanShips, hitPlayerCoords, winner, loser]);
+
+ useEffect(() => {
+   if (currentTurn.current === "Computer" && winner === "" && loser === "") {
+     setTimeout(() => {
+       attackPlayer(humanBoard, humanShips, hitPlayerCoords, null);
+       if (winner === "" && loser === "") {
+      }
+    }, 2000);
+  }
+}, [
+  currentTurn.current,
+  humanBoard,
+  humanShips,
+  hitPlayerCoords,
+  computerAttacking,
+  winner,
+  loser,
+]);
+useSingleToast("Your Turn", undefined, "yourTurn", gameOn && currentTurn.current === "Player" && winner === "" && loser === "", true);
+
+
+ useEffect(() => {
+   if (winner === "Player") {
+     setShowWinToast(true);
+   } else if (loser === "Player") {
+    setShowLoseToast(true);
+   }
+ }, [winner, loser]);
+
+ useSingleToast("You Win!", 1000, "win", showWinToast);
+ useSingleToast("Computer Wins!", 1000, "lose", showLoseToast);
+
+ useEffect(() => {
+   if (showWinToast) {
+     setShowWinToast(false);
+   } else if(showLoseToast) {
+      setShowLoseToast(false)
+   }
+ }, [showWinToast, showLoseToast]);
 
 
   // end useEffect for both sides/gameon
@@ -305,7 +343,6 @@ const AppMain = () => {
     setHumanBoard(newBoard);
     setHumanShipCoords(newShipCoords);
     setHumanShipSegmentsOnBoard(newShipSegmentsOnBoard);
-    // const allShipsPlaced = newShipSegmentsOnBoard.length === 17;
     setAllHumanShipsPlaced(true);
   };
 
@@ -395,7 +432,7 @@ const AppMain = () => {
   const attackPlayer = (board, ships, hitCoords, forceHitCoords) => {
     if (!gameOn) return;
     if (currentTurn.current === "Player") return;
-    if (currentTurn.current !== "Player") {
+    if (gameOn && currentTurn.current !== "Player") {
       setComputerAttacking(true);
       let newBoard = board.map(row => row.map(cell => ({...cell})))
       let coords;
@@ -426,6 +463,8 @@ const AppMain = () => {
         if(shipIndex  !== -1)  {
         const newShips = ships.map(ship => ship.copy());
         newShips[shipIndex].isHit();
+        showToast(`Computer hit ${ships[shipIndex].name.charAt(0).toUpperCase() +
+              ships[shipIndex].name.slice(1)}`, 1500, "warning")
         setHumanShips(newShips);
         cell.hit = true;
         setHumanBoard(newBoard)
@@ -435,7 +474,7 @@ const AppMain = () => {
             `The Computer Sank Your ${
               ships[shipIndex].name.charAt(0).toUpperCase() +
               ships[shipIndex].name.slice(1)
-            }`, 1000, "warning"
+            }`, 1500, "warning"
           );
           const newShipsArray = ships.map((ship) => ship.copy());
           newShipsArray.splice(shipIndex, 1);
@@ -448,8 +487,10 @@ const AppMain = () => {
         setMissedPlayerCoords([...missedPlayerCoords, [v, h]]);
       }
     }
-    currentTurn.current = "Player";
     setComputerAttacking(false);
+    if (gameOn && winner === "" && loser === "") {
+      currentTurn.current = "Player";
+    }
   }
 
 
@@ -460,7 +501,7 @@ const AppMain = () => {
   const attackCom = (v, h, board, ships) => {
     if (!gameOn) return;
     if (currentTurn.current !== "Player") return;
-    if (currentTurn.current === "Player") {
+    if (gameOn && currentTurn.current === "Player") {
       const newBoard = [...board];
       const cell = newBoard[v][h];
       if (cell.hit || cell.miss) {
@@ -478,7 +519,7 @@ const AppMain = () => {
         setComBoard(newBoard);
         setHitComCoords([...hitComCoords, [v, h]]);
         if (newShips[shipIndex].isSunk()) {
-          showToast(`You Sunk Their ${ships[shipIndex].name.charAt(0).toUpperCase() + ships[shipIndex].name.slice(1)}`, 1000, "success")
+          showToast(`You Sunk Their ${ships[shipIndex].name.charAt(0).toUpperCase() + ships[shipIndex].name.slice(1)}`, 1500, "success")
           const newArray = [...comShips];
           newArray.splice(shipIndex, 1);
           setComShips(newArray);
@@ -550,9 +591,7 @@ const AppMain = () => {
         }
       }
 
-    // console.log("shipCoords for computer", shipCoords);
-    showToast("Computer Ships Placed! Please place your ships on your board", 1500, "success");
-    console.log("test show toast?");
+    console.log("shipCoords for computer", shipCoords);
     return [newBoard, shipCoords, segmentsOnBoard];
   };
 
@@ -569,19 +608,13 @@ const AppMain = () => {
 
   //end computer place ships logic
 
-  // toast functions
-
-
-  // end toast functions
-
-
   /* END COMPUTER SIDE FUNCTIONS-------------------------------------------------- */
 
 /*FUNCTIONS end------------------------------------------------------------------*/
-
   return (
     <AppSection>
       <GameTitle data-testid="game-title">Battleship</GameTitle>
+      <ToastWrapper>
       {
         toasts.map((toast) => {
           return (
@@ -589,24 +622,34 @@ const AppMain = () => {
               key={toast.id}
               message={toast.message}
               duration={toast.duration}
-              onRemove={() => removeToast(toast.id)}
               type={toast.type}
+              persistent={toast.persistent}
+              onRemove={() => removeToast(toast.id)}
             />
           )
         })
       }
+
+      </ToastWrapper>
       {gameOn && <Turn>{currentTurn.current}'s Turn</Turn>}
-      <section>
-        {winner !== "" && loser !== "" ? (
+      <RestartBtn
+        onClick = {() => window.location.reload()}
+        winner = {winner}
+      >
+        {winner !== "" ? "Reload?": "Play Again?"}
+      </RestartBtn>
+      {winner !== "" && loser !== "" ? (
+        <WinnerDisplay>
           <Winner winner={winner} loser={loser}>{`${winner} Wins!`}</Winner>
-        ) : null}
-      </section>
+        </WinnerDisplay>
+      ) : null}
       <Boards>
         <BoardSection>
           <PlayerArea
             Player="Player"
             humanBoard={humanBoard}
             humanDirection={humanDirection}
+            setHumanDirection={setHumanDirection}
             humanPlaceShip={humanPlaceShip}
             /* for placing ships randomly */
             randomPlaceShips={randomPlaceShips}
@@ -627,20 +670,12 @@ const AppMain = () => {
           <EnemyArea
             Player="Computer"
             comBoard={comBoard}
-            boardSize={boardSize}
             comShips={comShips}
-            setComShips={setComShips}
-            comPlaceAllShips={comPlaceAllShips}
-            handlePlaceComputerShips={handlePlaceComputerShips}
             allComShipsPlaced={allComShipsPlaced}
             gameOn={gameOn}
             winner={winner}
             // attack logic
             attackCom={attackCom}
-            hit={hit}
-            setHit={setHit}
-            miss={miss}
-            setMiss={setMiss}
             turn={currentTurn.current}
             // end attack logic
           />
