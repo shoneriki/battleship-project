@@ -1,9 +1,5 @@
 import {
   PlayerTitle,
-  Board,
-  BoardBody,
-  TableRow,
-  Square,
   ShipDashboard,
   ShipInfo,
   ShipStats,
@@ -15,6 +11,12 @@ import {
   MobileSection,
   MobileBtn,
   DesktopSection,
+  InfoContainer,
+  
+  Board,
+  BoardBody,
+  TableRow,
+  Square,
 } from "./StyledComponents";
 
 const PlayerArea = ({
@@ -38,7 +40,7 @@ const PlayerArea = ({
 }) => {
   const Info = ({ Player, humanDirection, gameOn }) => {
     return (
-      <>
+      <InfoContainer>
         <PlayerTitle>{Player}</PlayerTitle>
         <DesktopSection>
           {!gameOn && (
@@ -111,7 +113,7 @@ const PlayerArea = ({
             </ShipInfo>
           )}
         </section>
-      </>
+      </InfoContainer>
     );
   };
 
