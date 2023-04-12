@@ -5,7 +5,7 @@ import 'react-toastify/dist/ReactToastify.css';
 /* styles for appMain---------------------------------------------------------*/
 
 export const AppSection = styled.main`
-  background-color: #fffafa;
+  overflow: hidden;
   width: 100%;
   min-height: 30vh;
   display: flex;
@@ -203,16 +203,24 @@ export const StyledBtn = styled.button`
 `;
 
 export const RestartBtn = styled(StyledBtn)`
-  background-color: blue;
+  background-color: #1abc9c;
+  background-image: none;
   width: 25%;
   text-align-center;
   margin: 0 auto;
-  background-image: linear-gradient(to bottom right, blue, green);
+
+  &:hover {
+    background-color: #16a085;
+  }
+
+  &:active {
+    background-color: #16a085;
+  }
 `;
 
 export const ShipBtn = styled.button`
-  background-color: yellow;
-  color: black;
+  background-color: #f39c12;
+  color: #ffffff;
   border: none;
   padding: 4px 8px;
   margin: 4px 4px;
