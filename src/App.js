@@ -133,6 +133,7 @@ const AppMain = () => {
     handlePlaceComputerShips()
     setComPlaceShipToast(true)
   },[])
+
   useEffect(() => {
     if(comPlaceShipToast) {
       setComPlaceShipToast(false)
@@ -143,22 +144,26 @@ const AppMain = () => {
   useEffect(() => {
   }, [comShips]);
 
-
-  useEffect(() => {
-    if (comShips.length === 0 || hitComCoords.length === 17) {
-      setGameOn(false);
-      setWinner("Player");
-      setLoser("Computer");
-    }
-  }, [gameOn, comShips, hitComCoords, winner, loser]);
-
   useEffect(() => {
     if (humanShips.length === 0 || hitPlayerCoords.length === 17) {
       setGameOn(false);
       setWinner("Computer");
       setLoser("Player");
+    } else if (comShips.length === 0 || hitComCoords.length === 17) {
+      setGameOn(false);
+      setWinner("Player");
+      setLoser("Computer");
     }
-  }, [gameOn, humanShips, hitPlayerCoords, winner, loser]);
+  }, [
+    gameOn,
+    humanShips,
+    hitPlayerCoords,
+    comShips,
+    hitComCoords,
+    winner,
+    loser,
+  ]);
+
 
  useEffect(() => {
    if (currentTurn.current === "Computer" && winner === "" && loser === "") {
@@ -563,7 +568,7 @@ useSingleToast("Your Turn", undefined, "yourTurn", gameOn && currentTurn.current
           }
         }
       }
-
+      console.log("computer ship placements",shipCoords)
     return [newBoard, shipCoords, segmentsOnBoard];
   };
 
