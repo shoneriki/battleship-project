@@ -26,7 +26,7 @@ export const Boards = styled.section`
   flex-direction: row;
   width: 100%;
   text-align: center;
-  @media only screen and (max-width: 1100px) {
+  @media only screen and (max-width: 800px) {
     display: flex;
     flex-direction: column;
     align-items: center;
