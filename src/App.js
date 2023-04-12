@@ -612,7 +612,7 @@ useSingleToast("Your Turn", undefined, "yourTurn", gameOn && currentTurn.current
         onClick = {() => window.location.reload()}
         winner = {winner}
       >
-        {winner !== "" ? "Reload?": "Play Again?"}
+        Reload?
       </RestartBtn>
       {winner !== "" && loser !== "" ? (
         <WinnerDisplay>
