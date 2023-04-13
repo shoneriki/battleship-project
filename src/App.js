@@ -568,7 +568,6 @@ useSingleToast("Your Turn", undefined, "yourTurn", gameOn && currentTurn.current
           }
         }
       }
-      console.log("computer ship placements",shipCoords)
     return [newBoard, shipCoords, segmentsOnBoard];
   };
 

@@ -41,7 +41,7 @@ export const GameTitle = styled.h1`
 `;
 
 export const BoardSection = styled.section`
-  width: 50%;
+  width: 100%;
   height: 100%;
   border-radius: 10px;
   font-size: 20px;
@@ -180,6 +180,9 @@ export const PlayerShipButtons = styled.section`
   align-items: center;
   flex-wrap: wrap;
   margin: 8px 0;
+  @media screen and (max-width: 800px) {
+    width: 100%;
+  }
 `
 
 export const PlaceAllPlayerShips = styled.section`
