@@ -8,28 +8,40 @@ import {useToast} from "./components/useToast"
 import Toast from "./components/Toast"
 
 
+import {useBattleshipGame} from "./hooks/useBattleshipGame";
+
 const AppMain = () => {
   const currentTurn = useRef("Player")
 
 /* USESTATES-----------------------------------------------------------------*/
 
-  const [boardSize, setBoardSize] = useState(10);
-  const initialBoard = (boardSize) => {
-    return Array.from({ length: boardSize }, (_, v) =>
-      Array.from({ length: boardSize }, (_, h) => ({
-        v,
-        h,
-        hasShip: 0,
-      }))
-    );
-  };
-  const [humanShips, setHumanShips] = useState([
-    ShipConstructor("carrier"),
-    ShipConstructor("battleship"),
-    ShipConstructor("cruiser"),
-    ShipConstructor("submarine"),
-    ShipConstructor("destroyer"),
-  ]);
+  // const [boardSize, setBoardSize] = useState(10);
+  // const initialBoard = (boardSize) => {
+  //   return Array.from({ length: boardSize }, (_, v) =>
+  //     Array.from({ length: boardSize }, (_, h) => ({
+  //       v,
+  //       h,
+  //       hasShip: 0,
+  //     }))
+  //   );
+  // };
+  // const [humanShips, setHumanShips] = useState([
+  //   ShipConstructor("carrier"),
+  //   ShipConstructor("battleship"),
+  //   ShipConstructor("cruiser"),
+  //   ShipConstructor("submarine"),
+  //   ShipConstructor("destroyer"),
+  // ]);
+
+  const {
+    initialBoard,
+    boardSize,
+    setBoardSize,
+    humanShips,
+    setHumanShips,
+    comShips,
+    setComShips,
+  } = useBattleshipGame();
 
   const [humanBoard, setHumanBoard] = useState(initialBoard(boardSize));
 
@@ -52,13 +64,13 @@ const AppMain = () => {
 
   // computer useStates
   const [comBoard, setComBoard] = useState(initialBoard(boardSize));
-  const [comShips, setComShips] = useState([
-    ShipConstructor("carrier"),
-    ShipConstructor("battleship"),
-    ShipConstructor("cruiser"),
-    ShipConstructor("submarine"),
-    ShipConstructor("destroyer"),
-  ]);
+  // const [comShips, setComShips] = useState([
+  //   ShipConstructor("carrier"),
+  //   ShipConstructor("battleship"),
+  //   ShipConstructor("cruiser"),
+  //   ShipConstructor("submarine"),
+  //   ShipConstructor("destroyer"),
+  // ]);
 
   const [comShipCoords, setComShipCoords] = useState([]);
   const [comShipSegmentsOnBoard, setComShipSegmentsOnBoard] = useState([]);
