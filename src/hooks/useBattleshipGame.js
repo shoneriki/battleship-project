@@ -27,6 +27,12 @@ export function useBattleshipGame() {
     ShipConstructor("destroyer"),
   ]);
 
+  const [humanBoard, setHumanBoard] = useState(initialBoard(boardSize));
+
+  const [comBoard, setComBoard] = useState(initialBoard(boardSize));
+
+
+
   return {
     initialBoard,
     boardSize,
@@ -35,5 +41,9 @@ export function useBattleshipGame() {
     setHumanShips,
     comShips,
     setComShips,
-  }
+    humanBoard,
+    setHumanBoard,
+    comBoard,
+    setComBoard
+  };
 }
