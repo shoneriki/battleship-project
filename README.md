@@ -1,70 +1,60 @@
-# Getting Started with Create React App
+# Battleship
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+I created a battleship game based on the famous board game by Mattel. The game is played on a 10x10 grid. The player and the computer each have 5 ships. The player and the computer take turns guessing where the other player's ships are located. The first player to sink all of the other player's ships wins.
 
-## Available Scripts
+## Technologies Used
 
-In the project directory, you can run:
+- React
+- React Testing Library
+- Styled Components
 
-### `npm start`
+## Installation Instructions
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+1. Clone down this repo
+2. Run `npm install`
+3. Run `npm start`
+4. Open `localhost:3000` in your browser
+5. You should be able to play the game on your machine
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+... Or you can head to this deployed link right here and play it without installation: [Battleship Project](https://shoneriki.github.io/battleship-project)
 
-### `npm test`
+## How to play
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### Setup
 
-### `npm run build`
+- The computer will place its ships randomly when it loads, but you will not see where they are for obvious reasons.
+- You will then place your ships on the board.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### Placing Ships
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+- You have two options for placing ships:
+  1. Select one of the 5 ship buttons. By default, the first ship is the carrier ship with a length of five.
+  2. Switch the orientation of the current ship with either `h` or `v` keys (for horizontal or vertical orientations; for mobile/tablet modes, there is a button to change the orientation) and place the ship on the board by clicking or tapping on the board.
+  3. Select the next ship to place and repeat the process until all 5 ships are placed.
+  4. Alternatively, click the "Please Place Ships For Me" button which will place the ships for you.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### Gameplay
 
-### `npm run eject`
+- Once all ships are placed, the current ship stats for both sides will be near their respective boards.
+- Playing the game is simple:
+  1. It will be your turn first. Click a cell on the Computer's board.
+  2. The computer also takes a turn and clicks a square on your board.
+  3. When you hit the computer's ship, the cell will turn red. If it's a miss, the square will turn gray. Regardless of the outcome, it will become the computer's turn next.
+  4. If the computer hits one of your ships, the cell will not only turn red, but you will get a toast notification as to which ship was hit. If it's a miss, the cell will just turn gray and it will become your turn again.
+  5. Each time a ship on either side is sunk, you will get a toast notification as to which ship was sunk.
+  6. The game ends when either you or the computer sinks all of the other player's ships.
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+## Future Iterations
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+This is a very basic version of the game, and I would like to add more features to it, such as:
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+- Refactoring the app heavily in the codebase.
+- Implementing a simple backend for storing states and making it a full-stack application.
+- Improving test-driven development for this project.
+- Developing a smarter AI with better strategies for targeting ships.
+- implement a splash sound for a missed shot, and some sort of explosive sound for a hit shot
+- implement actual ship images for the ships
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+## What I have learned
 
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+I naively started this project thinking that this project would be easy. I first set out to do this in Test-Driven-Development, but it turned out to be a massive wormhole of possible implementations which took the development of this project twice as long. What also prevents my refactoring of this code is also having to rewrite the tests as well. I also learned about states and the importance of useEffects to render so many parts of this app.

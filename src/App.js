@@ -8,30 +8,26 @@ import {useToast} from "./components/useToast"
 import Toast from "./components/Toast"
 
 
+import {useBattleshipGame} from "./hooks/useBattleshipGame";
+
 const AppMain = () => {
   const currentTurn = useRef("Player")
 
 /* USESTATES-----------------------------------------------------------------*/
 
-  const [boardSize, setBoardSize] = useState(10);
-  const initialBoard = (boardSize) => {
-    return Array.from({ length: boardSize }, (_, v) =>
-      Array.from({ length: boardSize }, (_, h) => ({
-        v,
-        h,
-        hasShip: 0,
-      }))
-    );
-  };
-  const [humanShips, setHumanShips] = useState([
-    ShipConstructor("carrier"),
-    ShipConstructor("battleship"),
-    ShipConstructor("cruiser"),
-    ShipConstructor("submarine"),
-    ShipConstructor("destroyer"),
-  ]);
-
-  const [humanBoard, setHumanBoard] = useState(initialBoard(boardSize));
+  const {
+    initialBoard,
+    boardSize,
+    setBoardSize,
+    humanShips,
+    setHumanShips,
+    comShips,
+    setComShips,
+    humanBoard,
+    setHumanBoard,
+    comBoard,
+    setComBoard,
+  } = useBattleshipGame();
 
   const [humanDirection, setHumanDirection] = useState("h");
   const [allHumanShipsPlaced, setAllHumanShipsPlaced] = useState(false);
@@ -51,14 +47,7 @@ const AppMain = () => {
   // end useStates for hit and miss logic
 
   // computer useStates
-  const [comBoard, setComBoard] = useState(initialBoard(boardSize));
-  const [comShips, setComShips] = useState([
-    ShipConstructor("carrier"),
-    ShipConstructor("battleship"),
-    ShipConstructor("cruiser"),
-    ShipConstructor("submarine"),
-    ShipConstructor("destroyer"),
-  ]);
+
 
   const [comShipCoords, setComShipCoords] = useState([]);
   const [comShipSegmentsOnBoard, setComShipSegmentsOnBoard] = useState([]);
