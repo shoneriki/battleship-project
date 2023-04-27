@@ -52,6 +52,8 @@ This is a very basic version of the game, and I would like to add more features 
 - Implementing a simple backend for storing states and making it a full-stack application.
 - Improving test-driven development for this project.
 - Developing a smarter AI with better strategies for targeting ships.
+- implement a splash sound for a missed shot, and some sort of explosive sound for a hit shot
+- implement actual ship images for the ships
 
 ## What I have learned
 
