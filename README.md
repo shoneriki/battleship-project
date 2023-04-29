@@ -2,6 +2,9 @@
 
 I created a battleship game based on the famous board game by Mattel. The game is played on a 10x10 grid. The player and the computer each have 5 ships. The player and the computer take turns guessing where the other player's ships are located. The first player to sink all of the other player's ships wins.
 
+![Alt text](assets/images/Battleship-Screenshot.png "Optional Title")
+
+
 ## Technologies Used
 
 - React
