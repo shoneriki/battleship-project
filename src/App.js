@@ -577,9 +577,9 @@ useSingleToast("Your Turn", undefined, "yourTurn", gameOn && currentTurn.current
 
 /*FUNCTIONS end------------------------------------------------------------------*/
   return (
-    <AppSection>
-      <GameTitle data-testid="game-title">Battleship</GameTitle>
-      <ToastWrapper>
+    <AppSection name="AppSection">
+      <GameTitle name="GameTitle" data-testid="game-title">Battleship</GameTitle>
+      <ToastWrapper name="ToastWrapper">
       {
         toasts.map((toast) => {
           return (
@@ -607,8 +607,8 @@ useSingleToast("Your Turn", undefined, "yourTurn", gameOn && currentTurn.current
           <Winner winner={winner} loser={loser}>{`${winner} Wins!`}</Winner>
         </WinnerDisplay>
       ) : null}
-      <Boards>
-        <BoardSection>
+      <Boards name="Boards">
+        <BoardSection name="BoardSection">
           <PlayerArea
             Player="Player"
             humanBoard={humanBoard}

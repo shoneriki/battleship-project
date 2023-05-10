@@ -15,6 +15,8 @@ import {
   ShipName,
   IndivStats,
 
+  PlayerAreaWrap,
+
   Board,
   BoardBody,
   TableRow,
@@ -42,7 +44,7 @@ const PlayerArea = ({
 }) => {
   const Info = ({ Player, humanDirection, gameOn }) => {
     return (
-      <InfoContainer>
+      <InfoContainer name="infoContainer">
         <PlayerTitle>{Player}</PlayerTitle>
         <DesktopSection>
           {!gameOn && (
@@ -172,7 +174,7 @@ const PlayerArea = ({
 
   // v for vertical, h for horizontal
   return (
-    <section>
+    <PlayerAreaWrap name="PlayerAreaWrap">
       <Info
         Player={Player}
         humanDirection={humanDirection}
@@ -181,7 +183,7 @@ const PlayerArea = ({
       <PlayerBoard
         Player={Player}
       />
-    </section>
+    </PlayerAreaWrap>
   );
 };
 

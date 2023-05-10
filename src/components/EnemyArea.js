@@ -11,6 +11,10 @@ import {
   ShipName,
   IndivStats,
 
+  PlayerAreaWrap,
+
+  EnemyScoreDisplay,
+
   Board,
   BoardBody,
   TableRow,
@@ -32,7 +36,7 @@ const EnemyArea = ({
 }) => {
   const Info = ({ Player, gameOn, turn }) => {
     return (
-      <InfoContainer>
+      <InfoContainer name="InfoContainer">
         <PlayerTitle>{Player}</PlayerTitle>
         {/* {!allComShipsPlaced && (
           <StyledBtn
@@ -42,7 +46,7 @@ const EnemyArea = ({
             Place Ships
           </StyledBtn>
         )} */}
-        <section>
+        <EnemyScoreDisplay name="EnemyScoreDisplay">
           <h6>Ships Placed</h6>
           {allComShipsPlaced && (
             <ShipInfo data-testid={`${Player}-ship-info`}>
@@ -62,7 +66,7 @@ const EnemyArea = ({
               })}
             </ShipInfo>
           )}
-        </section>
+        </EnemyScoreDisplay>
       </InfoContainer>
     );
   };
@@ -103,7 +107,7 @@ const EnemyArea = ({
 
   // v for vertical, h for horizontal
   return (
-    <section>
+    <PlayerAreaWrap name="PlayerAreaWrap">
       <Info
         Player={Player}
         comShips={comShips}
@@ -112,7 +116,7 @@ const EnemyArea = ({
         turn={turn}
       />
       <PlayerBoard Player={Player} winner={winner} />
-    </section>
+    </PlayerAreaWrap>
   );
 };
 export default EnemyArea
