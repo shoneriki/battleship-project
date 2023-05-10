@@ -47,6 +47,10 @@ export const BoardSection = styled.section`
   font-size: 20px;
   font-weight: bold;
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  aligh-items: center;
 
   @media only screen and (max-width: 800px) {
     margin-bottom: 32px;
@@ -59,18 +63,42 @@ export const PlayerTitle = styled.h1`
   text-align: center;
 `;
 
+export const PlayerAreaWrap = styled.section`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+`
+
 /*Info Container---------------------------------------------------------------*/
 
 export const InfoContainer = styled.section`
   min-height: 28vh;
+  width: 40%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 
   @media only screen and (max-width: 800px) {
     min-height: 16vh;
+    width: 96%;
   }
 
 `
 
 /*end of info container --------------------------------------------------------*/
+
+/* Enemy Score Display*/
+export const EnemyScoreDisplay = styled.section`
+  width: 40;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+`
+
+/* end Enemy Score Display*/
 
 /*  board ---------------------------------------------------------------------*/
 
@@ -164,6 +192,7 @@ export const ShipDashboard = styled.section`
   flex-direction: column;
   width: 100%;
   justify-content: center;
+  padding: 0 16px;
 `;
 
 export const ShipInfo = styled.section`
@@ -171,7 +200,7 @@ export const ShipInfo = styled.section`
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  width: 100%;
+  width: 80%;
 `
 
 export const PlayerShipButtons = styled.section`
@@ -265,6 +294,7 @@ export const ShipBtn = styled.button`
 export const ShipSelector = styled.section`
   display: flex;
   flex-direction: column;
+  padding: 0 16px;
 `
 
 export const Winner = styled.h1`
