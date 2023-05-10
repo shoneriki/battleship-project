@@ -74,7 +74,7 @@ export const PlayerAreaWrap = styled.section`
 
 export const InfoContainer = styled.section`
   min-height: 28vh;
-  width: 40%;
+  width: 80%;
   display: flex;
   flex-direction: column;
   align-items: center;
