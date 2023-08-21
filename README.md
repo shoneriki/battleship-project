@@ -57,7 +57,3 @@ This is a very basic version of the game, and I would like to add more features 
 - Developing a smarter AI with better strategies for targeting ships.
 - implement a splash sound for a missed shot, and some sort of explosive sound for a hit shot
 - implement actual ship images for the ships
-
-## What I have learned
-
-I naively started this project thinking that this project would be easy. I first set out to do this in Test-Driven-Development, but it turned out to be a massive wormhole of possible implementations which took the development of this project twice as long. What also prevents my refactoring of this code is also having to rewrite the tests as well. I also learned about states and the importance of useEffects to render so many parts of this app.
