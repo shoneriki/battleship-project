@@ -13,8 +13,9 @@ I created a battleship game based on the famous board game by Mattel. The game i
     👈
 </h3>
 
-![Alt text](assets/images/Battleship-Screenshot.png "Optional Title")
-
+<a href="https://shoneriki.github.io/battleship-project/" target="_blank">
+  ![Alt text](assets/images/Battleship-Screenshot.png "Optional Title")
+</a>
 
 ## Technologies Used
 
